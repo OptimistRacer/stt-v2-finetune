@@ -1,0 +1,14 @@
+data_dir: "E:/Audion-Data/stt-v2-finetune/outputs/_smoketest"
+output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/_smoketest/out"
+
+sample_rate: 16000
+silence_thresh_db: -40.0
+min_silence_ms: 400
+target_max_ms: 30000
+floor_ms: 2000
+
+dataset_version: "smoketest"
+
+sources:
+  - id: podcast1_90s
+    filename: "podcast1_90s.mp3"

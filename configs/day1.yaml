@@ -1,0 +1,22 @@
+data_dir: "E:/Audion-Data/Urdu"
+output_dir: "E:/Audion-Data/stt-v2-finetune/outputs"
+
+sample_rate: 16000
+silence_thresh_db: -40.0
+min_silence_ms: 400
+target_max_ms: 30000
+floor_ms: 2000
+
+whisper_model: "base"
+device: "cuda"
+language: "ur"
+
+dataset_version: "v2-day1"
+
+sources:
+  - id: podcast1
+    filename: "Urdu-Podcast1-Male-Neutral.mp3"
+  - id: podcast2
+    filename: "Urdu-Podcast2-maleAndFemal-Neutral.mp3"
+  - id: podcast3
+    filename: "Urdu-Podcast3-Male-Neutral.mpeg"
