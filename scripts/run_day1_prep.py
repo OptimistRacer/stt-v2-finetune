@@ -44,6 +44,7 @@ def run(config_path: str) -> None:
         clip_dir = out_dir / "clips" / source["id"]
         clip_records = export_clips(audio, clips, clip_dir, source["id"])
 
+        target_max_ms = cfg.get("target_max_ms", 30000)
         for rec in clip_records:
             rec["source_id"] = source["id"]
             rec["source_file"] = source["filename"]
@@ -51,6 +52,11 @@ def run(config_path: str) -> None:
             rec["speaker"] = None
             rec["verified"] = False
             rec["checksum_sha256"] = sha256_of(Path(rec["path"]))
+            # No silence gap was found to cut this on within the target ceiling (e.g. an
+            # intro with music under it) -- it was kept whole rather than force-split
+            # mid-sentence. Whisper's encoder is a fixed 30s window, so this needs a human
+            # to pick a manual cut point in Day 2, it can't go into fine-tuning as-is.
+            rec["needs_manual_split"] = rec["duration_s"] * 1000 > target_max_ms
         all_records.extend(clip_records)
         print(f"  -> {len(clip_records)} clips")
 
