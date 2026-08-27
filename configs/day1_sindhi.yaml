@@ -1,0 +1,16 @@
+data_dir: "E:/Audion-Data/Sindhi"
+output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/sindhi"
+
+sample_rate: 16000
+silence_thresh_db: -40.0
+min_silence_ms: 400
+target_max_ms: 30000
+floor_ms: 2000
+
+dataset_version: "v2-day1-sindhi"
+
+sources:
+  - id: sindhi_podcast1
+    filename: "Sindhi-Podcast1-Male-Neutral.mp3"
+  - id: sindhi_podcast2
+    filename: "Sindhi-Podcast2-MaleAndFemal-Neutral.mp3"

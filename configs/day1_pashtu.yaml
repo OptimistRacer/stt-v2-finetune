@@ -1,0 +1,16 @@
+data_dir: "E:/Audion-Data/Pashtu"
+output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/pashtu"
+
+sample_rate: 16000
+silence_thresh_db: -40.0
+min_silence_ms: 400
+target_max_ms: 30000
+floor_ms: 2000
+
+dataset_version: "v2-day1-pashtu"
+
+sources:
+  - id: pashtu_podcast1
+    filename: "Pashtu-Podcast1-Male-Neutral.mp3"
+  - id: pashtu_podcast2
+    filename: "Pashtu-Podcast2-Male-Neutral.mp3"

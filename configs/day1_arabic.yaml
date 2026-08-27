@@ -1,0 +1,16 @@
+data_dir: "E:/Audion-Data/Arabic"
+output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/arabic"
+
+sample_rate: 16000
+silence_thresh_db: -40.0
+min_silence_ms: 400
+target_max_ms: 30000
+floor_ms: 2000
+
+dataset_version: "v2-day1-arabic"
+
+sources:
+  - id: arabic_podcast1
+    filename: "Arabic_Podcast1.mp3"
+  - id: arabic_podcast2
+    filename: "Arabic_Podcast2.mp3"
