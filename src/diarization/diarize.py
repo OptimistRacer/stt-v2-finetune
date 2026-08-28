@@ -9,7 +9,7 @@ def load_pipeline(hf_token: str | None = None):
     token = hf_token or os.environ.get("HF_TOKEN")
     if not token:
         raise RuntimeError("Set HF_TOKEN env var or pass hf_token explicitly.")
-    return Pipeline.from_pretrained("pyannote/speaker-diarization-3.1", use_auth_token=token)
+    return Pipeline.from_pretrained("pyannote/speaker-diarization-3.1", token=token)
 
 
 def diarize_file(pipeline, audio_path: str) -> list[dict]:
