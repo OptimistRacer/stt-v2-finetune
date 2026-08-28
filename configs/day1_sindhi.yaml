@@ -1,5 +1,5 @@
 data_dir: "E:/Audion-Data/Sindhi"
-output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/sindhi"
+output_dir: "outputs/sindhi"
 
 sample_rate: 16000
 silence_thresh_db: -40.0

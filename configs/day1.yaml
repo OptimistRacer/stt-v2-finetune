@@ -1,5 +1,5 @@
 data_dir: "E:/Audion-Data/Urdu"
-output_dir: "E:/Audion-Data/stt-v2-finetune/outputs"
+output_dir: "outputs/urdu"
 
 sample_rate: 16000
 silence_thresh_db: -40.0

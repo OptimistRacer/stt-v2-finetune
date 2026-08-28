@@ -1,5 +1,5 @@
 data_dir: "E:/Audion-Data/Panjabi"
-output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/panjabi"
+output_dir: "outputs/panjabi"
 
 sample_rate: 16000
 silence_thresh_db: -40.0

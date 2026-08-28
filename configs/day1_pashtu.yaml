@@ -1,5 +1,5 @@
 data_dir: "E:/Audion-Data/Pashtu"
-output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/pashtu"
+output_dir: "outputs/pashtu"
 
 sample_rate: 16000
 silence_thresh_db: -40.0

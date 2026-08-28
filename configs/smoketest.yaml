@@ -1,5 +1,5 @@
 data_dir: "E:/Audion-Data/stt-v2-finetune/outputs/_smoketest"
-output_dir: "E:/Audion-Data/stt-v2-finetune/outputs/_smoketest/out"
+output_dir: "outputs/_smoketest/out"
 
 sample_rate: 16000
 silence_thresh_db: -40.0
