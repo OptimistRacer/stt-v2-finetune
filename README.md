@@ -76,6 +76,48 @@ despite drafts entering the pipeline, no defined duration validation, no minimum
 length. `accent` and `speaker` are left as explicit fields rather than free text so Day 2
 tagging has somewhere defined to write.
 
+## Open-dataset Urdu data (added 2026-09-08)
+
+Demo scope was narrowed to **Urdu, neutral emotion only**. Rather than pulling more
+podcasts (copyright risk, and mostly conversational/mixed-emotion audio that would
+need filtering back down to neutral), we're pulling open, pre-transcribed read-speech
+corpora instead — read-aloud sentences are inherently flat/neutral, and skip the
+denoise/diarize/draft-transcribe steps `run_day1_prep.py` + `run_day1_gpu.py` do for
+raw podcast audio, since these arrive already single-speaker and transcribed.
+
+- **FLEURS (`google/fleurs`, config `ur_pk`)** — fully open, no login needed.
+- **Common Voice 17 (`mozilla-foundation/common_voice_17_0`, config `ur`)** — gated:
+  needs a HuggingFace account that has accepted terms at
+  https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0, then
+  `huggingface-cli login` (or `hf auth login`) run locally. Until that's done, fetch
+  FLEURS only with `--only fleurs_ur`.
+
+Note: this machine has no `E:` drive mounted, so open-dataset audio lands on
+`D:\Audion-Data\Urdu\open_datasets\` instead of the `E:\Audion-Data\Urdu\` the podcast
+data uses — see `configs/opendata_urdu.yaml`. Move it under `E:\` and update the
+config's `output_dir` if/when that drive is available.
+
+```bash
+pip install -r requirements-opendata.txt
+python scripts/fetch_open_datasets.py --config configs/opendata_urdu.yaml --only fleurs_ur
+# once logged in and terms accepted:
+python scripts/fetch_open_datasets.py --config configs/opendata_urdu.yaml
+```
+
+Produces `<output_dir>/clips/<dataset_id>/*.wav` and `<output_dir>/manifest_opendata.jsonl`
+(`<output_dir>` is `configs/opendata_urdu.yaml`'s `output_dir`, currently
+`D:\Audion-Data\Urdu\open_datasets\` — not git-tracked, same as the podcast data), in
+the same record shape as
+`manifest.jsonl` plus two extra fields: `emotion` (hardcoded `"neutral"` — no separate
+labeling pass needed for this data) and `license` (per-dataset, for provenance since
+this gets merged with podcast-derived data before fine-tuning). `verified` is `True`
+since these transcripts are ground truth, not a Whisper draft.
+
+`datasets`' own `Audio(sampling_rate=...)` cast needs the `torchcodec` package (pulls
+in `torch`) in current versions — `src/opendata/hf_source.py` decodes with
+`soundfile`/`librosa` instead to keep heavy ML deps off the local machine, per the
+prep/gpu split above.
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the

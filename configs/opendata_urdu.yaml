@@ -1,0 +1,28 @@
+output_dir: "D:/Audion-Data/Urdu/open_datasets"
+
+sample_rate: 16000
+dataset_version: "v2-opendata-neutral"
+
+# Scope note (2026-09-08): demo was narrowed to Urdu, neutral emotion only. Both
+# datasets below are read-speech (people reading out prompted sentences), which is
+# inherently flat/neutral -- that's why they're tagged emotion: neutral in the
+# manifest without a separate labeling pass, unlike the podcast pipeline's emotion
+# track in the 7-Day Plan.
+datasets:
+  - id: fleurs_ur
+    hf_name: "google/fleurs"
+    hf_config: "ur_pk"
+    splits: ["train", "validation", "test"]
+    license: "CC-BY-4.0"
+    requires_auth: false
+
+  - id: common_voice_ur
+    hf_name: "mozilla-foundation/common_voice_17_0"
+    hf_config: "ur"
+    splits: ["train", "validated"]
+    license: "CC0-1.0"
+    requires_auth: true
+    # Gated: needs a HuggingFace account that has accepted terms at
+    # https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0, then
+    # `huggingface-cli login` (or `hf auth login`) run locally before this dataset
+    # entry will download. Run with `--only fleurs_ur` until that's done.
