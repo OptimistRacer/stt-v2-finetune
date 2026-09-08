@@ -153,6 +153,30 @@ Smoke-test a config change fast without waiting on a full epoch:
 python scripts/run_day3_train.py --config configs/day3_lora.yaml --max_train_examples 8 --max_steps 2
 ```
 
+### Post-mortem: the first full run collapsed (lr too high)
+
+The first Day 3 run (`learning_rate: 1.0e-3`, the value in HF's own PEFT/Whisper LoRA
+notebook) trained "successfully" -- loss dropped smoothly, 1.32 -> 0.45 -- but the
+resulting adapter was badly broken: 259% WER, worse than the un-tuned base model's
+22%. Root cause, found via `scripts/run_day4_eval.py`: teacher-forced training loss
+doesn't catch this failure mode, because during training the decoder always sees the
+*true* previous token. Free-running generation has no such crutch, and the adapter had
+learned a shortcut that only works with that crutch -- given only its own predictions
+to condition on, it degenerates into repeating a single token
+(`تتتتتتتتت...`, `رررررر...`) after a few correct words. Confirmed it wasn't
+"trained too long" either: `checkpoint-200` (1.5 epochs) was already *more* broken
+than the final one (302% vs 259% WER), so cutting epochs wouldn't have fixed it.
+
+Fix: `learning_rate: 1.0e-4` (10x lower) -- confirmed via a 15-minute diagnostic run
+(200 examples, 40 steps) before committing another ~2.4h to a full retrain: adapter
+beat the base model with no collapse (20.0% vs 21.95% WER). This is why
+`src/evaluation/transcribe_eval.py` exists as a separate module from training-time
+eval -- it's what caught this, by fixing `model.generation_config.language`/`task` up
+front (Day 3 training's own eval had a *second*, unrelated bug: it never forces
+language, so Whisper's per-call auto-detection produces noisy WER numbers regardless
+of real model quality -- don't trust the WER Day 3 training prints, use
+`run_day4_eval.py` on a saved checkpoint instead).
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the
