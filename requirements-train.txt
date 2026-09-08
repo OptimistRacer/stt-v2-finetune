@@ -1,0 +1,10 @@
+# Install torch separately, matching your GPU's CUDA capability, e.g. for an RTX 5090
+# (Blackwell, sm_120) on Windows:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+transformers==5.16.1
+peft==0.20.0
+accelerate==1.14.0
+evaluate==0.4.6
+jiwer==4.0.0
+soundfile==0.14.0
+PyYAML==6.0.2

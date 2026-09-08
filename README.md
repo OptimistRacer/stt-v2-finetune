@@ -122,6 +122,37 @@ in `torch`) in current versions — `src/opendata/hf_source.py` decodes with
 `soundfile`/`librosa` instead to keep heavy ML deps off the local machine, per the
 prep/gpu split above.
 
+## Day 3: LoRA fine-tuning (added 2026-09-08)
+
+Runs **locally on this machine's RTX 5090**, not Colab -- unlike Day 1's GPU step, the
+local GPU here is faster than what Colab offers and skips the upload round-trip, so
+the original prep/gpu split doesn't apply to Day 3 onward.
+
+```bash
+pip install -r requirements-train.txt
+pip install torch --index-url https://download.pytorch.org/whl/cu128   # match your GPU's CUDA capability
+python scripts/run_day3_train.py --config configs/day3_lora.yaml
+```
+
+Base model: `openai/whisper-large-v3`, LoRA on `q_proj`/`v_proj` (r=32, alpha=64) via
+PEFT — ~1% of params trainable. Trains/evals against `manifest_opendata.jsonl`'s
+`train`/`validation` splits (FLEURS's own split, not a separately-generated one).
+Checkpoints and the final adapter land under `configs/day3_lora.yaml`'s
+`training.output_dir` (`D:\Audion-Data\Urdu\checkpoints\stt_v2_lora\`, not
+git-tracked).
+
+Two dtype gotchas hit while building this, both fixed in `src/training/lora_setup.py`:
+loading the model at fp32 explicitly is required (the whisper-large-v3 checkpoint is
+stored in fp16, and `from_pretrained` now defaults to the checkpoint's native dtype)
+because `TrainingArguments(bf16=True)` only autocasts train/eval forward passes, not
+`model.generate()` during eval, which runs at the model's raw weight dtype instead —
+so non-fp32 weights there mismatch against fp32 audio features.
+
+Smoke-test a config change fast without waiting on a full epoch:
+```bash
+python scripts/run_day3_train.py --config configs/day3_lora.yaml --max_train_examples 8 --max_steps 2
+```
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the
