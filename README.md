@@ -86,11 +86,15 @@ denoise/diarize/draft-transcribe steps `run_day1_prep.py` + `run_day1_gpu.py` do
 raw podcast audio, since these arrive already single-speaker and transcribed.
 
 - **FLEURS (`google/fleurs`, config `ur_pk`)** — fully open, no login needed.
-- **Common Voice 17 (`mozilla-foundation/common_voice_17_0`, config `ur`)** — gated:
-  needs a HuggingFace account that has accepted terms at
-  https://huggingface.co/datasets/mozilla-foundation/common_voice_17_0, then
-  `huggingface-cli login` (or `hf auth login`) run locally. Until that's done, fetch
-  FLEURS only with `--only fleurs_ur`.
+- **Common Voice 17 (`mozilla-foundation/common_voice_17_0`, config `ur`)** — gated,
+  wired up in `configs/opendata_urdu.yaml` but **not used for this demo** (decided
+  2026-09-08: FLEURS alone, 8.6h/2,675 clips, is the full dataset for this pass). The
+  3 podcast files noted above are also out of scope for now — they need Day 1
+  prep/diarization first and live on an `E:` drive not mounted on this machine.
+
+FLEURS's own `train`/`validation`/`test` splits (2109/267/299 ≈ 79/10/11%) are used
+as-is — that's already the Day 2 80/10/10 split the 7-Day Plan calls for, so no
+separate splitting step is needed for this data.
 
 Note: this machine has no `E:` drive mounted, so open-dataset audio lands on
 `D:\Audion-Data\Urdu\open_datasets\` instead of the `E:\Audion-Data\Urdu\` the podcast
