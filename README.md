@@ -134,48 +134,106 @@ pip install torch --index-url https://download.pytorch.org/whl/cu128   # match y
 python scripts/run_day3_train.py --config configs/day3_lora.yaml
 ```
 
-Base model: `openai/whisper-large-v3`, LoRA on `q_proj`/`v_proj` (r=32, alpha=64) via
-PEFT — ~1% of params trainable. Trains/evals against `manifest_opendata.jsonl`'s
-`train`/`validation` splits (FLEURS's own split, not a separately-generated one).
-Checkpoints and the final adapter land under `configs/day3_lora.yaml`'s
-`training.output_dir` (`D:\Audion-Data\Urdu\checkpoints\stt_v2_lora\`, not
-git-tracked).
-
-Two dtype gotchas hit while building this, both fixed in `src/training/lora_setup.py`:
-loading the model at fp32 explicitly is required (the whisper-large-v3 checkpoint is
-stored in fp16, and `from_pretrained` now defaults to the checkpoint's native dtype)
-because `TrainingArguments(bf16=True)` only autocasts train/eval forward passes, not
-`model.generate()` during eval, which runs at the model's raw weight dtype instead —
-so non-fp32 weights there mismatch against fp32 audio features.
+Base model: `openai/whisper-large-v3`, LoRA on `q_proj`/`v_proj` (r=8, alpha=16,
+dropout=0.1, weight_decay=0.01) via PEFT — ~0.25% of params trainable. Trains/evals
+against `manifest_opendata.jsonl`'s `train`/`validation` splits (FLEURS's own split,
+not a separately-generated one). Checkpoints and the final adapter land under
+`configs/day3_lora.yaml`'s `training.output_dir`
+(`D:\Audion-Data\Urdu\checkpoints\stt_v2_lora\`, not git-tracked).
 
 Smoke-test a config change fast without waiting on a full epoch:
 ```bash
 python scripts/run_day3_train.py --config configs/day3_lora.yaml --max_train_examples 8 --max_steps 2
 ```
 
-### Post-mortem: the first full run collapsed (lr too high)
+Current numbers (full validation split, 267 clips, `run_day4_eval.py`):
 
-The first Day 3 run (`learning_rate: 1.0e-3`, the value in HF's own PEFT/Whisper LoRA
-notebook) trained "successfully" -- loss dropped smoothly, 1.32 -> 0.45 -- but the
-resulting adapter was badly broken: 259% WER, worse than the un-tuned base model's
-22%. Root cause, found via `scripts/run_day4_eval.py`: teacher-forced training loss
-doesn't catch this failure mode, because during training the decoder always sees the
-*true* previous token. Free-running generation has no such crutch, and the adapter had
-learned a shortcut that only works with that crutch -- given only its own predictions
-to condition on, it degenerates into repeating a single token
-(`تتتتتتتتت...`, `رررررر...`) after a few correct words. Confirmed it wasn't
-"trained too long" either: `checkpoint-200` (1.5 epochs) was already *more* broken
-than the final one (302% vs 259% WER), so cutting epochs wouldn't have fixed it.
+| | WER | CER |
+|---|---|---|
+| base whisper-large-v3 (zero-shot) | 23.95% | 8.55% |
+| Day 3 LoRA adapter | **20.9%** | **6.95%** |
 
-Fix: `learning_rate: 1.0e-4` (10x lower) -- confirmed via a 15-minute diagnostic run
-(200 examples, 40 steps) before committing another ~2.4h to a full retrain: adapter
-beat the base model with no collapse (20.0% vs 21.95% WER). This is why
-`src/evaluation/transcribe_eval.py` exists as a separate module from training-time
-eval -- it's what caught this, by fixing `model.generation_config.language`/`task` up
-front (Day 3 training's own eval had a *second*, unrelated bug: it never forces
-language, so Whisper's per-call auto-detection produces noisy WER numbers regardless
-of real model quality -- don't trust the WER Day 3 training prints, use
-`run_day4_eval.py` on a saved checkpoint instead).
+### Post-mortem: repeated "successful" runs that were actually all broken
+
+Every Day 3 run up through the one below trained "successfully" by every training-time
+signal (loss dropped smoothly every time) but produced an adapter that scored *worse*
+than the un-tuned base model on real `run_day4_eval.py` evaluation -- the reason this
+module exists separately from training-time eval, since training's own eval couldn't
+have caught any of this (see below). Real output degenerated into repeating a single
+token after a few correct words (`تتتتتتتتت...`, `رررررر...`), regardless of:
+- learning rate (tried 1e-3, then 1e-4 -- lower delayed the collapse, checkpoint-200
+  looked fine at 1e-4 on a 200-example subset, but the same lr still collapsed on the
+  full 2109-example set by step 200)
+- LoRA rank/regularization (tried r=32 down to r=8, added weight_decay=0.01 and
+  dropout=0.1 -- still collapsed, full validation set, 198% WER)
+- total training steps (checkpoint-200 was already *more* broken than later
+  checkpoints in one run, ruling out "trained too long")
+
+**Actual root cause**, found by inspecting the label pipeline directly after
+hyperparameters were exhausted as an explanation: `src/training/dataset.py`'s
+`WhisperCollator` was supposed to strip the leading `<|startoftranscript|>` token from
+labels before the model's own `shift_tokens_right` re-adds it via
+`decoder_start_token_id` -- otherwise every decoder position is off by one for the
+model's entire target sequence. The strip condition compared against
+`processor.tokenizer.bos_token_id`, which for Whisper is 50257 (`<|endoftext|>` --
+Whisper's tokenizer sets `bos_token_id == eos_token_id`; it is *not*
+`<|startoftranscript|>`, a distinct token, 50258). That comparison was never true, so
+the strip never fired, for the entire history of this repo's training runs: every
+training example carried a duplicate `<|startoftranscript|>` at the start of
+`decoder_input_ids`. Teacher-forced loss still dropped normally -- the model just
+learned a consistently *shifted* mapping -- but real generation, which starts from a
+single correctly-placed prompt, hit a decoder-input distribution the model never
+actually trained on, and degraded into repetition. This explains every earlier
+observation: why loss always looked fine while WER didn't, why no hyperparameter fixed
+it, and why an *untrained* PEFT-wrapped model (LoRA at init = zero delta, verified to
+match the base model's output exactly) proved the corruption came from training on
+mislabeled targets, not from the PEFT/`generate()` integration itself.
+
+Fixed by comparing against the correct token
+(`processor.tokenizer.convert_tokens_to_ids("<|startoftranscript|>")`) and asserting
+on it rather than silently no-op'ing if it's ever wrong again. Confirmed on the full
+validation set: 20.9% WER, actually beating the base model, no repetition anywhere in
+the output.
+
+### Crash post-mortem: this machine rebooted itself, three times
+
+Separately from the label bug above, three full-machine crashes (unclean reboot,
+`nvlddmkm` driver-fault storms in the Windows Event Log right before each one) hit
+while chasing the collapse -- every single time inside a batched `model.generate()`
+call, never once during plain training forward/backward:
+1. A full-validation-set `run_day4_eval.py` run (batch_size=8), mid-generate on the
+   base model.
+2. `Seq2SeqTrainer`'s own `predict_with_generate` eval, at step 200 of a training run.
+3. Same as #2, on a retry.
+
+One crash log showed `CUBLAS_STATUS_INTERNAL_ERROR` immediately before the fatal
+error, pointing at fused cuBLASLt/SDPA attention kernels being unstable on this RTX
+5090 (Blackwell, sm_120) under this driver/torch version. Fixes, all evidence-based
+rather than precautionary blanket changes:
+- `predict_with_generate` is now forced off in `run_day3_train.py` regardless of
+  config -- training eval only computes loss (the one thing that never crashed across
+  all 3 incidents). All WER/CER evaluation moved to `run_day4_eval.py`.
+- `run_day4_eval.py` (where the actual `generate()` risk lives) loads models with
+  `attn_implementation="eager"` (the unfused, stable attention path) and
+  `torch.backends.cuda.matmul.allow_tf32 = False`, plus a smaller batch size (2),
+  per-batch retry with a CUDA cache clear, and incremental JSONL writes so a crash
+  loses at most one in-flight batch and reruns resume automatically.
+- Training itself (`src/training/lora_setup.py`) does **not** use eager attention --
+  applying it there was tried first, on the reasoning that "sustained heavy load"
+  caused the crashes, but that's not what the evidence showed (0/3 crashes were during
+  training forward/backward) -- and it backfired: eager materializes the full
+  O(seq_len²) attention score matrix per head/layer instead of a fused kernel, and
+  Whisper's encoder always processes a fixed 30s/1500-token sequence regardless of
+  actual clip length, which pushed training VRAM to ~98% and caused allocator
+  thrashing (GPU-reported 100% "utilization" but power draw collapsed to ~115-130W,
+  step time climbing 38s→97s/step) at both batch=8/fp32 and batch=4/bf16 -- switching
+  batch size and dtype didn't fix it because neither was the actual lever,
+  `attn_implementation` was. Caught both times by a watchdog polling
+  `nvidia-smi` for exactly that signature (near-VRAM-ceiling memory + abnormally low
+  power despite high reported utilization) before it escalated to a crash.
+- Training also auto-resumes from the latest checkpoint (`get_last_checkpoint`) if one
+  exists in `output_dir`, and checkpoints every 100 steps (was 200) -- so a future
+  interruption, from any cause, loses at most ~100 steps, not the whole run.
 
 ## Roadmap (Days 2-7)
 

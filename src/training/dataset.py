@@ -46,9 +46,31 @@ class ManifestAudioDataset(Dataset):
 @dataclass
 class WhisperCollator:
     """Pads variable-length feature/label batches; standard shape for HF's Whisper
-    fine-tuning recipe -- labels padded with -100 so the loss ignores them, and a
-    duplicate leading BOS token (tokenizer adds one, the model adds another at
-    generation time) is stripped if present."""
+    fine-tuning recipe -- labels padded with -100 so the loss ignores them, and the
+    leading `<|startoftranscript|>` token (which the tokenizer adds because the
+    processor was configured with language/task) is stripped, since the model's own
+    `shift_tokens_right` prepends `decoder_start_token_id` (also
+    `<|startoftranscript|>`) when building decoder_input_ids from labels -- otherwise
+    every decoder position is off by one for the model's entire target sequence.
+
+    Bug fixed 2026-09-09: this used to compare against
+    `processor.tokenizer.bos_token_id`, which for Whisper is 50257
+    (`<|endoftext|>` -- Whisper's tokenizer sets bos_token_id == eos_token_id, it is
+    NOT `<|startoftranscript|>`, which is a distinct token, 50258).  That comparison
+    was never true, so the strip never fired, and every single training example
+    carried a duplicate `<|startoftranscript|>` at the start of decoder_input_ids for
+    the entire life of this repo's training runs. Teacher-forced loss still dropped
+    normally (the model just learned a consistently *shifted* mapping), but real
+    (free-running) generation -- which starts from a single correctly-placed prompt,
+    not two -- hit a decoder-input distribution the model never actually trained on,
+    and degraded into repeating a token after a few words. This is what caused every
+    "successful" training run (by loss) to still produce a broken adapter (by WER),
+    regardless of learning rate, LoRA rank, or regularization -- all things that were
+    tried and ruled out before this was found. Confirmed by generating from an
+    untrained (zero LoRA delta -> mathematically identical to base model) PEFT-wrapped
+    model: it matched the base model's output quality exactly, proving the corruption
+    came from training on mislabeled targets, not from the PEFT/generate() integration
+    itself."""
 
     processor: WhisperProcessor
 
@@ -59,8 +81,15 @@ class WhisperCollator:
         label_features = [{"input_ids": ex["labels"]} for ex in batch]
         labels_batch = self.processor.tokenizer.pad(label_features, return_tensors="pt")
         labels = labels_batch["input_ids"].masked_fill(labels_batch.attention_mask.ne(1), -100)
-        if (labels[:, 0] == self.processor.tokenizer.bos_token_id).all().item():
-            labels = labels[:, 1:]
+
+        sot_id = self.processor.tokenizer.convert_tokens_to_ids("<|startoftranscript|>")
+        if not (labels[:, 0] == sot_id).all().item():
+            raise ValueError(
+                f"Expected every label to start with <|startoftranscript|> ({sot_id}), "
+                f"got {labels[:, 0].tolist()} -- processor.tokenizer may not be configured "
+                f"with language/task, or the tokenizer's special-token layout changed."
+            )
+        labels = labels[:, 1:]
 
         batch_inputs["labels"] = labels
         return batch_inputs

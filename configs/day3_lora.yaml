@@ -8,24 +8,31 @@ eval_split: "validation"
 sample_rate: 16000
 
 lora:
-  r: 32
-  alpha: 64
-  dropout: 0.05
+  r: 8
+  alpha: 16
+  dropout: 0.1
   target_modules: ["q_proj", "v_proj"]
 
 training:
   output_dir: "D:/Audion-Data/Urdu/checkpoints/stt_v2_lora"
+  # Back to 8/2 (2026-09-09): the memory-thrashing incident (VRAM at ~98%, step time
+  # climbing 38s->97s/step) traced to attn_implementation="eager" during training, not
+  # batch size -- see src/training/lora_setup.py. Training uses default attention now,
+  # and this exact batch size ran two prior training attempts cleanly through step 200
+  # with no memory issues at any point.
   per_device_train_batch_size: 8
   per_device_eval_batch_size: 8
   gradient_accumulation_steps: 2
   learning_rate: 1.0e-4
+  weight_decay: 0.01
   warmup_steps: 50
   num_train_epochs: 3
   bf16: true
   eval_strategy: "steps"
-  eval_steps: 200
-  save_steps: 200
-  save_total_limit: 3
+  eval_steps: 100
+  save_steps: 100
+  save_total_limit: 5
   logging_steps: 25
-  generation_max_length: 225
-  predict_with_generate: true
+  # predict_with_generate is forced off in run_day3_train.py regardless of this file --
+  # see the script's module docstring. WER/CER evaluation happens separately, in
+  # run_day4_eval.py.
