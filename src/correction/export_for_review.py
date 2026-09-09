@@ -2,10 +2,14 @@
 human (with AI assistance) corrects externally, plus a guide explaining the conventions.
 
 Design choice: one JSONL file per source_id, so each can be handed to an AI assistant a
-podcast at a time rather than as one giant blob. Clips flagged needs_manual_split=True
-are excluded and counted -- they'd need a manual re-cut (an over-length clip with no
-clean silence boundary) that this text-only correction pass can't do; handling them is
-out of scope for this pass rather than silently mixed in.
+podcast at a time rather than as one giant blob. Two kinds of clip are excluded (and
+counted, never silently dropped), because neither fits a text-only correction pass:
+- needs_manual_split=True: an over-length clip with no clean silence boundary, would
+  need a manual re-cut.
+- empty draft_transcript: Whisper-base returned nothing (in this dataset these cluster
+  at the ~30s clip ceiling -- real speech the small model failed on, not silence).
+  There's no draft text to correct from; recovering these would mean transcribing from
+  scratch by ear, which this workflow deliberately doesn't do.
 """
 import json
 from pathlib import Path
@@ -50,7 +54,8 @@ def export(manifest_path: str | Path, out_dir: str | Path) -> dict:
     out_dir.mkdir(parents=True, exist_ok=True)
 
     by_source: dict[str, list[dict]] = {}
-    excluded = 0
+    excluded_split = 0
+    excluded_empty = 0
     total = 0
     with open(manifest_path, encoding="utf-8") as f:
         for line in f:
@@ -60,7 +65,10 @@ def export(manifest_path: str | Path, out_dir: str | Path) -> dict:
             total += 1
             rec = json.loads(line)
             if rec.get("needs_manual_split"):
-                excluded += 1
+                excluded_split += 1
+                continue
+            if not (rec.get("draft_transcript") or "").strip():
+                excluded_empty += 1
                 continue
             by_source.setdefault(rec["source_id"], []).append(rec)
 
@@ -83,7 +91,9 @@ def export(manifest_path: str | Path, out_dir: str | Path) -> dict:
 
     return {
         "total_clips": total,
-        "excluded_needs_manual_split": excluded,
+        "excluded_needs_manual_split": excluded_split,
+        "excluded_empty_transcript": excluded_empty,
         "exported_per_source": written,
+        "exported_total": sum(written.values()),
         "review_dir": str(out_dir),
     }

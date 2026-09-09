@@ -57,9 +57,13 @@ def import_corrections(
                 continue
             corrections[cid] = rec
 
-    # Which manifest clips were exported for review? Only non-split clips were, so only
-    # those are expected back -- don't flag needs_manual_split clips as "missing".
-    expected_ids = {cid for cid, r in by_id.items() if not r.get("needs_manual_split")}
+    # Which manifest clips were exported for review? export_for_review.py skips both
+    # needs_manual_split clips and empty-draft clips, so only the rest are expected
+    # back -- don't flag the skipped ones as "missing".
+    expected_ids = {
+        cid for cid, r in by_id.items()
+        if not r.get("needs_manual_split") and (r.get("draft_transcript") or "").strip()
+    }
     missing = expected_ids - corrections.keys()
     if missing:
         problems.append(f"{len(missing)} exported clip(s) missing from corrections, e.g. {sorted(missing)[:5]}")
