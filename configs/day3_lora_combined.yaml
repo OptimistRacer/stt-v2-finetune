@@ -18,9 +18,15 @@ lora:
 
 training:
   output_dir: "D:/Audion-Data/Urdu/checkpoints/stt_v2_lora_combined"
-  per_device_train_batch_size: 8
-  per_device_eval_batch_size: 8
-  gradient_accumulation_steps: 2
+  # 4/4 rather than day3_lora.yaml's 8/2 -- same effective batch (16), half the peak
+  # memory. The podcast transcripts are far longer than FLEURS's short read-aloud
+  # sentences, so the collator pads labels to a much greater length and decoder
+  # activations grow accordingly. At batch 8 this run hit 32039/32607 MiB (98%) with
+  # step time already climbing 1.66 -> 2.29 s/it: the same allocator-thrashing pattern
+  # that preceded earlier crashes. Caught and stopped at step 65.
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
   learning_rate: 1.0e-4
   weight_decay: 0.01
   warmup_steps: 50

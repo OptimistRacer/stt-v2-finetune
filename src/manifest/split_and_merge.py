@@ -67,10 +67,17 @@ def filter_neutral(records: list[dict]) -> tuple[list[dict], dict]:
 
 def merge(fleurs_path: str | Path, podcast_records: list[dict], out_path: str | Path) -> dict:
     """Write FLEURS records (with their native split) plus podcast records into one
-    manifest. Both end up carrying a `split` field so a single loader handles them."""
+    manifest. Both end up carrying a `split` field so a single loader handles them.
+
+    Clip paths are resolved to absolute: Day 1 wrote podcast clip paths relative to the
+    repo root (its output_dir is relative), which would silently break training run
+    from any other working directory. FLEURS paths are already absolute."""
     fleurs = load_jsonl(fleurs_path)
     for rec in fleurs:
         rec["split"] = split_of_fleurs(rec)
+
+    for rec in podcast_records:
+        rec["path"] = str(Path(rec["path"]).resolve())
 
     merged = fleurs + podcast_records
     out_path = Path(out_path)

@@ -33,10 +33,29 @@ def load_manifest(path: str, split: str) -> list[dict]:
 
 
 class ManifestAudioDataset(Dataset):
+    """Whisper's decoder has a hard 448-token limit (`max_target_positions`), and
+    exceeding it raises deep inside the model rather than at data-loading time. FLEURS'
+    short read-aloud sentences never come close, but a 30s clip of dense conversational
+    podcast speech can tokenize past it -- one did, at 451 tokens, and killed a training
+    run mid-eval. Over-long records are dropped here at construction, not truncated:
+    a truncated label ends mid-sentence and would teach the model to stop early."""
+
+    MAX_LABEL_TOKENS = 448
+
     def __init__(self, records: list[dict], processor: WhisperProcessor, sample_rate: int = 16000):
-        self.records = records
         self.processor = processor
         self.sample_rate = sample_rate
+
+        kept, dropped = [], []
+        for rec in records:
+            n = len(processor.tokenizer(rec["draft_transcript"]).input_ids)
+            (kept if n <= self.MAX_LABEL_TOKENS else dropped).append(rec)
+        if dropped:
+            print(
+                f"[dataset] dropped {len(dropped)} of {len(records)} clips over "
+                f"{self.MAX_LABEL_TOKENS} label tokens (e.g. {dropped[0]['clip_id']})"
+            )
+        self.records = kept
 
     def __len__(self) -> int:
         return len(self.records)
