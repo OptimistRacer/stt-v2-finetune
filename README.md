@@ -235,6 +235,72 @@ rather than precautionary blanket changes:
   exists in `output_dir`, and checkpoints every 100 steps (was 200) -- so a future
   interruption, from any cause, loses at most ~100 steps, not the whole run.
 
+## Podcast data: Day 1-2 pipeline run (2026-09-09)
+
+The 3 Urdu podcasts (`D:\Audion-Data\Urdu\*.mp3/.mpeg`, ~2h57m) went through the full
+Day 1 + Day 2 pipeline and are now merged with FLEURS into a combined training set.
+
+```bash
+python scripts/run_day1_prep.py       --config configs/day1.yaml   # denoise/segment  -> 373 clips
+python scripts/run_day1_gpu.py        --config configs/day1.yaml   # diarize + draft transcribe
+python scripts/run_day2_retranscribe.py --config configs/day1.yaml # re-do drafts with large-v3
+python scripts/run_day2_autocorrect.py  --config configs/day1.yaml # glossary + emotion -> manifest_verified
+python scripts/run_day2_split_merge.py                             # neutral filter, split, merge with FLEURS
+python scripts/run_day3_train.py --config configs/day3_lora_combined.yaml
+python scripts/run_day4_eval.py  --config configs/day3_lora_combined.yaml --split test --domain fleurs
+```
+
+Combined manifest: **2406 train / 306 validation / 336 test** (3048 clips = 2675 FLEURS
++ 373 podcast).
+
+### Why the drafts were re-transcribed with large-v3
+
+Day 1 drafts come from Whisper-**base**, and they were too garbled to correct from text
+alone -- "fixing" them without listening would be plausible-guessing, not correction
+(`کو حراج نہیں` -> `کوئی حرج نہیں`, `انسان کی فترہ تھا ہے` -> `انسان کی فطرت ہے`).
+large-v3 fixes far more than a human editor could infer from the base output, at zero
+manual cost, and recovered all 21 clips base had failed on entirely.
+
+**Accepted limitation:** these are pseudo-labels from the same model being fine-tuned,
+so they carry little *new text* signal. The podcast data's value here is acoustic --
+conversational delivery, mic, and background that FLEURS's clean read speech doesn't
+cover. Genuinely better labels need a human listening per clip.
+
+### What the podcasts actually contain
+
+Not what the filenames suggest. Measured Latin-vs-Urdu character ratio per clip:
+
+| podcast | clips | hours | mean English | >50% English | pure Urdu |
+|---|---|---|---|---|---|
+| podcast1 | 129 | 0.99h | 0% | 0 | 129 |
+| podcast2 | 132 | 1.02h | 24% | 21 | 52 |
+| podcast3 | 112 | 0.87h | 40% | 42 | 24 |
+
+podcast1 is pure Urdu; podcast3 is substantially an English-language podcast. All 373
+clips were kept (decision 2026-09-09) on the basis that heavily code-switched speech is
+legitimate target domain for Pakistani Urdu.
+
+The code-switching convention (Urdu words in Urdu script, English in Latin) turned out
+to need no tooling: large-v3 already applies it natively (1208 distinct Latin-script
+words across the corpus, e.g. `دونوں کے جو biology وہ same ہے`). Only ~22 occurrences
+corpus-wide were English still in Urdu script, mostly naturalized loanwords that
+written Urdu renders that way anyway -- so `configs/codeswitch_glossary.json` is
+deliberately empty, with the reasoning recorded in the file.
+
+### Results so far
+
+| model | test set | WER | CER |
+|---|---|---|---|
+| base whisper-large-v3 | FLEURS-only (299) | 22.77% | 8.01% |
+| LoRA, FLEURS-only training | FLEURS-only (299) | **20.65%** | **6.79%** |
+| base whisper-large-v3 | mixed (336) | 21.89% | 10.14% |
+| LoRA, FLEURS+podcast training | mixed (336) | **19.62%** | **8.55%** |
+
+The two rows are **not directly comparable** -- different test sets. The like-for-like
+comparisons (still to run) are `--domain fleurs` and `--domain podcast`, which answer
+"did podcast data help or hurt on FLEURS?" and "did it improve podcast-like audio?"
+respectively. The second is the one that matters for whether this exercise paid off.
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the
