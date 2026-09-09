@@ -33,24 +33,29 @@ from src.training.dataset import load_manifest
 from src.training.lora_setup import load_processor
 
 
-def run(config_path: str, split: str, limit: int | None, batch_size: int) -> None:
+def run(config_path: str, split: str, limit: int | None, batch_size: int, domain: str) -> None:
     cfg = yaml.safe_load(open(config_path, encoding="utf-8"))
     sample_rate = cfg.get("sample_rate", 16000)
     adapter_dir = str(Path(cfg["training"]["output_dir"]) / "final_adapter")
     out_dir = Path(cfg["training"]["output_dir"])
 
     records = load_manifest(cfg["manifest_path"], split)
+    if domain == "podcast":
+        records = [r for r in records if r["source_id"].startswith("podcast")]
+    elif domain == "fleurs":
+        records = [r for r in records if not r["source_id"].startswith("podcast")]
     if limit:
         records = records[:limit]
-    print(f"[day4] evaluating {len(records)} clips from split={split}, batch_size={batch_size}")
+    print(f"[day4] evaluating {len(records)} clips from split={split} domain={domain}, batch_size={batch_size}")
 
     processor = load_processor(cfg["base_model"], cfg["language"], cfg["task"])
 
-    report = {"split": split, "n": len(records)}
+    report = {"split": split, "domain": domain, "n": len(records)}
 
     print("[day4] base whisper-large-v3 (zero-shot)")
     base_model = load_base_model(cfg["base_model"], cfg["language"], cfg["task"])
-    base_out = out_dir / f"day4_raw_{split}_base.jsonl"
+    tag = split if domain == "all" else f"{split}_{domain}"
+    base_out = out_dir / f"day4_raw_{tag}_base.jsonl"
     base_results = transcribe_records(base_model, processor, records, base_out, sample_rate, batch_size)
     report["base"] = score(base_results)
     print(f"  base: {report['base']}")
@@ -59,14 +64,14 @@ def run(config_path: str, split: str, limit: int | None, batch_size: int) -> Non
 
     print("[day4] Day 3 LoRA adapter")
     lora_model = load_lora_model(cfg["base_model"], adapter_dir, cfg["language"], cfg["task"])
-    lora_out = out_dir / f"day4_raw_{split}_lora.jsonl"
+    lora_out = out_dir / f"day4_raw_{tag}_lora.jsonl"
     lora_results = transcribe_records(lora_model, processor, records, lora_out, sample_rate, batch_size)
     report["lora"] = score(lora_results)
     print(f"  lora: {report['lora']}")
     del lora_model
     torch.cuda.empty_cache()
 
-    report_path = out_dir / f"day4_eval_{split}.json"
+    report_path = out_dir / f"day4_eval_{tag}.json"
     with open(report_path, "w", encoding="utf-8") as f:
         json.dump(
             {
@@ -89,5 +94,8 @@ if __name__ == "__main__":
     parser.add_argument("--split", default="validation", choices=["validation", "test"])
     parser.add_argument("--limit", type=int, default=None, help="Smoke test: cap number of clips")
     parser.add_argument("--batch_size", type=int, default=2)
+    parser.add_argument("--domain", default="all", choices=["all", "fleurs", "podcast"],
+                        help="Restrict to one corpus. The combined manifest mixes FLEURS and podcast "
+                             "clips, so comparing against the FLEURS-only baseline needs --domain fleurs.")
     args = parser.parse_args()
-    run(args.config, args.split, args.limit, args.batch_size)
+    run(args.config, args.split, args.limit, args.batch_size, args.domain)
