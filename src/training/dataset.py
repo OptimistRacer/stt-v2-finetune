@@ -15,11 +15,19 @@ from transformers import WhisperProcessor
 
 
 def load_manifest(path: str, split: str) -> list[dict]:
+    """Records for one split. Prefers an explicit `split` field (written by
+    src/manifest/split_and_merge.py for the combined FLEURS+podcast manifest) and falls
+    back to parsing it out of FLEURS's `source_file` (e.g. '...ur_pk:train'), so the
+    original FLEURS-only manifest and its baseline numbers stay reproducible."""
     records = []
     with open(path, encoding="utf-8") as f:
         for line in f:
+            line = line.strip()
+            if not line:
+                continue
             rec = json.loads(line)
-            if rec["source_file"].rsplit(":", 1)[-1] == split:
+            rec_split = rec.get("split") or rec["source_file"].rsplit(":", 1)[-1]
+            if rec_split == split:
                 records.append(rec)
     return records
 

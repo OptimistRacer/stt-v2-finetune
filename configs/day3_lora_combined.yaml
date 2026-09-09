@@ -1,0 +1,33 @@
+# Same hyperparameters as day3_lora.yaml, pointed at the combined FLEURS + podcast
+# manifest and a separate output_dir. Kept as its own file so the FLEURS-only run
+# (day3_lora.yaml, test split 20.65% WER / 6.79% CER) stays reproducible for comparison.
+base_model: "openai/whisper-large-v3"
+language: "urdu"
+task: "transcribe"
+
+manifest_path: "D:/Audion-Data/Urdu/open_datasets/manifest_combined.jsonl"
+train_split: "train"
+eval_split: "validation"
+sample_rate: 16000
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+
+training:
+  output_dir: "D:/Audion-Data/Urdu/checkpoints/stt_v2_lora_combined"
+  per_device_train_batch_size: 8
+  per_device_eval_batch_size: 8
+  gradient_accumulation_steps: 2
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  warmup_steps: 50
+  num_train_epochs: 3
+  bf16: true
+  eval_strategy: "steps"
+  eval_steps: 100
+  save_steps: 100
+  save_total_limit: 5
+  logging_steps: 25
