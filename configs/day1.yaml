@@ -1,4 +1,4 @@
-data_dir: "E:/Audion-Data/Urdu"
+data_dir: "D:/Audion-Data/Urdu"
 output_dir: "outputs/urdu"
 
 sample_rate: 16000

@@ -1,0 +1,4 @@
+{
+  "_comment": "Code-switch glossary: English/loan terms that should render consistently in Latin script every time they appear in a corrected Urdu transcript (proper nouns, recurring tech/brand terms). Key = the (possibly mis-transliterated) form to look for, value = the canonical Latin-script form to use. Starts intentionally near-empty; grow it as recurring terms surface during correction. See src/correction/glossary.py.",
+  "terms": {}
+}
