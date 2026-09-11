@@ -440,6 +440,40 @@ comparing numbers across the two runtimes: they are not the same decoder.
 added. Note the FLEURS row: on its own benchmark it looked like the second-best model,
 while being the one that would have failed hardest in a real demo.
 
+## Day 7: end-to-end integration test (2026-09-11)
+
+`scripts/transcribe.py` is the inference entry point -- the deployable surface a caller
+actually uses. Everything upstream works on pre-cut ~30s clips; this takes a whole
+recording and lets faster-whisper do its own segmentation.
+
+```bash
+python scripts/transcribe.py audio.mp3                          # plain text
+python scripts/transcribe.py audio.mp3 --format srt --out s.srt # subtitles
+python scripts/transcribe.py audio.mp3 --format json --vad      # segments + timestamps
+```
+
+Tested on a raw, never-segmented 61-minute podcast MP3 -- the case the clip-level
+evaluation could not cover:
+
+| check | result |
+|---|---|
+| decodes raw MP3 directly | yes, no pre-conversion (faster-whisper's decoder, not torchcodec) |
+| 61 min in a single call | yes, 1566 auto-segmented chunks |
+| speed | **12.0x realtime** (61 min of audio in 305s) |
+| language detection | correctly `ur` |
+| timestamps monotonic | yes, no overlaps |
+| coverage | 100% of audio, 0 empty segments |
+
+Sample output, subtitle-ready:
+
+```
+[   0.20 ->    4.76] اس میں کوئی حرج نہیں ہے کہ بچہ انگریزی سیکھے گا
+[  15.16 ->   18.12] ہم پرانے ڈرامے دیکھتے ہیں پی ٹی وی کے
+```
+
+Note `stdout` is written as raw UTF-8 bytes: the Windows console is cp1252 and raises
+`UnicodeEncodeError` on Urdu through normal `print`.
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the
