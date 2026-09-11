@@ -33,8 +33,14 @@ from src.training.dataset import load_manifest
 from src.training.lora_setup import load_processor
 
 
-def run(config_path: str, split: str, limit: int | None, batch_size: int, domain: str) -> None:
+def run(config_path: str, split: str, limit: int | None, batch_size: int, domain: str,
+        manifest: str | None = None, tag_suffix: str = "") -> None:
     cfg = yaml.safe_load(open(config_path, encoding="utf-8"))
+    if manifest:
+        # Evaluate an adapter against a manifest other than the one it trained on --
+        # e.g. scoring the FLEURS-only adapter on podcast clips, which only exist in
+        # the combined manifest.
+        cfg["manifest_path"] = manifest
     sample_rate = cfg.get("sample_rate", 16000)
     adapter_dir = str(Path(cfg["training"]["output_dir"]) / "final_adapter")
     out_dir = Path(cfg["training"]["output_dir"])
@@ -54,7 +60,7 @@ def run(config_path: str, split: str, limit: int | None, batch_size: int, domain
 
     print("[day4] base whisper-large-v3 (zero-shot)")
     base_model = load_base_model(cfg["base_model"], cfg["language"], cfg["task"])
-    tag = split if domain == "all" else f"{split}_{domain}"
+    tag = (split if domain == "all" else f"{split}_{domain}") + tag_suffix
     base_out = out_dir / f"day4_raw_{tag}_base.jsonl"
     base_results = transcribe_records(base_model, processor, records, base_out, sample_rate, batch_size)
     report["base"] = score(base_results)
@@ -97,5 +103,8 @@ if __name__ == "__main__":
     parser.add_argument("--domain", default="all", choices=["all", "fleurs", "podcast"],
                         help="Restrict to one corpus. The combined manifest mixes FLEURS and podcast "
                              "clips, so comparing against the FLEURS-only baseline needs --domain fleurs.")
+    parser.add_argument("--manifest", default=None,
+                        help="Override the config's manifest_path (to score an adapter on another corpus).")
+    parser.add_argument("--tag_suffix", default="", help="Suffix for output filenames, to avoid clobbering.")
     args = parser.parse_args()
-    run(args.config, args.split, args.limit, args.batch_size, args.domain)
+    run(args.config, args.split, args.limit, args.batch_size, args.domain, args.manifest, args.tag_suffix)
