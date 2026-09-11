@@ -24,11 +24,13 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+import soundfile as sf
 import torch
 import yaml
 from transformers import Seq2SeqTrainer, Seq2SeqTrainingArguments
 from transformers.trainer_utils import get_last_checkpoint
 
+from src.training.augment import Augmenter
 from src.training.dataset import ManifestAudioDataset, WhisperCollator, load_manifest
 from src.training.lora_setup import load_lora_model, load_processor
 
@@ -52,7 +54,32 @@ def run(config_path: str, max_train_examples: int | None, max_steps: int | None)
     print(f"[day3] train={len(train_records)} eval={len(eval_records)}")
 
     sample_rate = cfg.get("sample_rate", 16000)
-    train_ds = ManifestAudioDataset(train_records, processor, sample_rate)
+
+    # Augmentation is train-only, on purpose: augmenting eval would make a real
+    # robustness gain indistinguishable from an easier test set.
+    aug_cfg = cfg.get("augment") or {}
+    augmenter = None
+    if aug_cfg.get("enabled"):
+        augmenter = Augmenter(
+            sample_rate=sample_rate,
+            p_clean=aug_cfg.get("p_clean", 0.35),
+            p_noise=aug_cfg.get("p_noise", 0.6),
+            p_babble=aug_cfg.get("p_babble", 0.3),
+            p_reverb=aug_cfg.get("p_reverb", 0.3),
+            p_telephone=aug_cfg.get("p_telephone", 0.15),
+            p_gain=aug_cfg.get("p_gain", 0.4),
+            snr_range=tuple(aug_cfg.get("snr_range", (5.0, 25.0))),
+            seed=aug_cfg.get("seed", 0),
+        )
+        pool_n = aug_cfg.get("babble_pool", 24)
+        pool = []
+        for rec in train_records[:: max(1, len(train_records) // pool_n)][:pool_n]:
+            clip, _ = sf.read(rec["path"], dtype="float32")
+            pool.append(clip)
+        augmenter.set_babble_pool(pool)
+        print(f"[day3] augmentation ON (babble pool: {len(pool)} clips)")
+
+    train_ds = ManifestAudioDataset(train_records, processor, sample_rate, augmenter=augmenter)
     eval_ds = ManifestAudioDataset(eval_records, processor, sample_rate)
     collator = WhisperCollator(processor)
 

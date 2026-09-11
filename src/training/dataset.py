@@ -42,9 +42,19 @@ class ManifestAudioDataset(Dataset):
 
     MAX_LABEL_TOKENS = 448
 
-    def __init__(self, records: list[dict], processor: WhisperProcessor, sample_rate: int = 16000):
+    def __init__(
+        self,
+        records: list[dict],
+        processor: WhisperProcessor,
+        sample_rate: int = 16000,
+        augmenter: "Augmenter | None" = None,
+    ):
         self.processor = processor
         self.sample_rate = sample_rate
+        # Pass an Augmenter for the TRAIN split only. Augmenting eval would make the
+        # numbers unreadable -- a real gain would be indistinguishable from an easier
+        # test set. See src/training/augment.py.
+        self.augmenter = augmenter
 
         kept, dropped = [], []
         for rec in records:
@@ -65,6 +75,8 @@ class ManifestAudioDataset(Dataset):
         audio, sr = sf.read(rec["path"], dtype="float32")
         if sr != self.sample_rate:
             raise ValueError(f"{rec['path']} is {sr}Hz, expected {self.sample_rate}Hz")
+        if self.augmenter is not None:
+            audio = self.augmenter(audio)
         features = self.processor.feature_extractor(audio, sampling_rate=sr).input_features[0]
         labels = self.processor.tokenizer(rec["draft_transcript"]).input_ids
         return {"input_features": features, "labels": labels}

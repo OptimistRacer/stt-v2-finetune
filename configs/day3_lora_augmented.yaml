@@ -1,0 +1,54 @@
+# Combined FLEURS+podcast training WITH audio augmentation, for robustness to noisy /
+# degraded recordings. Same hyperparameters and data as day3_lora_combined.yaml; the
+# only difference is the `augment` block. Separate output_dir so the un-augmented
+# combined model stays intact for comparison.
+#
+# Motivation: both corpora are clean (FLEURS median ~28 dB SNR, podcasts ~46-50 dB raw)
+# -- no traffic, cafe noise, phone compression, or reverb anywhere. A demo on a laptop
+# mic or phone line would be well outside anything the model has seen.
+base_model: "openai/whisper-large-v3"
+language: "urdu"
+task: "transcribe"
+
+manifest_path: "D:/Audion-Data/Urdu/open_datasets/manifest_combined.jsonl"
+train_split: "train"
+eval_split: "validation"
+sample_rate: 16000
+
+# Applied to the TRAIN split only (run_day3_train.py wires it that way deliberately) --
+# augmenting eval would make a genuine robustness gain indistinguishable from an easier
+# test set. p_clean keeps a third of batches pristine so the model doesn't lose accuracy
+# on clean audio while gaining it on noisy.
+augment:
+  enabled: true
+  p_clean: 0.35
+  p_noise: 0.6
+  p_babble: 0.3
+  p_reverb: 0.3
+  p_telephone: 0.15
+  p_gain: 0.4
+  snr_range: [5.0, 25.0]
+  babble_pool: 24
+  seed: 0
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+
+training:
+  output_dir: "D:/Audion-Data/Urdu/checkpoints/stt_v2_lora_augmented"
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  warmup_steps: 50
+  num_train_epochs: 3
+  bf16: true
+  eval_strategy: "steps"
+  eval_steps: 100
+  save_steps: 100
+  save_total_limit: 5
+  logging_steps: 25
