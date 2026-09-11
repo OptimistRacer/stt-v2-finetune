@@ -340,6 +340,59 @@ why base looks strongest on the pure-Urdu podcast row; don't read that row as
 "fine-tuning hurt". The English-heavy degradation is far too large to be explained by
 that circularity.
 
+## Audio augmentation for noisy input (2026-09-11)
+
+Both corpora are clean -- measured, not assumed. FLEURS is crowd-sourced read speech
+(median ~28 dB SNR, p5 19 dB, worst 14 dB, 9% of clips under 20 dB); the podcasts are
+studio-grade (~46-50 dB *before* our denoise step). Neither contains traffic, cafe
+noise, phone-line compression, or reverb, so nothing in training resembles a demo run
+on a laptop mic or over a phone.
+
+```bash
+python scripts/make_noisy_testset.py                                      # fixed-seed degraded test set
+python scripts/run_day3_train.py --config configs/day3_lora_augmented.yaml
+python scripts/run_day4_eval.py  --config configs/day3_lora_augmented.yaml \
+    --manifest D:/Audion-Data/Urdu/open_datasets/manifest_noisy_test.jsonl --split test
+```
+
+`src/training/augment.py` synthesizes degradations rather than pulling a multi-GB noise
+corpus: colored noise at 5-25 dB SNR, babble mixed from other clips in this same corpus,
+a decaying-noise RIR for room reverb, and telephone band-limiting + mu-law. Two choices
+that matter: augmentation is wired to the **train split only** (augmenting eval would
+make a real gain indistinguishable from an easier test set), and `p_clean=0.35` keeps a
+third of batches pristine so clean accuracy isn't traded away.
+
+`make_noisy_testset.py` writes the degraded clips to disk with a fixed seed so every
+model is scored on byte-identical audio, using a different seed from training so it
+isn't a memorization test of noise already seen.
+
+### Results
+
+Overall, 336-clip test set (WER):
+
+| audio | base large-v3 | combined | combined + augmentation |
+|---|---|---|---|
+| clean | 21.89% | 19.62% | **19.06%** |
+| degraded | 31.90% | 27.52% | **25.40%** |
+
+Better on **both**. The degraded gain (-2.1pp) was the goal; the clean gain (-0.6pp) is
+a bonus -- the augmentation regularized rather than traded off.
+
+Clean test by domain:
+
+| subset | combined | + augmentation |
+|---|---|---|
+| FLEURS (299, human labels) | 20.55% | 20.64% |
+| podcast (37) | 17.14% | **14.88%** |
+| podcast English-heavy (17) | 17.86% | **12.62%** |
+
+FLEURS is flat (0.09pp is noise) and code-switched audio improved markedly.
+
+**`stt_v2_lora_augmented` is the model to ship.** Still untested on genuinely
+in-the-wild audio -- the degraded set is synthetic, so it validates robustness to
+noise/reverb/band-limiting but not to real room acoustics, real overlapping speakers,
+or real phone codecs.
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the
