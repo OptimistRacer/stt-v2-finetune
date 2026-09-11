@@ -393,6 +393,53 @@ in-the-wild audio -- the degraded set is synthetic, so it validates robustness t
 noise/reverb/band-limiting but not to real room acoustics, real overlapping speakers,
 or real phone codecs.
 
+## Day 5: export for serving (2026-09-11)
+
+```bash
+python scripts/run_day5_export.py        --config configs/day3_lora_augmented.yaml
+python scripts/run_day5_verify_export.py --config configs/day3_lora_augmented.yaml --split test
+```
+
+Merges the LoRA deltas into the base projections and converts to CTranslate2 --
+faster-whisper's format, already a dependency here. Output:
+`<training.output_dir>/export/ct2/`, 2.9GB fp16 (from a 5.8GB fp32 merged model),
+self-contained with no PEFT or adapter loading at runtime.
+
+```python
+from faster_whisper import WhisperModel
+model = WhisperModel(r"D:\Audion-Data\Urdu\checkpoints\stt_v2_lora_augmented\export\ct2",
+                     device="cuda", compute_type="float16")
+segments, info = model.transcribe("clip.wav", language="ur")
+```
+
+### Verified, not just built
+
+| runtime | WER | CER |
+|---|---|---|
+| PyTorch (HF transformers) | 19.06% | 8.10% |
+| CTranslate2 fp16 (served) | **18.45%** | **7.57%** |
+
+No quantization loss -- slightly better, because faster-whisper's decoding defaults
+(beam search, temperature fallback) differ from the plain HF `generate()` path used in
+run_day4_eval.py and happen to suit real transcription better. Worth knowing when
+comparing numbers across the two runtimes: they are not the same decoder.
+
+**Throughput: 12.5x realtime** (66 min of audio in 318s, RTF 0.080) at 5.9GB VRAM.
+
+### End to end
+
+| model | clean WER | |
+|---|---|---|
+| base whisper-large-v3 | 22.77% | starting point |
+| + FLEURS fine-tune | 20.65% | but destroyed code-switching (56% WER on English-heavy clips) |
+| + podcast data | 19.62% | code-switching restored |
+| + augmentation | 19.06% | and robust to noise/reverb/phone |
+| + CT2 export | **18.45%** | deployable, 12.5x realtime |
+
+~19% relative error reduction over base, code-switching preserved, noise robustness
+added. Note the FLEURS row: on its own benchmark it looked like the second-best model,
+while being the one that would have failed hardest in a real demo.
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the
