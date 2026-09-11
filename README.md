@@ -474,6 +474,51 @@ Sample output, subtitle-ready:
 Note `stdout` is written as raw UTF-8 bytes: the Windows console is cp1252 and raises
 `UnicodeEncodeError` on Urdu through normal `print`.
 
+## Status against the 7-Day Plan (as of 2026-09-11)
+
+The STT track is complete and deployable. Two STT items and the whole Emotion track are
+not done -- recorded here rather than left implicit.
+
+| Day | Task | Track | Status |
+|---|---|---|---|
+| 1 | Denoise, segment, diarize | Shared | done -- 373 clips, 2 speakers per podcast |
+| 1 | Draft transcription (Whisper base) | Shared | done, then redone with large-v3 |
+| 2 | Transcript correction & verification | STT | done via large-v3 re-transcription (pseudo-labels, see above) |
+| 2 | **Accent tagging** (Karachi/Lahori/Punjabi) | STT | **NOT DONE** |
+| 2 | Emotion labeling per segment | Emotion | partial -- blanket `neutral`, not a per-clip judgement |
+| 2 | Train/val/test split 80/10/10 | Shared | done -- 2406/306/336 |
+| 3 | Base model selection | STT | done -- whisper-large-v3 |
+| 3 | LoRA/PEFT fine-tuning setup | STT | done |
+| 3 | Kick off STT training | STT | done |
+| 4 | Complete STT training | STT | done |
+| 4 | Emotion classifier architecture | Emotion | not done (out of scope) |
+| 4 | Emotion training pipeline | Emotion | not done (out of scope) |
+| 5 | Complete emotion training | Emotion | not done (out of scope) |
+| 5 | STT WER/CER evaluation | STT | done |
+| 5 | **STT accent-wise breakdown** | STT | **NOT DONE** |
+| 6 | Emotion accuracy/F1 per class | Emotion | not done (out of scope) |
+| 6 | CTranslate2/ONNX export | STT | done -- 2.9GB CT2, verified 18.45% WER |
+| 6 | Emotion model export | Emotion | not done (out of scope) |
+| 7 | End-to-end integration test | Shared | done for STT; "both models" not applicable with no emotion model |
+| 7 | Buffer: bug-fix, sign-off | Shared | done |
+
+**Why the two STT gaps:** accent tagging needs someone who can distinguish
+Karachi/Lahori/Punjabi-influenced Urdu by ear. FLEURS ships no accent labels and nothing
+in this pipeline listens to audio, so neither the tagging nor the accent-wise report
+could be produced. `run_day4_eval.py` notes the same thing at the top of the file.
+
+**Why the Emotion track is absent:** scope was narrowed on 2026-09-08 to "Urdu, neutral
+emotion only" for the demo. It is a deliberate decision, not an oversight -- but it does
+mean Day 7's "both models in pipeline" is half-satisfied by construction.
+
+### Biggest remaining risk
+
+Every number in this README comes from FLEURS, 3 podcasts, and *synthetic* noise. The
+model has never been scored on audio from the actual demo environment. 10-15 minutes
+recorded through the real mic/room/phone, with a rough human transcript, would convert
+"good model, assumed conditions" into "good model, measured conditions". That is the
+single highest-value thing left to do.
+
 ## Roadmap (Days 2-7)
 
 Not scaffolded yet — build each day's script once the prior day's output exists and the
