@@ -32,6 +32,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from src.postprocess.codeswitch import DEFAULT_PATH, CodeSwitcher
+from src.postprocess.translit import looks_like_transliteration, similarity
 
 LATIN_ONLY = re.compile(r"^[A-Za-z][A-Za-z'-]*$")
 URDU_ONLY = re.compile(r"^[؀-ۿݐ-ݿ]+$")
@@ -41,36 +42,59 @@ def _words(text: str) -> list[str]:
     return [w.strip("،۔.!?\"'()") for w in text.split() if w.strip("،۔.!?\"'()")]
 
 
-def diff_pairs(plain: str, prompted: str) -> collections.Counter:
-    """Aligned (urdu, latin) pairs where the prompted run switched script."""
+def diff_pairs(plain: str, prompted: str, check_phonetics: bool = True) -> collections.Counter:
+    """Aligned (urdu, latin) pairs where the prompted run switched script.
+
+    Two filters, both added after seeing what the unfiltered version proposed:
+
+    - Words are paired POSITIONALLY when the replaced spans are the same length. Taking
+      the cross-product instead turned "سوشل میڈیا ایپس" -> "social media apps" into
+      nine pairs (every Urdu word against every English one) rather than three.
+    - Pairs must be phonetically plausible. The model sometimes *translates* rather than
+      transliterates, producing تقریباً/"almost", تحجد/"time", ہے/"possible". Those are
+      the dangerous ones: تقریباً is ordinary Urdu for "almost", so accepting it would
+      rewrite a real Urdu word as English everywhere it occurs.
+    """
     a, b = _words(plain), _words(prompted)
     sm = difflib.SequenceMatcher(a=a, b=b, autojunk=False)
     pairs = collections.Counter()
+
+    def keep(u: str, e: str) -> bool:
+        if not URDU_ONLY.match(u) or not LATIN_ONLY.match(e) or len(e) <= 2:
+            return False
+        return looks_like_transliteration(u, e) if check_phonetics else True
+
     for tag, i1, i2, j1, j2 in sm.get_opcodes():
         if tag != "replace":
             continue
         src, dst = a[i1:i2], b[j1:j2]
-        # Only trust short, tight substitutions; a long replaced span usually means
-        # Whisper rewrote the sentence rather than switching one word's script.
+        # A long replaced span usually means Whisper rewrote the sentence rather than
+        # switching one word's script.
         if len(src) > 3 or len(dst) > 3:
             continue
-        for u in src:
-            if not URDU_ONLY.match(u):
-                continue
-            for e in dst:
-                if LATIN_ONLY.match(e) and len(e) > 2:
-                    pairs[(u, e.lower())] += 1
+        if len(src) == len(dst):
+            candidates = list(zip(src, dst))
+        else:
+            # Lengths differ, so position carries no information; fall back to the
+            # cross-product and let the phonetic filter discard the mismatches.
+            candidates = [(u, e) for u in src for e in dst]
+        for u, e in candidates:
+            if keep(u, e):
+                pairs[(u, e.lower())] += 1
     return pairs
 
 
-def run(audio: str, out: str, dict_path: str, min_count: int, model_dir: str | None) -> None:
+def run(audio: str, out: str, dict_path: str, min_count: int, model_dir: str | None,
+        chunk_s: int = 60) -> None:
     from scripts.transcribe import CODESWITCH_PROMPT, DEFAULT_MODEL, transcribe
 
     model = model_dir or DEFAULT_MODEL
     print("[harvest] pass 1/2: plain transcription")
     plain = transcribe(audio, model_dir=model)
-    print("[harvest] pass 2/2: with code-switch prompt")
-    prompted = transcribe(audio, model_dir=model, initial_prompt=CODESWITCH_PROMPT)
+    print("[harvest] pass 2/2: with code-switch prompt (chunked)")
+    # chunked, else the prompt only affects the first 30s window and the diff is empty
+    prompted = transcribe(audio, model_dir=model, initial_prompt=CODESWITCH_PROMPT,
+                          prompt_chunk_s=chunk_s)
 
     pairs = diff_pairs(plain["text"], prompted["text"])
     cs = CodeSwitcher(dict_path)
@@ -96,7 +120,7 @@ def run(audio: str, out: str, dict_path: str, min_count: int, model_dir: str | N
         "",
     ]
     for u, e, n in rows:
-        lines.append(f"{u} = {e}    # seen {n}x")
+        lines.append(f"{u} = {e}    # seen {n}x, phonetic match {similarity(u, e):.2f}")
     if not rows:
         lines.append("# (none found above the frequency threshold)")
 
@@ -114,5 +138,7 @@ if __name__ == "__main__":
     p.add_argument("--dict", default=str(DEFAULT_PATH))
     p.add_argument("--min-count", type=int, default=1)
     p.add_argument("--model_dir", default=None)
+    p.add_argument("--prompt_chunk_s", type=int, default=60,
+                   help="Re-apply the prompt every N seconds in the prompted pass")
     a = p.parse_args()
-    run(a.audio, a.out, a.dict, a.min_count, a.model_dir)
+    run(a.audio, a.out, a.dict, a.min_count, a.model_dir, a.prompt_chunk_s)

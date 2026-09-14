@@ -52,6 +52,51 @@ CODESWITCH_PROMPT = (
 )
 
 
+def _chunked(model, audio_path, language, beam_size, vad, prompt, chunk_s):
+    """Decode in chunks, re-applying `prompt` to each, and stitch the timestamps back.
+
+    Chunk boundaries are cut on the quietest point in a window near the nominal split so
+    a cut lands in a pause rather than mid-word; a word sliced in half is transcribed
+    wrong on both sides.
+    """
+    import numpy as np
+    from faster_whisper.audio import decode_audio
+
+    sr = 16000
+    audio = decode_audio(audio_path, sampling_rate=sr)
+    duration = len(audio) / sr
+    step = int(chunk_s * sr)
+    search = int(2.0 * sr)  # hunt for a pause +/-2s around the nominal boundary
+
+    bounds, pos = [0], 0
+    while pos + step < len(audio):
+        nominal = pos + step
+        lo, hi = max(nominal - search, pos + sr), min(nominal + search, len(audio))
+        if hi - lo > sr // 10:
+            window = audio[lo:hi]
+            frame = sr // 50
+            energies = [(np.abs(window[i:i + frame]).mean(), i) for i in range(0, len(window) - frame, frame)]
+            nominal = lo + min(energies)[1] if energies else nominal
+        bounds.append(nominal)
+        pos = nominal
+    bounds.append(len(audio))
+
+    segs = []
+    for i in range(len(bounds) - 1):
+        piece = audio[bounds[i]:bounds[i + 1]]
+        if len(piece) < sr // 2:
+            continue
+        offset = bounds[i] / sr
+        out, _ = model.transcribe(
+            piece, language=language, beam_size=beam_size, vad_filter=vad, initial_prompt=prompt,
+        )
+        for s in out:
+            text = s.text.strip()
+            if text:
+                segs.append({"start": s.start + offset, "end": s.end + offset, "text": text})
+    return segs, duration
+
+
 def transcribe(
     audio_path: str,
     model_dir: str = DEFAULT_MODEL,
@@ -61,7 +106,15 @@ def transcribe(
     beam_size: int = 5,
     vad: bool = False,
     initial_prompt: str | None = None,
+    prompt_chunk_s: int = 0,
 ) -> dict:
+    """`prompt_chunk_s` > 0 splits the audio and re-applies `initial_prompt` to each
+    chunk. Needed for anything longer than about a minute: Whisper decodes in 30s
+    windows and `initial_prompt` conditions only the first one, after which the model
+    conditions on its own previous output and the prompt falls out of the context
+    window. Measured on a 35-minute file, a whole-file prompt produced zero Latin-script
+    words while the identical prompt on a 25-second clip worked -- so without chunking
+    the prompt silently does nothing on real-length audio."""
     # A bare size name ("large-v3", "medium") is valid too -- faster-whisper resolves it
     # to a pretrained CT2 model from the Hub, which is how the un-fine-tuned baseline is
     # run for comparison. Only treat it as a path if it looks like one.
@@ -71,23 +124,26 @@ def transcribe(
 
     model = WhisperModel(model_dir, device=device, compute_type=compute_type)
     t0 = time.time()
-    segments, info = model.transcribe(
-        audio_path,
-        language=language,
-        beam_size=beam_size,
-        vad_filter=vad,
-        initial_prompt=initial_prompt,
-    )
-    # faster-whisper yields lazily; materializing here is what actually runs decoding.
-    segs = [
-        {"start": s.start, "end": s.end, "text": s.text.strip()}
-        for s in segments
-    ]
+
+    if initial_prompt and prompt_chunk_s > 0:
+        segs, duration = _chunked(model, audio_path, language, beam_size, vad,
+                                  initial_prompt, prompt_chunk_s)
+    else:
+        segments, info = model.transcribe(
+            audio_path,
+            language=language,
+            beam_size=beam_size,
+            vad_filter=vad,
+            initial_prompt=initial_prompt,
+        )
+        # faster-whisper yields lazily; materializing here is what runs decoding.
+        segs = [{"start": s.start, "end": s.end, "text": s.text.strip()} for s in segments]
+        duration = float(getattr(info, "duration", 0.0) or 0.0)
+
     elapsed = time.time() - t0
-    duration = float(getattr(info, "duration", 0.0) or 0.0)
     return {
         "audio": str(audio_path),
-        "language": getattr(info, "language", language),
+        "language": language,
         "duration_s": round(duration, 2),
         "elapsed_s": round(elapsed, 2),
         "rtf": round(elapsed / duration, 4) if duration else None,
@@ -109,6 +165,9 @@ if __name__ == "__main__":
     p.add_argument("--codeswitch_prompt", action="store_true",
                    help="Bias Whisper to write English/loan words in Latin script")
     p.add_argument("--initial_prompt", default=None, help="Custom prompt (overrides --codeswitch_prompt)")
+    p.add_argument("--prompt_chunk_s", type=int, default=60,
+                   help="Re-apply the prompt every N seconds. Required for long audio -- a "
+                        "whole-file prompt only conditions the first 30s window. 0 disables.")
     p.add_argument("--fix_codeswitch", action="store_true",
                    help="Apply the code-switch dictionary to the transcript afterwards")
     p.add_argument("--format", default="text", choices=["text", "json", "srt"])
@@ -117,7 +176,7 @@ if __name__ == "__main__":
 
     prompt = a.initial_prompt or (CODESWITCH_PROMPT if a.codeswitch_prompt else None)
     result = transcribe(a.audio, a.model_dir, a.language, a.device, a.compute_type,
-                        a.beam_size, a.vad, prompt)
+                        a.beam_size, a.vad, prompt, a.prompt_chunk_s)
 
     if a.fix_codeswitch:
         from src.postprocess.codeswitch import CodeSwitcher
