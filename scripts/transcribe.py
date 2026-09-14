@@ -40,6 +40,18 @@ def to_srt(segments: list[dict]) -> str:
     return "\n".join(out)
 
 
+# Biases Whisper toward writing English/loan words in Latin script instead of
+# transliterating them into Urdu ("trigger" not "ٹرگر"). It is a nudge, not a guarantee
+# -- the dictionary pass in src/postprocess/codeswitch.py is the deterministic layer --
+# but it costs nothing and catches a useful share on its own. The Urdu words in the
+# prompt matter as much as the English ones: the prompt sets the whole output style, so
+# an all-English prompt would push it toward translating rather than transcribing.
+CODESWITCH_PROMPT = (
+    "یہ ڈیجیٹل اور physical دنیا ہے۔ اس کا target اور design ہے۔ "
+    "time، system، mobile اور internet بھی ہیں۔"
+)
+
+
 def transcribe(
     audio_path: str,
     model_dir: str = DEFAULT_MODEL,
@@ -48,6 +60,7 @@ def transcribe(
     compute_type: str = "float16",
     beam_size: int = 5,
     vad: bool = False,
+    initial_prompt: str | None = None,
 ) -> dict:
     # A bare size name ("large-v3", "medium") is valid too -- faster-whisper resolves it
     # to a pretrained CT2 model from the Hub, which is how the un-fine-tuned baseline is
@@ -63,6 +76,7 @@ def transcribe(
         language=language,
         beam_size=beam_size,
         vad_filter=vad,
+        initial_prompt=initial_prompt,
     )
     # faster-whisper yields lazily; materializing here is what actually runs decoding.
     segs = [
@@ -92,11 +106,26 @@ if __name__ == "__main__":
     p.add_argument("--compute_type", default="float16")
     p.add_argument("--beam_size", type=int, default=5)
     p.add_argument("--vad", action="store_true", help="Drop non-speech with VAD before decoding")
+    p.add_argument("--codeswitch_prompt", action="store_true",
+                   help="Bias Whisper to write English/loan words in Latin script")
+    p.add_argument("--initial_prompt", default=None, help="Custom prompt (overrides --codeswitch_prompt)")
+    p.add_argument("--fix_codeswitch", action="store_true",
+                   help="Apply the code-switch dictionary to the transcript afterwards")
     p.add_argument("--format", default="text", choices=["text", "json", "srt"])
     p.add_argument("--out", default=None, help="Write to a file instead of stdout")
     a = p.parse_args()
 
-    result = transcribe(a.audio, a.model_dir, a.language, a.device, a.compute_type, a.beam_size, a.vad)
+    prompt = a.initial_prompt or (CODESWITCH_PROMPT if a.codeswitch_prompt else None)
+    result = transcribe(a.audio, a.model_dir, a.language, a.device, a.compute_type,
+                        a.beam_size, a.vad, prompt)
+
+    if a.fix_codeswitch:
+        from src.postprocess.codeswitch import CodeSwitcher
+        cs = CodeSwitcher()
+        for seg in result["segments"]:
+            seg["text"] = cs.apply(seg["text"])
+        result["text"] = cs.apply(result["text"])
+        print(f"[transcribe] code-switch dictionary applied ({cs.n_terms} terms)", file=sys.stderr)
 
     if a.format == "text":
         body = result["text"]

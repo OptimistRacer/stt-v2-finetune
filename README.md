@@ -474,6 +474,80 @@ Sample output, subtitle-ready:
 Note `stdout` is written as raw UTF-8 bytes: the Windows console is cp1252 and raises
 `UnicodeEncodeError` on Urdu through normal `print`.
 
+## Code-switching: English words in Latin script (2026-09-14)
+
+Whisper transliterates English into Urdu script when the surrounding speech is
+Urdu-dominant (`ٹرگر` for "trigger"). The convention wanted here is Urdu words in Urdu
+script, English words in Latin. Two layers, cheapest first.
+
+**Layer 1 -- decode-time prompt.** `--codeswitch_prompt` passes an `initial_prompt`
+mixing Urdu with Latin-script English, which biases the output style. Measured on the
+demo lecture, same audio and model:
+
+| | output |
+|---|---|
+| without | گناہ **ٹرگر** ہوتے ہیں … **فیزیکل** چیزوں |
+| with | گناہ **trigger** ہوتے ہیں … **physical** چیزوں |
+
+Free and needs no maintenance, but it is a bias, not a guarantee. The Urdu in the
+prompt matters as much as the English: an all-English prompt pushes the model toward
+translating rather than transcribing.
+
+**Layer 2 -- dictionary.** `--fix_codeswitch` applies `configs/codeswitch_dict.json`
+after decoding. Deterministic, and guarded three ways, because a wrong replacement is
+worse than a missed one (a missed word merely looks untranslated; a wrong one corrupts
+real Urdu):
+- whole-word matching only -- verified that `ٹرگرانا`, `موبائلوں`, `ڈیزائنر` are left
+  alone despite containing dictionary keys
+- a `protected` list never converted: `منٹ`, `پروگرام`, `فون`, `ٹیم` and similar are
+  naturalized written Urdu now. `منٹ` alone appeared 19 times in the 35-minute lecture;
+  rendering it "minute" mid-sentence would be wrong, not right
+- nothing is ever added automatically
+
+```bash
+python scripts/transcribe.py audio.mp3 --codeswitch_prompt --fix_codeswitch
+```
+
+### How the dictionary grows
+
+`scripts/harvest_codeswitch.py` transcribes the audio **twice**, with and without the
+prompt, and diffs the aligned word sequences. Where one run has Urdu script and the
+other Latin for the same position, that pair is an entry -- discovered by the model, not
+guessed. Verified working: on a 4-minute clip it recovered `ٹارگٹ -> target` and
+`ڈیزائن -> design` unprompted, then correctly suppressed them as already known.
+
+Candidates go to a text file for a human to approve, then
+`scripts/apply_codeswitch_candidates.py` merges them (refusing any line still holding
+the `????` placeholder, and reporting what it skipped).
+
+**A heuristic version of this was built first and scrapped.** Ranking high-frequency
+Latin words returned "you", "the", "and" -- already Latin, needing no entry. Flagging
+Urdu words absent from a reference corpus returned `رمضان`, `دعا`, `قرآن`, `صاحب` --
+ordinary Urdu, missing from FLEURS only because FLEURS is general-domain and the test
+audio is a religious lecture. Both produced mostly noise, which is worse than nothing
+when a human has to review it.
+
+### Expected coverage
+
+Measured held-out (dictionary built on some podcasts, tested on one never seen), not
+in-sample:
+
+| dictionary size | coverage on a *new* recording |
+|---|---|
+| 100 | ~27% |
+| 300 | ~53% |
+| 500 | ~66% |
+| 1,000 | ~80% |
+| 1,150 | ~85% |
+
+Plateaus around 85-90%: half of all distinct English words in this project's data appear
+exactly once (names, one-off terms), accounting for ~12% of occurrences. Combined with
+the prompt layer, expect ~90% of English words rendered in Latin. The 2.9h of
+code-switched podcast audio already on disk is enough to harvest ~1,200 terms.
+
+Caveat: that curve comes from *podcast* speech, which is ~8% English by word. The demo
+lecture was 0.6%, so for that kind of content there is simply far less to get wrong.
+
 ## Real-world evaluation (2026-09-14)
 
 First measurement on audio that isn't FLEURS, the podcasts, or synthetic noise: a
