@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urdu Speech to Text</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --line:#262b36; --text:#e7e9ee;
+    --muted:#9aa3b2; --accent:#4f8cff; --accent-dim:#2f5fb3; --ok:#3fb950; --warn:#d29922;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  button{font:inherit;border:0;border-radius:8px;padding:11px 18px;cursor:pointer;
+         background:var(--accent);color:#fff;font-weight:600}
+  button:hover:not(:disabled){background:var(--accent-dim)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button.ghost{background:#222735;color:var(--text);border:1px solid var(--line)}
+  button.rec{background:#b3392f}
+  #drop{border:2px dashed var(--line);border-radius:10px;padding:30px;text-align:center;
+        color:var(--muted);cursor:pointer;transition:.15s}
+  #drop:hover,#drop.over{border-color:var(--accent);color:var(--text);background:#1b1f29}
+  .tabs{display:flex;gap:6px;margin-bottom:18px}
+  .tab{padding:9px 16px;border-radius:8px;cursor:pointer;color:var(--muted);
+       border:1px solid transparent;font-weight:600;font-size:14px}
+  .tab.on{background:var(--panel);border-color:var(--line);color:var(--text)}
+  .urdu{font-family:'Noto Nastaliq Urdu',serif;direction:rtl;text-align:right;
+        font-size:20px;line-height:2.4}
+  #out{white-space:pre-wrap;max-height:460px;overflow:auto;padding:8px 4px}
+  .seg{display:flex;gap:14px;padding:9px 6px;border-bottom:1px solid #1e222c}
+  .seg:hover{background:#1b1f29}
+  .t{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;
+     min-width:52px;padding-top:10px;direction:ltr}
+  .stats{display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-bottom:14px}
+  .stats b{color:var(--text)}
+  .hide{display:none}
+  .err{color:#ff7b72}
+  #timer{font-variant-numeric:tabular-nums;color:var(--warn);font-weight:600}
+  label.chk{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:14px;cursor:pointer}
+  .bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:14px}
+  .bar i{display:block;height:100%;width:35%;background:var(--accent);
+         animation:slide 1.1s ease-in-out infinite}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(385%)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Urdu Speech to Text</h1>
+  <div class="sub">Fine-tuned Whisper large-v3 &middot; runs locally on this machine</div>
+
+  <div class="tabs">
+    <div class="tab on" data-tab="file">Upload audio</div>
+    <div class="tab" data-tab="mic">Record voice</div>
+  </div>
+
+  <div class="panel" id="pane-file">
+    <div id="drop">
+      <b>Click to choose an audio file</b><br>or drag &amp; drop here
+      <div style="font-size:12px;margin-top:8px">mp3, wav, m4a, mp4, ogg, webm</div>
+    </div>
+    <input type="file" id="file" accept="audio/*,video/*" class="hide">
+    <div id="fname" class="sub" style="margin:12px 0 0"></div>
+  </div>
+
+  <div class="panel hide" id="pane-mic">
+    <div class="row">
+      <button id="recBtn" class="rec">Start recording</button>
+      <span id="timer"></span>
+    </div>
+    <audio id="playback" controls class="hide" style="width:100%;margin-top:14px"></audio>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <label class="chk">
+        <input type="checkbox" id="cs">
+        Write English words in English script
+      </label>
+      <button id="go" disabled>Transcribe</button>
+    </div>
+    <div id="progress" class="bar hide"><i></i></div>
+    <div id="status" class="sub" style="margin:12px 0 0"></div>
+  </div>
+
+  <div class="panel hide" id="results">
+    <div class="stats" id="stats"></div>
+    <div class="row" style="margin-bottom:12px">
+      <button class="ghost" id="dlTxt">Download .txt</button>
+      <button class="ghost" id="dlSrt">Download .srt</button>
+      <button class="ghost" id="copy">Copy text</button>
+      <button class="ghost" id="toggleTs">Hide timestamps</button>
+    </div>
+    <div id="out" class="urdu"></div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+let blob = null, rec = null, chunks = [], t0 = 0, tick = null, data = null, showTs = true;
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  t.classList.add('on');
+  const mic = t.dataset.tab === 'mic';
+  $('#pane-file').classList.toggle('hide', mic);
+  $('#pane-mic').classList.toggle('hide', !mic);
+  blob = null; $('#go').disabled = true; $('#fname').textContent = '';
+});
+
+$('#drop').onclick = () => $('#file').click();
+$('#drop').ondragover = e => { e.preventDefault(); $('#drop').classList.add('over'); };
+$('#drop').ondragleave = () => $('#drop').classList.remove('over');
+$('#drop').ondrop = e => {
+  e.preventDefault(); $('#drop').classList.remove('over');
+  if (e.dataTransfer.files[0]) pickFile(e.dataTransfer.files[0]);
+};
+$('#file').onchange = e => e.target.files[0] && pickFile(e.target.files[0]);
+
+function pickFile(f){
+  blob = f;
+  $('#fname').innerHTML = `<b>${f.name}</b> &middot; ${(f.size/1048576).toFixed(1)} MB`;
+  $('#go').disabled = false;
+}
+
+$('#recBtn').onclick = async () => {
+  if (rec && rec.state === 'recording') {
+    rec.stop(); clearInterval(tick);
+    $('#recBtn').textContent = 'Start recording'; $('#recBtn').classList.add('rec');
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    rec = new MediaRecorder(stream); chunks = [];
+    rec.ondataavailable = e => chunks.push(e.data);
+    rec.onstop = () => {
+      blob = new Blob(chunks, {type:'audio/webm'});
+      blob.name = 'recording.webm';
+      $('#playback').src = URL.createObjectURL(blob);
+      $('#playback').classList.remove('hide');
+      $('#go').disabled = false;
+      stream.getTracks().forEach(t => t.stop());
+    };
+    rec.start(); t0 = Date.now();
+    tick = setInterval(() => {
+      const s = Math.floor((Date.now()-t0)/1000);
+      $('#timer').textContent = `${String(Math.floor(s/60)).padStart(2,'0')}:${String(s%60).padStart(2,'0')}`;
+    }, 250);
+    $('#recBtn').textContent = 'Stop recording'; $('#recBtn').classList.remove('rec');
+  } catch (err) {
+    $('#status').innerHTML = `<span class="err">Microphone blocked: ${err.message}</span>`;
+  }
+};
+
+$('#go').onclick = async () => {
+  if (!blob) return;
+  $('#go').disabled = true;
+  $('#progress').classList.remove('hide');
+  $('#results').classList.add('hide');
+  $('#status').textContent = 'Transcribing… (about 5 seconds per minute of audio)';
+
+  const fd = new FormData();
+  fd.append('audio', blob, blob.name || 'audio.webm');
+  fd.append('codeswitch', $('#cs').checked);
+
+  try {
+    const r = await fetch('/transcribe', {method:'POST', body:fd});
+    const j = await r.json();
+    if (!r.ok || j.error) throw new Error(j.error || 'Transcription failed');
+    data = j; render();
+    $('#status').textContent = '';
+  } catch (e) {
+    $('#status').innerHTML = `<span class="err">${e.message}</span>`;
+  } finally {
+    $('#progress').classList.add('hide');
+    $('#go').disabled = false;
+  }
+};
+
+function fmt(s){
+  const m = Math.floor(s/60), x = Math.floor(s%60);
+  return `${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`;
+}
+
+function render(){
+  $('#stats').innerHTML = `
+    <span>Audio <b>${fmt(data.duration_s)}</b></span>
+    <span>Took <b>${data.elapsed_s}s</b></span>
+    <span>Speed <b>${data.speed}&times; realtime</b></span>
+    <span>Segments <b>${data.n_segments}</b></span>`;
+  $('#out').innerHTML = data.segments.map(s =>
+    `<div class="seg">${showTs ? `<div class="t">${fmt(s.start)}</div>` : ''}<div style="flex:1">${esc(s.text)}</div></div>`
+  ).join('');
+  $('#results').classList.remove('hide');
+}
+const esc = t => t.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+
+$('#toggleTs').onclick = () => {
+  showTs = !showTs;
+  $('#toggleTs').textContent = showTs ? 'Hide timestamps' : 'Show timestamps';
+  render();
+};
+const save = (text, name) => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:'text/plain;charset=utf-8'}));
+  a.download = name; a.click();
+};
+$('#dlTxt').onclick = () => data && save(data.text, 'transcript.txt');
+$('#dlSrt').onclick = () => data && save(data.srt, 'subtitles.srt');
+$('#copy').onclick = async () => {
+  if (!data) return;
+  await navigator.clipboard.writeText(data.text);
+  $('#copy').textContent = 'Copied'; setTimeout(() => $('#copy').textContent = 'Copy text', 1200);
+};
+</script>
+</body>
+</html>
