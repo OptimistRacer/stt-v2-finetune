@@ -474,6 +474,60 @@ Sample output, subtitle-ready:
 Note `stdout` is written as raw UTF-8 bytes: the Windows console is cp1252 and raises
 `UnicodeEncodeError` on Urdu through normal `print`.
 
+## Real-world evaluation (2026-09-14)
+
+First measurement on audio that isn't FLEURS, the podcasts, or synthetic noise: a
+35-minute Urdu religious lecture (M4A/AAC, mono 48kHz) supplied as the demo sample.
+
+```bash
+python scripts/transcribe.py "<audio>" --format json --out out.json
+python scripts/make_correction_sheet.py --json out.json --audio "<audio>" --out CORRECT_ME.txt
+# human corrects 5 x 2-minute chunks, then:
+python scripts/score_correction_sheet.py --sheet CORRECTED_ME.txt \
+    --model_json out.json --compare_json base.json
+```
+
+Recording quality sat between the two training corpora on SNR (27.3 dB, vs FLEURS ~28
+and podcasts ~46-50) but with a **noise floor ~16 dB higher than FLEURS** (-46.7 vs
+-62.7 dB) -- noisier than anything trained on.
+
+| | WER | CER |
+|---|---|---|
+| fine-tuned (augmented, CT2) | **8.30%** | **4.10%** |
+| base whisper-large-v3 | 21.68% | 13.73% |
+
+Fine-tuned won all 5 chunks individually (3.7/8.8/6.4/10.2/11.2 vs 10.0/22.9/15.2/22.9/36.0).
+
+### Read these numbers with the bias in mind
+
+**The reference was produced by correcting the fine-tuned model's own transcript.** Any
+error the human did not notice stays in the reference as "correct", so the fine-tuned
+model scores right by construction there. 8.30% is therefore closer to *"how much the
+human changed"* -- a floor on its true error rate -- and base is graded against its
+competitor's wording rather than a neutral reference. Same circularity as the podcast
+pseudo-labels, and it inflates the gap.
+
+A concrete instance of the unfairness: in chunk 5 the fine-tuned model duplicated a
+whole sentence, the duplication survived into the reference, and base -- which said it
+once, correctly -- was penalised for the difference.
+
+**The direction still holds**, on evidence independent of the scoring: base hallucinated
+text over the silent first 6 seconds of the file (-43 dB, then looped `پچیس لاکھ`), and
+repeated `دعاوں میں جنت بہت مانگو` three times at the start of chunk 5. Those are real
+Whisper failure modes, not artifacts. Digit formatting was ruled out as an explanation
+(only 8 digit tokens corpus-wide; stripping them moves WER 8.30 -> 8.33 and 21.68 ->
+21.76).
+
+Honest summary: the fine-tuned model is clearly better on this audio and comfortably
+beats off-the-shelf Whisper, but quote it as roughly **88-92% of words correct**, not
+91.7%. An unbiased figure would need the base model's transcript corrected
+independently and both scored against their own references.
+
+`score_correction_sheet.py` also handles a correction sheet filled into the wrong box --
+it picks whichever of the two boxes diverges from the original transcript, so a
+misfiled chunk is recovered rather than lost (chunk 3 of this run was filled in the
+"what the model heard" box).
+
 ## Status against the 7-Day Plan (as of 2026-09-11)
 
 The STT track is complete and deployable. Two STT items and the whole Emotion track are

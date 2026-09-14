@@ -49,7 +49,11 @@ def transcribe(
     beam_size: int = 5,
     vad: bool = False,
 ) -> dict:
-    if not Path(model_dir).exists():
+    # A bare size name ("large-v3", "medium") is valid too -- faster-whisper resolves it
+    # to a pretrained CT2 model from the Hub, which is how the un-fine-tuned baseline is
+    # run for comparison. Only treat it as a path if it looks like one.
+    looks_like_path = any(sep in str(model_dir) for sep in ("/", "\\")) or Path(model_dir).exists()
+    if looks_like_path and not Path(model_dir).exists():
         raise FileNotFoundError(f"No model at {model_dir} -- run scripts/run_day5_export.py first")
 
     model = WhisperModel(model_dir, device=device, compute_type=compute_type)
