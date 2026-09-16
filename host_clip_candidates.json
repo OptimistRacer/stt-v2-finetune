@@ -1,0 +1,1406 @@
+[
+ {
+  "path": "host_clips\\All You Need To Know About Exports__000.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 127.11659375,
+  "end": 140.38034375,
+  "dur": 13.263750000000002,
+  "peak": 0.489013671875,
+  "rms": 0.048554763197898865
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__001.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 154.23471875,
+  "end": 168.07221875000002,
+  "dur": 13.837500000000006,
+  "peak": 0.345123291015625,
+  "rms": 0.01437492948025465
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__002.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 249.56159375000001,
+  "end": 261.05346875000004,
+  "dur": 11.491875000000022,
+  "peak": 0.318023681640625,
+  "rms": 0.019169289618730545
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__003.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 352.02659375,
+  "end": 359.28284375000004,
+  "dur": 7.256250000000023,
+  "peak": 0.30145263671875,
+  "rms": 0.019725246354937553
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__004.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 359.50221875,
+  "end": 371.53409375,
+  "dur": 12.031875000000014,
+  "peak": 0.4581298828125,
+  "rms": 0.02283116988837719
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__005.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 530.46284375,
+  "end": 544.89096875,
+  "dur": 14.428124999999909,
+  "peak": 0.311248779296875,
+  "rms": 0.018467415124177933
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__006.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 545.1609687499999,
+  "end": 551.6240937499999,
+  "dur": 6.463124999999991,
+  "peak": 0.20849609375,
+  "rms": 0.017918789759278297
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__007.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 638.02409375,
+  "end": 650.5959687500001,
+  "dur": 12.571875000000091,
+  "peak": 0.306793212890625,
+  "rms": 0.019965194165706635
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__008.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 650.78159375,
+  "end": 661.6997187500001,
+  "dur": 10.918125000000146,
+  "peak": 0.419708251953125,
+  "rms": 0.01699075661599636
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__009.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 662.07096875,
+  "end": 673.7822187500001,
+  "dur": 11.711250000000064,
+  "peak": 0.3958740234375,
+  "rms": 0.028282450512051582
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__010.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 673.9678437500002,
+  "end": 679.5365937500001,
+  "dur": 5.568749999999909,
+  "peak": 0.279510498046875,
+  "rms": 0.01941497065126896
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__011.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 795.6028437500001,
+  "end": 805.2890937500001,
+  "dur": 9.686249999999973,
+  "peak": 0.334808349609375,
+  "rms": 0.02108835056424141
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__012.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 805.6772187500001,
+  "end": 813.1697187500001,
+  "dur": 7.492500000000064,
+  "peak": 0.2469482421875,
+  "rms": 0.019926326349377632
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__013.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 983.3372187500001,
+  "end": 990.2053437500001,
+  "dur": 6.868124999999964,
+  "peak": 0.24853515625,
+  "rms": 0.01918678730726242
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__014.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1043.88471875,
+  "end": 1048.79534375,
+  "dur": 4.910624999999982,
+  "peak": 0.45745849609375,
+  "rms": 0.021894356235861778
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__015.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1055.00534375,
+  "end": 1068.65721875,
+  "dur": 13.651875000000018,
+  "peak": 0.361602783203125,
+  "rms": 0.02190864086151123
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__016.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1069.1634687500002,
+  "end": 1077.19596875,
+  "dur": 8.0324999999998,
+  "peak": 0.26995849609375,
+  "rms": 0.019555669277906418
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__017.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1149.9778437500001,
+  "end": 1163.3765937500002,
+  "dur": 13.398750000000064,
+  "peak": 0.224853515625,
+  "rms": 0.016598181799054146
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__018.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1307.97846875,
+  "end": 1317.9009687500002,
+  "dur": 9.922500000000127,
+  "peak": 0.18115234375,
+  "rms": 0.015113973058760166
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__019.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1318.4747187500002,
+  "end": 1324.43159375,
+  "dur": 5.9568749999998545,
+  "peak": 0.25030517578125,
+  "rms": 0.020165827125310898
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__020.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1385.1478437500002,
+  "end": 1398.7322187500001,
+  "dur": 13.584374999999909,
+  "peak": 0.204498291015625,
+  "rms": 0.013622002676129341
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__021.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1400.5547187500001,
+  "end": 1412.04659375,
+  "dur": 11.491874999999936,
+  "peak": 0.13641357421875,
+  "rms": 0.012551141902804375
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__022.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1412.3672187500001,
+  "end": 1418.0372187500002,
+  "dur": 5.670000000000073,
+  "peak": 0.1744384765625,
+  "rms": 0.013898642733693123
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__023.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1570.5872187500001,
+  "end": 1581.0328437500002,
+  "dur": 10.445625000000064,
+  "peak": 0.2694091796875,
+  "rms": 0.0209494661539793
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__024.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1746.5428437500002,
+  "end": 1760.4140937500001,
+  "dur": 13.871249999999918,
+  "peak": 0.412322998046875,
+  "rms": 0.021221701055765152
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__025.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 1989.05346875,
+  "end": 1999.9378437500002,
+  "dur": 10.884375000000091,
+  "peak": 0.2091064453125,
+  "rms": 0.017919247969985008
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__026.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2000.30909375,
+  "end": 2004.3084687500002,
+  "dur": 3.9993750000001,
+  "peak": 0.518280029296875,
+  "rms": 0.03800668939948082
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__027.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2089.96596875,
+  "end": 2096.14221875,
+  "dur": 6.176250000000437,
+  "peak": 0.371795654296875,
+  "rms": 0.021305499598383904
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__028.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2097.32346875,
+  "end": 2109.69284375,
+  "dur": 12.369375000000218,
+  "peak": 0.5367431640625,
+  "rms": 0.01817345805466175
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__029.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2110.21596875,
+  "end": 2122.09596875,
+  "dur": 11.88000000000011,
+  "peak": 0.23370361328125,
+  "rms": 0.014351174235343933
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__030.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2122.39971875,
+  "end": 2137.11471875,
+  "dur": 14.715000000000146,
+  "peak": 0.2396240234375,
+  "rms": 0.020693166181445122
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__031.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2385.46409375,
+  "end": 2397.0065937500003,
+  "dur": 11.542500000000473,
+  "peak": 0.4034423828125,
+  "rms": 0.02163885347545147
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__032.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2411.56971875,
+  "end": 2421.99846875,
+  "dur": 10.428750000000036,
+  "peak": 0.207305908203125,
+  "rms": 0.016487114131450653
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__033.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2422.48784375,
+  "end": 2434.18221875,
+  "dur": 11.694375000000036,
+  "peak": 0.44110107421875,
+  "rms": 0.023032475262880325
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__034.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2434.5703437500006,
+  "end": 2440.37534375,
+  "dur": 5.8049999999993815,
+  "peak": 0.390655517578125,
+  "rms": 0.027503497898578644
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__035.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2557.9772187500002,
+  "end": 2570.2959687500006,
+  "dur": 12.318750000000364,
+  "peak": 0.327301025390625,
+  "rms": 0.01622072234749794
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__036.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2570.8190937500003,
+  "end": 2574.04221875,
+  "dur": 3.223124999999527,
+  "peak": 0.257110595703125,
+  "rms": 0.015693016350269318
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__037.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2660.89784375,
+  "end": 2664.10409375,
+  "dur": 3.206250000000182,
+  "peak": 0.395416259765625,
+  "rms": 0.033721014857292175
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__038.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2664.40784375,
+  "end": 2676.67596875,
+  "dur": 12.2681249999996,
+  "peak": 0.566131591796875,
+  "rms": 0.03348882868885994
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__039.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2787.9665937500004,
+  "end": 2800.0153437500003,
+  "dur": 12.048749999999927,
+  "peak": 0.377685546875,
+  "rms": 0.023675628006458282
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__040.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2800.0322187500005,
+  "end": 2815.96221875,
+  "dur": 15.929999999999382,
+  "peak": 0.333160400390625,
+  "rms": 0.020988691598176956
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__041.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2816.73846875,
+  "end": 2829.5128437500007,
+  "dur": 12.774375000000873,
+  "peak": 0.40167236328125,
+  "rms": 0.01876249723136425
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__042.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 2829.9684687500003,
+  "end": 2844.46409375,
+  "dur": 14.495624999999563,
+  "peak": 0.286163330078125,
+  "rms": 0.024012962356209755
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__043.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3305.6240937500006,
+  "end": 3319.5290937500004,
+  "dur": 13.904999999999745,
+  "peak": 0.142730712890625,
+  "rms": 0.009375541470944881
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__044.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3319.9678437500006,
+  "end": 3332.2697187500007,
+  "dur": 12.30187500000011,
+  "peak": 0.144805908203125,
+  "rms": 0.011387423612177372
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__045.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3332.9615937500002,
+  "end": 3341.63534375,
+  "dur": 8.673749999999927,
+  "peak": 0.223419189453125,
+  "rms": 0.014680147171020508
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__046.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3402.36846875,
+  "end": 3406.3340937500006,
+  "dur": 3.9656250000007276,
+  "peak": 0.568328857421875,
+  "rms": 0.03402707725763321
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__047.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3459.4059687500003,
+  "end": 3469.0584687500004,
+  "dur": 9.652500000000146,
+  "peak": 0.183258056640625,
+  "rms": 0.011179478839039803
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__048.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3552.79221875,
+  "end": 3566.0390937500006,
+  "dur": 13.246875000000728,
+  "peak": 0.222137451171875,
+  "rms": 0.016372188925743103
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__049.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3615.2803437500006,
+  "end": 3625.9959687500004,
+  "dur": 10.715624999999818,
+  "peak": 0.244659423828125,
+  "rms": 0.014489901252090931
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__050.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3707.9747187500006,
+  "end": 3719.7703437500004,
+  "dur": 11.795624999999745,
+  "peak": 0.195159912109375,
+  "rms": 0.008919932879507542
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__051.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3720.3103437500004,
+  "end": 3727.58346875,
+  "dur": 7.273124999999709,
+  "peak": 0.194488525390625,
+  "rms": 0.012197373434901237
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__052.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3889.4147187500002,
+  "end": 3904.0622187500003,
+  "dur": 14.647500000000036,
+  "peak": 0.281951904296875,
+  "rms": 0.01345087867230177
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__053.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 3904.39971875,
+  "end": 3912.71909375,
+  "dur": 8.319375000000036,
+  "peak": 0.267547607421875,
+  "rms": 0.018234169110655785
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__054.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 4155.0272187499995,
+  "end": 4162.300343749999,
+  "dur": 7.273124999999709,
+  "peak": 0.41680908203125,
+  "rms": 0.02293466590344906
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__055.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 4187.68034375,
+  "end": 4213.09409375,
+  "dur": 25.41374999999971,
+  "peak": 0.309051513671875,
+  "rms": 0.016157926991581917
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__056.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 4213.3134687500005,
+  "end": 4227.1678437499995,
+  "dur": 13.854374999998981,
+  "peak": 0.280029296875,
+  "rms": 0.017346318811178207
+ },
+ {
+  "path": "host_clips\\All You Need To Know About Exports__057.wav",
+  "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+  "start": 4227.6572187500005,
+  "end": 4233.647843750001,
+  "dur": 5.990625000000364,
+  "peak": 0.280670166015625,
+  "rms": 0.018797636032104492
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__000.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 30.827843750000003,
+  "end": 35.58659375,
+  "dur": 4.758749999999996,
+  "peak": 0.22637939453125,
+  "rms": 0.01953429915010929
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__001.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 49.49159375,
+  "end": 64.17284375,
+  "dur": 14.681249999999999,
+  "peak": 0.420989990234375,
+  "rms": 0.018843797966837883
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__002.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 64.98284375,
+  "end": 79.69784375,
+  "dur": 14.715000000000003,
+  "peak": 0.383941650390625,
+  "rms": 0.018022427335381508
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__003.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 79.91721875,
+  "end": 92.40471875,
+  "dur": 12.487499999999997,
+  "peak": 0.213836669921875,
+  "rms": 0.015662992373108864
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__004.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 106.27596875,
+  "end": 118.67909375,
+  "dur": 12.403125000000003,
+  "peak": 0.37847900390625,
+  "rms": 0.020536936819553375
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__005.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 211.03596875000002,
+  "end": 218.30909375000002,
+  "dur": 7.273124999999993,
+  "peak": 0.701324462890625,
+  "rms": 0.06521818041801453
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__006.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 344.14596875,
+  "end": 352.51596875,
+  "dur": 8.370000000000005,
+  "peak": 0.708740234375,
+  "rms": 0.057943232357501984
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__007.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 412.32096875,
+  "end": 425.78721875,
+  "dur": 13.466250000000002,
+  "peak": 0.64483642578125,
+  "rms": 0.029218265786767006
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__008.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 537.2297187500001,
+  "end": 546.5109687500001,
+  "dur": 9.28125,
+  "peak": 0.585479736328125,
+  "rms": 0.03198375552892685
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__009.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 547.74284375,
+  "end": 552.77159375,
+  "dur": 5.028749999999945,
+  "peak": 0.44622802734375,
+  "rms": 0.03440156579017639
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__010.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 678.0347187500001,
+  "end": 687.48471875,
+  "dur": 9.449999999999818,
+  "peak": 0.2713623046875,
+  "rms": 0.01614522375166416
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__011.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 688.1765937499999,
+  "end": 694.2178437500002,
+  "dur": 6.041250000000218,
+  "peak": 0.53082275390625,
+  "rms": 0.02303679659962654
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__012.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 985.8684687500001,
+  "end": 999.55409375,
+  "dur": 13.685624999999845,
+  "peak": 0.400177001953125,
+  "rms": 0.021096300333738327
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__013.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1000.12784375,
+  "end": 1005.6965937500001,
+  "dur": 5.568750000000136,
+  "peak": 0.171966552734375,
+  "rms": 0.015172683633863926
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__014.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1040.6953437500001,
+  "end": 1050.4490937500002,
+  "dur": 9.753750000000082,
+  "peak": 0.239471435546875,
+  "rms": 0.009765015915036201
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__015.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1051.32659375,
+  "end": 1058.38034375,
+  "dur": 7.053750000000036,
+  "peak": 0.370574951171875,
+  "rms": 0.01930534839630127
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__016.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1162.7690937500001,
+  "end": 1174.51409375,
+  "dur": 11.74499999999989,
+  "peak": 0.227447509765625,
+  "rms": 0.015795333310961723
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__017.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1174.8515937500001,
+  "end": 1179.3740937500002,
+  "dur": 4.522500000000036,
+  "peak": 0.12457275390625,
+  "rms": 0.0109708895906806
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__018.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1248.5615937500002,
+  "end": 1260.2559687500002,
+  "dur": 11.694375000000036,
+  "peak": 0.39404296875,
+  "rms": 0.021994972601532936
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__019.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1260.6778437500002,
+  "end": 1271.27534375,
+  "dur": 10.597499999999854,
+  "peak": 0.43280029296875,
+  "rms": 0.019077686592936516
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__020.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1334.6747187500002,
+  "end": 1343.9390937500002,
+  "dur": 9.264374999999973,
+  "peak": 0.52117919921875,
+  "rms": 0.02544584684073925
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__021.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1523.2022187500002,
+  "end": 1535.7572187500002,
+  "dur": 12.555000000000064,
+  "peak": 0.31640625,
+  "rms": 0.014195352792739868
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__022.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1536.07784375,
+  "end": 1548.44721875,
+  "dur": 12.369374999999991,
+  "peak": 0.60211181640625,
+  "rms": 0.026271142065525055
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__023.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1549.0884687500002,
+  "end": 1561.67721875,
+  "dur": 12.58874999999989,
+  "peak": 0.40728759765625,
+  "rms": 0.02021760679781437
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__024.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1755.9590937500002,
+  "end": 1769.2903437500001,
+  "dur": 13.331249999999955,
+  "peak": 0.254669189453125,
+  "rms": 0.018205052241683006
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__025.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1769.81346875,
+  "end": 1783.0772187500002,
+  "dur": 13.263750000000073,
+  "peak": 0.232513427734375,
+  "rms": 0.015191962011158466
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__026.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1895.12721875,
+  "end": 1908.6440937500001,
+  "dur": 13.516875000000027,
+  "peak": 0.38336181640625,
+  "rms": 0.018577829003334045
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__027.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1908.8128437500002,
+  "end": 1917.9928437500002,
+  "dur": 9.180000000000064,
+  "peak": 0.3367919921875,
+  "rms": 0.018129484727978706
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__028.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 1999.9040937500001,
+  "end": 2013.9778437500001,
+  "dur": 14.073750000000018,
+  "peak": 0.304656982421875,
+  "rms": 0.014752455055713654
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__029.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2097.10409375,
+  "end": 2103.73596875,
+  "dur": 6.631875000000036,
+  "peak": 0.24755859375,
+  "rms": 0.014083576388657093
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__030.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2105.6934687500006,
+  "end": 2112.9665937500004,
+  "dur": 7.273124999999709,
+  "peak": 0.260223388671875,
+  "rms": 0.018593456596136093
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__031.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2162.4609687500006,
+  "end": 2177.2772187500004,
+  "dur": 14.816249999999854,
+  "peak": 0.4852294921875,
+  "rms": 0.022725889459252357
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__032.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2177.6315937500003,
+  "end": 2181.9178437500004,
+  "dur": 4.286250000000109,
+  "peak": 0.20379638671875,
+  "rms": 0.015053283423185349
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__033.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2254.09221875,
+  "end": 2268.1153437500006,
+  "dur": 14.023125000000618,
+  "peak": 0.361541748046875,
+  "rms": 0.015127833932638168
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__034.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2420.3953437500004,
+  "end": 2433.37221875,
+  "dur": 12.976874999999382,
+  "peak": 0.3829345703125,
+  "rms": 0.01966346614062786
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__035.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2434.3172187500004,
+  "end": 2444.96534375,
+  "dur": 10.648124999999709,
+  "peak": 0.439605712890625,
+  "rms": 0.02460227720439434
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__036.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2445.5222187500003,
+  "end": 2459.00534375,
+  "dur": 13.483124999999745,
+  "peak": 0.564971923828125,
+  "rms": 0.027943192049860954
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__037.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2649.9122187500006,
+  "end": 2660.3747187500003,
+  "dur": 10.462499999999636,
+  "peak": 0.237762451171875,
+  "rms": 0.013329516164958477
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__038.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2721.1922187500004,
+  "end": 2734.0340937500005,
+  "dur": 12.841875000000073,
+  "peak": 0.4215087890625,
+  "rms": 0.021080832928419113
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__039.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2749.20471875,
+  "end": 2763.59909375,
+  "dur": 14.394374999999854,
+  "peak": 0.433563232421875,
+  "rms": 0.016671767458319664
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__040.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2763.8015937500004,
+  "end": 2777.94284375,
+  "dur": 14.141249999999673,
+  "peak": 0.3052978515625,
+  "rms": 0.019390655681490898
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__041.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 2778.48284375,
+  "end": 2787.9834687500006,
+  "dur": 9.500625000000582,
+  "peak": 0.499359130859375,
+  "rms": 0.02148686908185482
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__042.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3073.3903437500003,
+  "end": 3084.5447187500004,
+  "dur": 11.154375000000073,
+  "peak": 0.169403076171875,
+  "rms": 0.008403382264077663
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__043.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3084.7809687500003,
+  "end": 3099.27659375,
+  "dur": 14.495624999999563,
+  "peak": 0.2093505859375,
+  "rms": 0.00893034040927887
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__044.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3100.18784375,
+  "end": 3113.8903437500003,
+  "dur": 13.702500000000327,
+  "peak": 0.21014404296875,
+  "rms": 0.010862798430025578
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__045.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3114.36284375,
+  "end": 3121.29846875,
+  "dur": 6.935625000000073,
+  "peak": 0.36627197265625,
+  "rms": 0.016086388379335403
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__046.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3188.8322187500007,
+  "end": 3192.08909375,
+  "dur": 3.256874999999127,
+  "peak": 0.13177490234375,
+  "rms": 0.007675972767174244
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__047.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3196.5440937500007,
+  "end": 3209.6559687500003,
+  "dur": 13.1118749999996,
+  "peak": 0.791534423828125,
+  "rms": 0.07592663168907166
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__048.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3210.24659375,
+  "end": 3219.8484687500004,
+  "dur": 9.601875000000291,
+  "peak": 0.778839111328125,
+  "rms": 0.07589985430240631
+ },
+ {
+  "path": "host_clips\\How Great Leaders Think Under Press__049.wav",
+  "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+  "start": 3220.30409375,
+  "end": 3232.6228437500004,
+  "dur": 12.318750000000364,
+  "peak": 0.891265869140625,
+  "rms": 0.08956475555896759
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__000.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 0.03096875,
+  "end": 6.207218750000001,
+  "dur": 6.1762500000000005,
+  "peak": 0.55364990234375,
+  "rms": 0.04910512641072273
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__001.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 48.27659375,
+  "end": 61.034093750000004,
+  "dur": 12.7575,
+  "peak": 0.549468994140625,
+  "rms": 0.03817310184240341
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__002.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 61.455968750000004,
+  "end": 72.99846875,
+  "dur": 11.542499999999997,
+  "peak": 0.668853759765625,
+  "rms": 0.03143446519970894
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__003.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 73.65659375,
+  "end": 88.60784375,
+  "dur": 14.951250000000002,
+  "peak": 0.60333251953125,
+  "rms": 0.04618268832564354
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__004.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 89.35034375000001,
+  "end": 97.88909375,
+  "dur": 8.538749999999993,
+  "peak": 0.40966796875,
+  "rms": 0.02860008366405964
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__005.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 111.45659375000001,
+  "end": 123.30284375000001,
+  "dur": 11.846249999999998,
+  "peak": 0.309844970703125,
+  "rms": 0.024816283956170082
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__006.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 123.99471875,
+  "end": 130.66034375,
+  "dur": 6.665625000000006,
+  "peak": 0.332061767578125,
+  "rms": 0.026044517755508423
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__007.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 307.98284375000003,
+  "end": 311.76284375,
+  "dur": 3.7799999999999727,
+  "peak": 0.28857421875,
+  "rms": 0.023026466369628906
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__008.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 393.13409375000003,
+  "end": 404.87909375000004,
+  "dur": 11.745000000000005,
+  "peak": 0.558441162109375,
+  "rms": 0.04223659634590149
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__009.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 405.62159375000005,
+  "end": 416.26971875000004,
+  "dur": 10.648124999999993,
+  "peak": 0.564605712890625,
+  "rms": 0.05271016061306
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__010.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 518.7178437499999,
+  "end": 535.47471875,
+  "dur": 16.756875000000036,
+  "peak": 0.49169921875,
+  "rms": 0.041580576449632645
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__011.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 580.0247187500001,
+  "end": 584.27721875,
+  "dur": 4.252499999999827,
+  "peak": 0.557586669921875,
+  "rms": 0.06318851560354233
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__012.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 636.85971875,
+  "end": 642.9853437500001,
+  "dur": 6.125625000000127,
+  "peak": 0.498199462890625,
+  "rms": 0.05284777656197548
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__013.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 653.5659687500001,
+  "end": 661.6828437500001,
+  "dur": 8.116874999999936,
+  "peak": 0.700347900390625,
+  "rms": 0.05322868749499321
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__014.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 710.43471875,
+  "end": 722.51721875,
+  "dur": 12.082499999999982,
+  "peak": 0.891265869140625,
+  "rms": 0.05232517048716545
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__015.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 800.6147187500001,
+  "end": 814.21596875,
+  "dur": 13.601249999999936,
+  "peak": 0.55169677734375,
+  "rms": 0.04085654392838478
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__016.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 814.89096875,
+  "end": 828.3403437500001,
+  "dur": 13.449375000000146,
+  "peak": 0.668701171875,
+  "rms": 0.042178403586149216
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__017.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 939.1753437500001,
+  "end": 945.0815937500001,
+  "dur": 5.90625,
+  "peak": 0.4586181640625,
+  "rms": 0.04903171956539154
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__018.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 946.51596875,
+  "end": 960.64034375,
+  "dur": 14.1243750000001,
+  "peak": 0.714599609375,
+  "rms": 0.054521698504686356
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__019.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1085.4647187500002,
+  "end": 1090.44284375,
+  "dur": 4.978124999999864,
+  "peak": 0.42279052734375,
+  "rms": 0.0422835499048233
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__020.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1097.05784375,
+  "end": 1106.5247187500001,
+  "dur": 9.466875000000073,
+  "peak": 0.5294189453125,
+  "rms": 0.04652254283428192
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__021.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1106.9634687500002,
+  "end": 1116.1265937500002,
+  "dur": 9.163125000000036,
+  "peak": 0.540191650390625,
+  "rms": 0.04134547337889671
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__022.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1179.4922187500001,
+  "end": 1194.1228437500001,
+  "dur": 14.630625000000009,
+  "peak": 0.60797119140625,
+  "rms": 0.04543203487992287
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__023.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1194.52784375,
+  "end": 1204.4165937500002,
+  "dur": 9.888750000000073,
+  "peak": 0.5816650390625,
+  "rms": 0.038851819932460785
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__024.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1204.5853437500002,
+  "end": 1217.3597187500002,
+  "dur": 12.774374999999964,
+  "peak": 0.737396240234375,
+  "rms": 0.05798923969268799
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__025.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1217.59596875,
+  "end": 1225.1222187500002,
+  "dur": 7.526250000000118,
+  "peak": 0.7598876953125,
+  "rms": 0.050755344331264496
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__026.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1225.6790937500002,
+  "end": 1235.87159375,
+  "dur": 10.192499999999882,
+  "peak": 0.450714111328125,
+  "rms": 0.038570061326026917
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__027.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1293.4322187500002,
+  "end": 1307.2528437500002,
+  "dur": 13.820625000000064,
+  "peak": 0.553131103515625,
+  "rms": 0.04910048842430115
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__028.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1338.38721875,
+  "end": 1351.17846875,
+  "dur": 12.791249999999991,
+  "peak": 0.5318603515625,
+  "rms": 0.03925098106265068
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__029.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1352.00534375,
+  "end": 1357.9959687500002,
+  "dur": 5.990625000000136,
+  "peak": 0.36944580078125,
+  "rms": 0.04206851124763489
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__030.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1481.36909375,
+  "end": 1492.64159375,
+  "dur": 11.272500000000036,
+  "peak": 0.36712646484375,
+  "rms": 0.03134073689579964
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__031.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1492.7428437500002,
+  "end": 1507.7109687500001,
+  "dur": 14.968124999999873,
+  "peak": 0.690399169921875,
+  "rms": 0.052966535091400146
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__032.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1508.2172187500003,
+  "end": 1518.2747187500001,
+  "dur": 10.05749999999989,
+  "peak": 0.55364990234375,
+  "rms": 0.048529285937547684
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__033.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1519.1522187500002,
+  "end": 1528.6697187500001,
+  "dur": 9.517499999999927,
+  "peak": 0.48541259765625,
+  "rms": 0.04860713705420494
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__034.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1528.93971875,
+  "end": 1535.5715937500001,
+  "dur": 6.631875000000036,
+  "peak": 0.4283447265625,
+  "rms": 0.038892000913619995
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__035.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1589.3353437500002,
+  "end": 1600.2703437500002,
+  "dur": 10.934999999999945,
+  "peak": 0.5615234375,
+  "rms": 0.04051702842116356
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__036.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1684.8309687500002,
+  "end": 1691.9690937500002,
+  "dur": 7.138124999999945,
+  "peak": 0.45111083984375,
+  "rms": 0.03296641632914543
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__037.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1692.7115937500002,
+  "end": 1701.6384687500001,
+  "dur": 8.926874999999882,
+  "peak": 0.515655517578125,
+  "rms": 0.04087905213236809
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__038.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 1996.93409375,
+  "end": 2007.5315937500002,
+  "dur": 10.597500000000082,
+  "peak": 0.613433837890625,
+  "rms": 0.04019485414028168
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__039.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2007.8184687500002,
+  "end": 2018.1290937500003,
+  "dur": 10.310625000000073,
+  "peak": 0.55743408203125,
+  "rms": 0.039424993097782135
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__040.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2018.7872187500002,
+  "end": 2030.81909375,
+  "dur": 12.0318749999999,
+  "peak": 0.742462158203125,
+  "rms": 0.04863555729389191
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__041.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2245.95846875,
+  "end": 2255.42534375,
+  "dur": 9.466875000000073,
+  "peak": 0.483001708984375,
+  "rms": 0.040727462619543076
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__042.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2256.3534687500005,
+  "end": 2266.07346875,
+  "dur": 9.719999999999345,
+  "peak": 0.58648681640625,
+  "rms": 0.05060107260942459
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__043.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2368.48784375,
+  "end": 2381.43096875,
+  "dur": 12.943124999999782,
+  "peak": 0.367950439453125,
+  "rms": 0.02449050359427929
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__044.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2381.61659375,
+  "end": 2391.48846875,
+  "dur": 9.871874999999818,
+  "peak": 0.44854736328125,
+  "rms": 0.03822304680943489
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__045.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2453.5378437500003,
+  "end": 2467.56096875,
+  "dur": 14.023124999999709,
+  "peak": 0.6290283203125,
+  "rms": 0.04387675225734711
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__046.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2468.1347187500005,
+  "end": 2477.7703437500004,
+  "dur": 9.63562499999989,
+  "peak": 0.652069091796875,
+  "rms": 0.04637432098388672
+ },
+ {
+  "path": "host_clips\\The New Rules Of Career Growth  Epi__047.wav",
+  "episode": "The New Rules Of Career Growth  Episode 19.wav",
+  "start": 2478.15846875,
+  "end": 2490.52784375,
+  "dur": 12.369375000000218,
+  "peak": 0.8236083984375,
+  "rms": 0.05485856905579567
+ }
+]

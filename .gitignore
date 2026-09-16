@@ -1,0 +1,25 @@
+# Large binaries and generated audio -- already safe on disk, not worth versioning
+raw_episodes/
+host_clips/
+host_id_clips/
+host_id_clips_v2/
+dataset_test/
+vits_dataset/train/*.wav
+vits_dataset/validation/*.wav
+*.wav
+
+# Downloaded model weights / checkpoints
+f5tts_model/
+mms_urd_train_checkpoint/
+vits_finetuned_host/
+urdu_tts_weights/
+
+# Abandoned routes (kept on disk for reference, not worth tracking)
+tortoise-tts-fast/
+tortoise_check/
+
+# finetune-hf-vits is its own git clone with its own history/commits
+finetune-hf-vits/
+
+# Logs
+*.log

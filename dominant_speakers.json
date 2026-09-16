@@ -1,0 +1,29 @@
+{
+ "dominant_per_episode": [
+  {
+   "episode": "All You Need To Know About Exports In Pakistan  Episode 08.wav",
+   "speaker": "SPEAKER_01",
+   "talk_min": 58.5
+  },
+  {
+   "episode": "Heres Why Starting Over Is Not Failure  Episode 18 (Part 02).wav",
+   "speaker": "SPEAKER_01",
+   "talk_min": 33.3
+  },
+  {
+   "episode": "How Great Leaders Think Under Pressure (Framework Inside)  Episode 15.wav",
+   "speaker": "SPEAKER_02",
+   "talk_min": 35.7
+  },
+  {
+   "episode": "The New Rules Of Career Growth  Episode 19.wav",
+   "speaker": "SPEAKER_01",
+   "talk_min": 29.4
+  },
+  {
+   "episode": "The Prophetic Principle That Transforms Leaders Today  Episode 14.wav",
+   "speaker": "SPEAKER_01",
+   "talk_min": 62.0
+  }
+ ]
+}
