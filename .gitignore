@@ -12,7 +12,21 @@ vits_dataset/validation/*.wav
 f5tts_model/
 mms_urd_train_checkpoint/
 vits_finetuned_host/
+vits_finetuned_host_v2/
+vits_finetuned_host_v3/
+vits_finetuned_host_light/
+vits_finetuned_iqbal_control/
 urdu_tts_weights/
+
+# Dataset audio (metadata.csv / manifests are tracked, the wavs are not)
+vits_dataset_v2/train/
+vits_dataset_v2/validation/
+vits_dataset_v3/train/*.wav
+vits_dataset_v3/validation/*.wav
+iqbal_dataset/train/*.wav
+iqbal_dataset/validation/*.wav
+
+__pycache__/
 
 # Abandoned routes (kept on disk for reference, not worth tracking)
 tortoise-tts-fast/

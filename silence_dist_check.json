@@ -1,0 +1,113 @@
+{
+  "n": 123,
+  "silence_ratio_percentiles": {
+    "p10": 0.5247959824231011,
+    "p25": 0.6255166039479765,
+    "p50": 0.7598065419371262,
+    "p75": 0.8149055177626606,
+    "p90": 0.860116652085156,
+    "max": 0.9300901938207637
+  },
+  "rms_percentiles": {
+    "p10": 0.013898642733693123,
+    "p50": 0.02190864086151123,
+    "p90": 0.05060107260942459
+  },
+  "severe_outliers_gt85pct_silent": [
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__001.wav",
+      "silence_ratio": 0.8643134598012647,
+      "dur": 13.8375
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__021.wav",
+      "silence_ratio": 0.8517702724751183,
+      "dur": 11.491875
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__022.wav",
+      "silence_ratio": 0.8596230158730159,
+      "dur": 5.67
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__028.wav",
+      "silence_ratio": 0.8629579101611844,
+      "dur": 12.369375
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__047.wav",
+      "silence_ratio": 0.8622701372701372,
+      "dur": 9.6525
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__049.wav",
+      "silence_ratio": 0.860116652085156,
+      "dur": 10.715625
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__050.wav",
+      "silence_ratio": 0.8999046256556986,
+      "dur": 11.795625
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__051.wav",
+      "silence_ratio": 0.8608318295093237,
+      "dur": 7.273125
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\All You Need To Know About Exports__057.wav",
+      "silence_ratio": 0.8617423056859677,
+      "dur": 5.990625
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__010.wav",
+      "silence_ratio": 0.8597156084656085,
+      "dur": 9.45
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__021.wav",
+      "silence_ratio": 0.865810434090004,
+      "dur": 12.555
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__029.wav",
+      "silence_ratio": 0.8577608142493639,
+      "dur": 6.631875
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__032.wav",
+      "silence_ratio": 0.8571886847477399,
+      "dur": 4.28625
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__034.wav",
+      "silence_ratio": 0.8541203101671242,
+      "dur": 12.976875
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__037.wav",
+      "silence_ratio": 0.8707646356033453,
+      "dur": 10.4625
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__043.wav",
+      "silence_ratio": 0.9114129263139741,
+      "dur": 14.495625
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/train\\How Great Leaders Think Under Press__046.wav",
+      "silence_ratio": 0.9300901938207637,
+      "dur": 3.256875
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/validation\\How Great Leaders Think Under Press__039.wav",
+      "silence_ratio": 0.879709956146064,
+      "dur": 14.394375
+    },
+    {
+      "file": "D:/Audion-Data/TTS/vits_dataset_v3/validation\\How Great Leaders Think Under Press__044.wav",
+      "silence_ratio": 0.9030788177339901,
+      "dur": 13.7025
+    }
+  ]
+}

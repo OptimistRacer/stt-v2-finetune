@@ -1,0 +1,78 @@
+{
+  "n": 123,
+  "rms_stats": {
+    "min": 0.007675972767174244,
+    "max": 0.07592663168907166,
+    "mean": 0.028823523388463793
+  },
+  "peak_stats": {
+    "min": 0.12457275390625,
+    "max": 0.891265869140625,
+    "mean": 0.4122207765656758
+  },
+  "quietest_5": [
+    {
+      "file": "train\\How Great Leaders Think Under Press__046.wav",
+      "rms": 0.007675972767174244,
+      "peak": 0.13177490234375,
+      "silence_ratio": 0.9300901938207637
+    },
+    {
+      "file": "train\\All You Need To Know About Exports__050.wav",
+      "rms": 0.008919932879507542,
+      "peak": 0.195159912109375,
+      "silence_ratio": 0.8999046256556986
+    },
+    {
+      "file": "train\\How Great Leaders Think Under Press__043.wav",
+      "rms": 0.00893034040927887,
+      "peak": 0.2093505859375,
+      "silence_ratio": 0.9114129263139741
+    },
+    {
+      "file": "validation\\How Great Leaders Think Under Press__044.wav",
+      "rms": 0.010862798430025578,
+      "peak": 0.21014404296875,
+      "silence_ratio": 0.9030788177339901
+    },
+    {
+      "file": "train\\How Great Leaders Think Under Press__017.wav",
+      "rms": 0.0109708895906806,
+      "peak": 0.12457275390625,
+      "silence_ratio": 0.8289110005527915
+    }
+  ],
+  "loudest_5": [
+    {
+      "file": "train\\The New Rules Of Career Growth  Epi__024.wav",
+      "rms": 0.05798923969268799,
+      "peak": 0.737396240234375,
+      "silence_ratio": 0.45697441166397573
+    },
+    {
+      "file": "train\\The New Rules Of Career Growth  Epi__011.wav",
+      "rms": 0.06318851560354233,
+      "peak": 0.557586669921875,
+      "silence_ratio": 0.5633744855967078
+    },
+    {
+      "file": "train\\How Great Leaders Think Under Press__005.wav",
+      "rms": 0.06521818041801453,
+      "peak": 0.701324462890625,
+      "silence_ratio": 0.565833118501332
+    },
+    {
+      "file": "train\\How Great Leaders Think Under Press__048.wav",
+      "rms": 0.07589985430240631,
+      "peak": 0.778839111328125,
+      "silence_ratio": 0.5184794636464233
+    },
+    {
+      "file": "train\\How Great Leaders Think Under Press__047.wav",
+      "rms": 0.07592663168907166,
+      "peak": 0.791534423828125,
+      "silence_ratio": 0.5044330044330044
+    }
+  ],
+  "clipped_count": 0
+}

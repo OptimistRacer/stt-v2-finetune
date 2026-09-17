@@ -1,0 +1,14 @@
+{
+  "n_clips": 123,
+  "episode_distribution": {
+    "All You Need To Know About Exports": 49,
+    "How Great Leaders Think Under Press": 34,
+    "The New Rules Of Career Growth  Epi": 40
+  },
+  "duration_stats": {
+    "min": 3.21,
+    "max": 16.76,
+    "mean": 10.03349593495935,
+    "total_min": 20.568666666666665
+  }
+}
