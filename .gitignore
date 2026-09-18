@@ -16,6 +16,9 @@ vits_finetuned_host_v2/
 vits_finetuned_host_v3/
 vits_finetuned_host_light/
 vits_finetuned_iqbal_control/
+vits_iqbal_voice/
+vits_iqbal_voice_clean/
+urdu_tts_iqbal_voice/
 urdu_tts_weights/
 
 # Dataset audio (metadata.csv / manifests are tracked, the wavs are not)
@@ -25,6 +28,8 @@ vits_dataset_v3/train/*.wav
 vits_dataset_v3/validation/*.wav
 iqbal_dataset/train/*.wav
 iqbal_dataset/validation/*.wav
+iqbal_dataset_clean/train/*.wav
+iqbal_dataset_clean/validation/*.wav
 
 __pycache__/
 

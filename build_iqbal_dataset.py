@@ -8,6 +8,7 @@ data, the transcripts are proven to be the cause.
 import json
 import random
 import sys
+import unicodedata
 from pathlib import Path
 
 import numpy as np
@@ -22,7 +23,14 @@ N_EVAL = 12
 
 with open("D:/Audion-Data/TTS/vits_finetuned_host/vocab.json", encoding="utf-8") as f:
     VOCAB_CHARS = set(json.load(f).keys())
-STRIP_CHARS = str.maketrans("", "", "،؟۔ًُ")
+# Optional diacritics (zer/izafat, zabar, shadda, sukun, ...) aren't in the MMS vocab and
+# are normally omitted in written Urdu anyway. NFC runs first so decomposed hamza/maddah
+# fold into the precomposed letters the vocab does have (e.g. ا + maddah -> آ).
+STRIP_CHARS = str.maketrans("", "", "،؟۔!ًٌٍَُِّْٓٔ")
+
+
+def clean(text):
+    return unicodedata.normalize("NFC", text or "").translate(STRIP_CHARS).strip()
 
 
 def main():
@@ -39,7 +47,7 @@ def main():
 
     train_rows, val_rows, dropped, durations = [], [], 0, []
     for i, row in enumerate(ds):
-        text = (row["text"] or "").translate(STRIP_CHARS).strip()
+        text = clean(row["text"])
         if not text or (set(text) - VOCAB_CHARS):
             dropped += 1
             continue
