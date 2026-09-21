@@ -19,6 +19,8 @@ vits_finetuned_iqbal_control/
 vits_iqbal_voice/
 vits_iqbal_voice_clean/
 urdu_tts_iqbal_voice/
+urdu_tts_iqbal_clean/
+urdu_tts_final/
 urdu_tts_weights/
 
 # Dataset audio (metadata.csv / manifests are tracked, the wavs are not)

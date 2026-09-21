@@ -1,0 +1,86 @@
+[
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 0.9,
+    "wer": 0.076,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns05_nsd08_rate09_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 0.9,
+    "wer": 0.077,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns033_nsd05_rate09_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 1.0,
+    "wer": 0.083,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns05_nsd05_rate10_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 1.0,
+    "wer": 0.09,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns033_nsd05_rate10_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 1.0,
+    "wer": 0.096,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns0667_nsd05_rate10_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 0.9,
+    "wer": 0.102,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns05_nsd05_rate09_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 0.9,
+    "wer": 0.114,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns0667_nsd08_rate09_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 1.0,
+    "wer": 0.114,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns033_nsd08_rate10_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 0.9,
+    "wer": 0.114,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns033_nsd08_rate09_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 0.9,
+    "wer": 0.121,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns0667_nsd05_rate09_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 1.0,
+    "wer": 0.121,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns05_nsd08_rate10_t0_s0.wav"
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 1.0,
+    "wer": 0.133,
+    "example": "D:\\Audion-Data\\TTS\\playback_base\\ns0667_nsd08_rate10_t0_s0.wav"
+  }
+]

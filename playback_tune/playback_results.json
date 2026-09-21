@@ -1,0 +1,98 @@
+[
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 1.0,
+    "wer": 0.139,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns05_nsd08_rate10_t0_s0.wav",
+    "voice_sim": 0.809
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 1.0,
+    "wer": 0.163,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns033_nsd08_rate10_t0_s0.wav",
+    "voice_sim": 0.805
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 1.0,
+    "wer": 0.177,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns0667_nsd08_rate10_t0_s0.wav",
+    "voice_sim": 0.803
+  },
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 1.0,
+    "wer": 0.219,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns05_nsd05_rate10_t0_s0.wav",
+    "voice_sim": 0.808
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 1.0,
+    "wer": 0.225,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns033_nsd05_rate10_t0_s0.wav",
+    "voice_sim": 0.8
+  },
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 0.9,
+    "wer": 0.231,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns05_nsd05_rate09_t0_s0.wav",
+    "voice_sim": 0.802
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 1.0,
+    "wer": 0.232,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns0667_nsd05_rate10_t0_s0.wav",
+    "voice_sim": 0.808
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 0.9,
+    "wer": 0.244,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns033_nsd08_rate09_t0_s0.wav",
+    "voice_sim": 0.804
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 0.9,
+    "wer": 0.25,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns0667_nsd05_rate09_t0_s0.wav",
+    "voice_sim": 0.806
+  },
+  {
+    "noise_scale": 0.33,
+    "noise_scale_duration": 0.5,
+    "speaking_rate": 0.9,
+    "wer": 0.255,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns033_nsd05_rate09_t0_s0.wav",
+    "voice_sim": 0.8
+  },
+  {
+    "noise_scale": 0.5,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 0.9,
+    "wer": 0.267,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns05_nsd08_rate09_t0_s0.wav",
+    "voice_sim": 0.809
+  },
+  {
+    "noise_scale": 0.667,
+    "noise_scale_duration": 0.8,
+    "speaking_rate": 0.9,
+    "wer": 0.293,
+    "example": "D:\\Audion-Data\\TTS\\playback_tune\\ns0667_nsd08_rate09_t0_s0.wav",
+    "voice_sim": 0.811
+  }
+]
