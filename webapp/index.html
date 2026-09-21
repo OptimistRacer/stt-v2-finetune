@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urdu Text to Speech</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --line:#262b36; --text:#e7e9ee;
+    --muted:#9aa3b2; --accent:#4f8cff; --accent-dim:#2f5fb3; --ok:#3fb950; --warn:#d29922;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  button{font:inherit;border:0;border-radius:8px;padding:11px 18px;cursor:pointer;
+         background:var(--accent);color:#fff;font-weight:600}
+  button:hover:not(:disabled){background:var(--accent-dim)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button.ghost{background:#222735;color:var(--text);border:1px solid var(--line)}
+  textarea{width:100%;min-height:180px;background:#12151c;color:var(--text);
+           border:1px solid var(--line);border-radius:10px;padding:16px;resize:vertical}
+  textarea:focus{outline:0;border-color:var(--accent)}
+  .urdu{font-family:'Noto Nastaliq Urdu',serif;direction:rtl;text-align:right;
+        font-size:20px;line-height:2.4}
+  .stats{display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-bottom:14px}
+  .stats b{color:var(--text)}
+  .hide{display:none}
+  .err{color:#ff7b72}
+  label.chk{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:14px;cursor:pointer}
+  .bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:14px}
+  .bar i{display:block;height:100%;width:35%;background:var(--accent);
+         animation:slide 1.1s ease-in-out infinite}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(385%)}}
+  audio{width:100%;margin-top:6px}
+  select{font:inherit;background:#222735;color:var(--text);border:1px solid var(--line);
+         border-radius:8px;padding:9px 12px}
+  .count{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Urdu Text to Speech</h1>
+  <div class="sub">MMS Urdu voice &middot; runs locally on this machine</div>
+
+  <div class="panel">
+    <textarea id="text" class="urdu" placeholder="اردو متن یہاں لکھیں..."></textarea>
+    <div class="row" style="justify-content:space-between;margin-top:10px">
+      <span class="count"><span id="chars">0</span> characters</span>
+      <button class="ghost" id="sample">Insert sample text</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="row" style="justify-content:space-between">
+      <div class="row">
+        <label class="chk">
+          <input type="checkbox" id="split" checked>
+          Split long text into sentences
+        </label>
+        <label class="chk">
+          Speed
+          <select id="rate">
+            <option value="0.8">Slower</option>
+            <option value="0.9" selected>Normal</option>
+            <option value="1.0">Faster</option>
+          </select>
+        </label>
+      </div>
+      <button id="go">Generate speech</button>
+    </div>
+    <div id="progress" class="bar hide"><i></i></div>
+    <div id="status" class="sub" style="margin:12px 0 0"></div>
+  </div>
+
+  <div class="panel hide" id="result">
+    <div class="stats">
+      <span>Length <b id="s-dur">-</b></span>
+      <span>Sentences <b id="s-sent">-</b></span>
+      <span>Generated in <b id="s-elapsed">-</b></span>
+      <span><b id="s-speed">-</b>&times; faster than real time</span>
+    </div>
+    <audio id="player" controls></audio>
+    <div class="row" style="margin-top:14px">
+      <button class="ghost" id="download">Download .wav</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const SAMPLE = "السلام علیکم، ہمارے پروگرام میں خوش آمدید۔ آج کی گفتگو میں ہم نوجوانوں کے لیے روزگار کے نئے مواقع پر بات کریں گے۔ امید ہے یہ گفتگو آپ کے لیے مفید ثابت ہوگی۔";
+let lastUrl = null;
+
+$('text').addEventListener('input', () => $('chars').textContent = $('text').value.length);
+$('sample').onclick = () => { $('text').value = SAMPLE; $('text').dispatchEvent(new Event('input')); };
+
+$('go').onclick = async () => {
+  const text = $('text').value.trim();
+  if (!text) { $('status').innerHTML = '<span class="err">Type some Urdu text first.</span>'; return; }
+
+  $('go').disabled = true;
+  $('progress').classList.remove('hide');
+  $('status').textContent = 'Generating...';
+
+  try {
+    const res = await fetch('/synthesize', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        text,
+        split: $('split').checked,
+        speaking_rate: parseFloat($('rate').value)
+      })
+    });
+    const data = await res.json();
+    if (!res.ok) throw new Error(data.error || 'Generation failed.');
+
+    const blob = await (await fetch('data:audio/wav;base64,' + data.audio)).blob();
+    if (lastUrl) URL.revokeObjectURL(lastUrl);
+    lastUrl = URL.createObjectURL(blob);
+
+    $('player').src = lastUrl;
+    $('s-dur').textContent = data.duration_s + 's';
+    $('s-sent').textContent = data.n_sentences;
+    $('s-elapsed').textContent = data.elapsed_s + 's';
+    $('s-speed').textContent = data.speed ?? '-';
+    $('result').classList.remove('hide');
+    $('status').textContent = '';
+    $('player').play().catch(() => {});
+  } catch (e) {
+    $('status').innerHTML = '<span class="err">' + e.message + '</span>';
+  } finally {
+    $('go').disabled = false;
+    $('progress').classList.add('hide');
+  }
+};
+
+$('download').onclick = () => {
+  if (!lastUrl) return;
+  const a = document.createElement('a');
+  a.href = lastUrl;
+  a.download = 'urdu_tts.wav';
+  a.click();
+};
+</script>
+</body>
+</html>

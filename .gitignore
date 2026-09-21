@@ -44,3 +44,5 @@ finetune-hf-vits/
 
 # Logs
 *.log
+webapp_api_test.wav
+webapp_server.log
