@@ -97,12 +97,26 @@
 
     <div class="panel">
       <div class="row" style="justify-content:space-between">
-        <label class="chk">
-          <input type="checkbox" id="cs">
-          Write English words in English script
-        </label>
+        <div class="row">
+          <label class="chk">
+            Language
+            <select id="lang">
+              <option value="ur" selected>Urdu</option>
+              <option value="ar">Arabic</option>
+            </select>
+          </label>
+          <label class="chk" id="csWrap">
+            <input type="checkbox" id="cs">
+            Write English words in English script
+          </label>
+          <label class="chk">
+            <input type="checkbox" id="vad" checked>
+            Skip silence
+          </label>
+        </div>
         <button id="go" disabled>Transcribe</button>
       </div>
+      <div id="langNote" class="sub hide" style="margin:10px 0 0"></div>
       <div id="progress" class="bar hide"><i></i></div>
       <div id="status" class="sub" style="margin:12px 0 0"></div>
     </div>
@@ -138,6 +152,10 @@
             Split long text into sentences
           </label>
           <label class="chk">
+            <input type="checkbox" id="normalize" checked>
+            Spell out numbers &amp; English words
+          </label>
+          <label class="chk">
             Speed
             <select id="rate">
               <option value="0.8">Slower</option>
@@ -159,10 +177,13 @@
         <span>Generated in <b id="s-elapsed">-</b></span>
         <span><b id="s-speed">-</b>&times; faster than real time</span>
       </div>
+      <div id="note" class="sub hide" style="margin:0 0 10px"></div>
       <audio id="player" controls></audio>
       <div class="row" style="margin-top:14px">
         <button class="ghost" id="download">Download .wav</button>
+        <button class="ghost" id="showSpoken">Show what was spoken</button>
       </div>
+      <div id="spoken" class="urdu hide" style="margin-top:12px;font-size:17px"></div>
     </div>
   </div>
 </div>
@@ -187,6 +208,18 @@ const showMode = name => document.querySelector(`.mode[data-mode="${name}"]`).cl
 
 /* ---------- speech to text ---------- */
 let blob = null, rec = null, chunks = [], t0 = 0, tick = null, data = null, showTs = true;
+
+/* Urdu runs on the fine-tuned model; Arabic falls back to base Whisper, and the
+   code-switch dictionary is Urdu vocabulary so it doesn't apply there. */
+$('#lang').onchange = () => {
+  const arabic = $('#lang').value === 'ar';
+  $('#csWrap').classList.toggle('hide', arabic);
+  $('#langNote').classList.toggle('hide', !arabic);
+  $('#langNote').textContent = arabic
+    ? 'Arabic uses base Whisper (no Urdu-style fine-tune yet). Accuracy on Gulf dialect is unverified — formal Arabic will do better.'
+    : '';
+  $('#toSpeech').classList.toggle('hide', arabic);  // the voice speaks Urdu only
+};
 
 document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
   document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
@@ -251,6 +284,8 @@ $('#go').onclick = async () => {
   const fd = new FormData();
   fd.append('audio', blob, blob.name || 'audio.webm');
   fd.append('codeswitch', $('#cs').checked);
+  fd.append('language', $('#lang').value);
+  fd.append('vad', $('#vad').checked);
 
   try {
     const r = await fetch('/transcribe', {method:'POST', body:fd});
@@ -327,6 +362,7 @@ $('#speak').onclick = async () => {
       body: JSON.stringify({
         text,
         split: $('#split').checked,
+        normalize: $('#normalize').checked,
         speaking_rate: parseFloat($('#rate').value)
       })
     });
@@ -342,6 +378,11 @@ $('#speak').onclick = async () => {
     $('#s-sent').textContent = d.n_sentences;
     $('#s-elapsed').textContent = d.elapsed_s + 's';
     $('#s-speed').textContent = d.speed ?? '-';
+    $('#note').textContent = d.note || '';
+    $('#note').classList.toggle('hide', !d.note);
+    $('#spoken').textContent = d.spoken_text || '';
+    $('#spoken').classList.add('hide');
+    $('#showSpoken').textContent = 'Show what was spoken';
     $('#tResult').classList.remove('hide');
     $('#tStatus').textContent = '';
     $('#player').play().catch(() => {});
@@ -351,6 +392,11 @@ $('#speak').onclick = async () => {
     $('#speak').disabled = false;
     $('#tProgress').classList.add('hide');
   }
+};
+
+$('#showSpoken').onclick = () => {
+  const hidden = $('#spoken').classList.toggle('hide');
+  $('#showSpoken').textContent = hidden ? 'Show what was spoken' : 'Hide what was spoken';
 };
 
 $('#download').onclick = () => {

@@ -34,6 +34,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, r"C:\Users\Sistems-AI\stt-v2-finetune")
 
 from synthesize import MODEL as TTS_MODEL, PAUSE_S, split_sentences
+from text_normalize import describe, has_sayable, normalize_for_tts
 from scripts.transcribe import CODESWITCH_PROMPT, DEFAULT_MODEL as STT_MODEL, _chunked, to_srt
 from src.postprocess.codeswitch import CodeSwitcher
 
@@ -41,11 +42,14 @@ app = FastAPI(title="Urdu Speech")
 STATE: dict = {}
 HERE = Path(__file__).resolve().parent
 MAX_CHARS = 5000
+BASE_WHISPER = "large-v3"
+LANGUAGES = {"ur": "Urdu", "ar": "Arabic"}
 
 
 class SpeakRequest(BaseModel):
     text: str
     split: bool = True
+    normalize: bool = True
     speaking_rate: float = 0.9
     seed: int = 1234
 
@@ -62,26 +66,32 @@ def get_tts():
     return STATE["tts"]
 
 
-def get_stt():
-    if "stt" not in STATE:
+def get_stt(language: str = "ur"):
+    """Urdu uses the fine-tune (18.45% WER, vs 22.77% for base large-v3 on the same
+    test set); Arabic has no fine-tune, so it uses base large-v3, which is already
+    cached. Each is loaded once, on first use of that language."""
+    key = "stt_ur" if language == "ur" else "stt_base"
+    if key not in STATE:
         from faster_whisper import WhisperModel
 
-        print(f"[server] loading transcriber from {STATE['stt_dir']} ...")
+        source = STATE["stt_dir"] if key == "stt_ur" else BASE_WHISPER
+        print(f"[server] loading {language} transcriber from {source} ...")
         t0 = time.time()
-        STATE["stt"] = WhisperModel(STATE["stt_dir"], device=STATE["device"],
-                                    compute_type=STATE["compute_type"])
-        print(f"[server] transcriber ready in {time.time() - t0:.1f}s")
-    return STATE["stt"]
+        STATE[key] = WhisperModel(source, device=STATE["device"], compute_type=STATE["compute_type"])
+        print(f"[server] {language} transcriber ready in {time.time() - t0:.1f}s")
+    return STATE[key]
 
 
 def _to_wav(src: Path) -> Path:
     """Browser mic recordings arrive as webm/ogg. ffmpeg-decode to 16k mono wav so the
     decoder never has to guess at a container it may not support."""
     dst = src.with_suffix(".conv.wav")
-    subprocess.run(
+    r = subprocess.run(
         ["ffmpeg", "-v", "error", "-y", "-i", str(src), "-ac", "1", "-ar", "16000", str(dst)],
-        check=True,
+        capture_output=True, text=True,
     )
+    if r.returncode != 0:
+        raise RuntimeError(r.stderr.strip() or f"ffmpeg exited {r.returncode}")
     return dst
 
 
@@ -102,8 +112,20 @@ async def transcribe_endpoint(
     audio: UploadFile = File(...),
     codeswitch: str = Form("false"),
     beam_size: int = Form(5),
+    language: str = Form("ur"),
+    vad: str = Form("true"),
 ):
-    want_codeswitch = str(codeswitch).lower() in ("true", "1", "on", "yes")
+    if language not in LANGUAGES:
+        return JSONResponse({"error": f"Unsupported language {language!r}."}, status_code=400)
+    # The code-switch prompt and dictionary are Urdu vocabulary; they'd be meaningless
+    # or harmful applied to Arabic.
+    want_codeswitch = language == "ur" and str(codeswitch).lower() in ("true", "1", "on", "yes")
+    # VAD on by default: measured 18.23% vs 18.45% word error over the 336-clip Urdu
+    # test set (25 fewer errors in 11,644 words; better in 93% of bootstrap resamples).
+    # Small but free, and dropping non-speech should help more on real recordings than
+    # on these clean test clips. Toggleable because aggressive trimming can clip quiet
+    # speech.
+    want_vad = str(vad).lower() in ("true", "1", "on", "yes")
     tmpdir = Path(tempfile.mkdtemp(prefix="urdu_stt_"))
     try:
         raw = tmpdir / (audio.filename or "upload.bin")
@@ -112,18 +134,26 @@ async def transcribe_endpoint(
 
         try:
             wav = _to_wav(raw)
-        except (subprocess.CalledProcessError, FileNotFoundError):
+        except FileNotFoundError:
+            print("[server] ffmpeg not found on PATH -- install it (winget install Gyan.FFmpeg) "
+                  "and restart this server so it picks up the updated PATH")
+            return JSONResponse(
+                {"error": "Could not decode that audio file (ffmpeg is not available on the server)."},
+                status_code=400)
+        except RuntimeError as e:
+            print(f"[server] ffmpeg could not decode {audio.filename!r}: {e}")
             return JSONResponse({"error": "Could not decode that audio file."}, status_code=400)
 
-        model = get_stt()
+        model = get_stt(language)
         t0 = time.time()
         if want_codeswitch:
             # Chunked, else the prompt only conditions the first 30s window and has no
             # effect on anything longer -- see scripts/transcribe.py.
-            segs, duration = _chunked(model, str(wav), "ur", beam_size, False,
+            segs, duration = _chunked(model, str(wav), language, beam_size, want_vad,
                                       CODESWITCH_PROMPT, 60)
         else:
-            out, info = model.transcribe(str(wav), language="ur", beam_size=beam_size)
+            out, info = model.transcribe(str(wav), language=language, beam_size=beam_size,
+                                         vad_filter=want_vad)
             segs = [{"start": s.start, "end": s.end, "text": s.text.strip()} for s in out]
             duration = float(getattr(info, "duration", 0.0) or 0.0)
         elapsed = time.time() - t0
@@ -142,6 +172,8 @@ async def transcribe_endpoint(
             "speed": round(duration / elapsed, 1) if elapsed else None,
             "n_segments": len(segs),
             "codeswitch": want_codeswitch,
+            "language": language,
+            "vad": want_vad,
         }
     finally:
         shutil.rmtree(tmpdir, ignore_errors=True)
@@ -156,10 +188,22 @@ def synthesize(req: SpeakRequest):
         return JSONResponse({"error": f"Text is too long ({len(text)} characters, limit {MAX_CHARS})."},
                             status_code=400)
 
+    # Digits and English words are unsayable as written -- "1500" came out as "5000",
+    # "podcast" vanished. Spelling them out halved the error on such sentences
+    # (0.385 -> 0.167), and whatever still can't be said is reported back so the page
+    # can warn instead of quietly dropping words.
+    note = ""
+    if req.normalize:
+        text, report = normalize_for_tts(text)
+        note = describe(report)
+
     tts = get_tts()
     # Sentence-splitting matters: on a 7-sentence paragraph it halved the word error
     # against feeding the whole thing in at once (0.067 vs 0.135).
-    chunks = split_sentences(text) if req.split else [text]
+    chunks = split_sentences(text) if req.split else [c for c in [text] if has_sayable(c)]
+    if not chunks:
+        return JSONResponse({"error": "Nothing here the voice can say -- it speaks Urdu script only."},
+                            status_code=400)
 
     t0 = time.time()
     pieces, sr = [], 16000
@@ -189,6 +233,8 @@ def synthesize(req: SpeakRequest):
         "speed": round(duration / elapsed, 1) if elapsed else None,
         "n_sentences": len(chunks),
         "sample_rate": sr,
+        "spoken_text": text,
+        "note": note,
     }
 
 

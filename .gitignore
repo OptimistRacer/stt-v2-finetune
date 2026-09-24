@@ -46,3 +46,4 @@ finetune-hf-vits/
 *.log
 webapp_api_test.wav
 webapp_server.log
+arabic_test/

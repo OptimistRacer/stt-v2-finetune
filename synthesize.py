@@ -19,6 +19,8 @@ import scipy.io.wavfile
 import torch
 from transformers import pipeline
 
+from text_normalize import describe, has_sayable, normalize_for_tts
+
 MODEL = "D:/Audion-Data/TTS/urdu_tts_final"
 PAUSE_S = 0.28
 
@@ -28,7 +30,10 @@ def split_sentences(text):
     89-word paragraph, synthesizing sentence by sentence halved the word error
     (0.135 -> 0.067) versus feeding the whole thing in at once."""
     parts = [p.strip() for p in re.split(r"(?<=[۔?!])\s*|\n+", text) if p and p.strip()]
-    return parts or [text]
+    parts = parts or [text]
+    # A chunk the voice can't say anything for (e.g. a stray all-English line) becomes
+    # an empty token sequence and crashes VITS, so drop those here.
+    return [p for p in parts if has_sayable(p)]
 
 
 def main():
@@ -40,11 +45,19 @@ def main():
     ap.add_argument("--seed", type=int, default=1234, help="same seed gives the same audio")
     ap.add_argument("--no-split", action="store_true",
                     help="feed the text in as one piece instead of sentence by sentence")
+    ap.add_argument("--no-normalize", action="store_true",
+                    help="skip spelling out numbers and converting English words")
     args = ap.parse_args()
 
     text = Path(args.file).read_text(encoding="utf-8").strip() if args.file else args.text
     if not text:
         raise SystemExit("give text as an argument or use --file")
+
+    if not args.no_normalize:
+        text, report = normalize_for_tts(text)
+        summary = describe(report)
+        if summary:
+            print(f"[text] {summary}")
 
     tts = pipeline("text-to-speech", args.model, device=0 if torch.cuda.is_available() else -1)
     chunks = [text] if args.no_split else split_sentences(text)
