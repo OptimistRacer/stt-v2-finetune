@@ -47,3 +47,7 @@ finetune-hf-vits/
 webapp_api_test.wav
 webapp_server.log
 arabic_test/
+
+# Nexdata's free Gulf samples -- vendor demo files under a commercial licence,
+# kept locally for measurement but not redistributed here
+gulf_sample/
