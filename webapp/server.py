@@ -33,7 +33,7 @@ from pydantic import BaseModel
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 sys.path.insert(0, r"C:\Users\Sistems-AI\stt-v2-finetune")
 
-from synthesize import MODEL as TTS_MODEL, PAUSE_S, split_sentences
+from synthesize import MODEL as TTS_MODEL, PAUSE_S, VOICES, split_sentences
 from text_normalize import describe, has_sayable, normalize_for_tts
 from scripts.transcribe import CODESWITCH_PROMPT, DEFAULT_MODEL as STT_MODEL, _chunked, to_srt
 from src.postprocess.codeswitch import CodeSwitcher
@@ -50,20 +50,34 @@ class SpeakRequest(BaseModel):
     text: str
     split: bool = True
     normalize: bool = True
-    speaking_rate: float = 0.9
+    speaking_rate: float | None = None
     seed: int = 1234
+    language: str = "ur"
 
 
-def get_tts():
-    if "tts" not in STATE:
+# Playback settings measured per voice, by synthesizing held-out sentences and scoring
+# what a recognizer hears back. Urdu's are already baked into its exported config
+# (0.33/0.5/0.9, 0.132 -> 0.085). Arabic's are applied here: 0.196 -> 0.107.
+ARABIC_PLAYBACK = {"noise_scale": 0.5, "noise_scale_duration": 0.5, "speaking_rate": 0.9}
+
+
+def get_tts(language: str = "ur"):
+    """Urdu uses the locally exported voice (tuned playback baked into its config);
+    Arabic uses facebook/mms-tts-ara. One pipeline per language, loaded on first use."""
+    key = f"tts_{language}"
+    if key not in STATE:
         from transformers import pipeline
 
-        print(f"[server] loading voice from {STATE['tts_dir']} ...")
+        source = STATE["tts_dir"] if language == "ur" else VOICES[language]
+        print(f"[server] loading {language} voice from {source} ...")
         t0 = time.time()
-        STATE["tts"] = pipeline("text-to-speech", STATE["tts_dir"],
-                                device=0 if torch.cuda.is_available() else -1)
-        print(f"[server] voice ready in {time.time() - t0:.1f}s")
-    return STATE["tts"]
+        tts = pipeline("text-to-speech", source, device=0 if torch.cuda.is_available() else -1)
+        if language == "ar":
+            for name, value in ARABIC_PLAYBACK.items():
+                setattr(tts.model, name, value)
+        STATE[key] = tts
+        print(f"[server] {language} voice ready in {time.time() - t0:.1f}s")
+    return STATE[key]
 
 
 def get_stt(language: str = "ur"):
@@ -181,9 +195,11 @@ async def transcribe_endpoint(
 
 @app.post("/synthesize")
 def synthesize(req: SpeakRequest):
+    if req.language not in VOICES:
+        return JSONResponse({"error": f"No voice for language {req.language!r}."}, status_code=400)
     text = (req.text or "").strip()
     if not text:
-        return JSONResponse({"error": "Type some Urdu text first."}, status_code=400)
+        return JSONResponse({"error": "Type some text first."}, status_code=400)
     if len(text) > MAX_CHARS:
         return JSONResponse({"error": f"Text is too long ({len(text)} characters, limit {MAX_CHARS})."},
                             status_code=400)
@@ -194,22 +210,25 @@ def synthesize(req: SpeakRequest):
     # can warn instead of quietly dropping words.
     note = ""
     if req.normalize:
-        text, report = normalize_for_tts(text)
+        text, report = normalize_for_tts(text, language=req.language)
         note = describe(report)
 
-    tts = get_tts()
+    tts = get_tts(req.language)
     # Sentence-splitting matters: on a 7-sentence paragraph it halved the word error
     # against feeding the whole thing in at once (0.067 vs 0.135).
-    chunks = split_sentences(text) if req.split else [c for c in [text] if has_sayable(c)]
+    chunks = (split_sentences(text, language=req.language) if req.split
+              else [c for c in [text] if has_sayable(c, language=req.language)])
     if not chunks:
-        return JSONResponse({"error": "Nothing here the voice can say -- it speaks Urdu script only."},
+        script = "Urdu" if req.language == "ur" else "Arabic"
+        return JSONResponse({"error": f"Nothing here the voice can say -- it speaks {script} script only."},
                             status_code=400)
 
     t0 = time.time()
     pieces, sr = [], 16000
     original_rate = tts.model.speaking_rate
     try:
-        tts.model.speaking_rate = req.speaking_rate
+        if req.speaking_rate is not None:
+            tts.model.speaking_rate = req.speaking_rate
         for i, chunk in enumerate(chunks):
             torch.manual_seed(req.seed + i)
             out = tts(chunk)
@@ -235,6 +254,7 @@ def synthesize(req: SpeakRequest):
         "sample_rate": sr,
         "spoken_text": text,
         "note": note,
+        "language": req.language,
     }
 
 

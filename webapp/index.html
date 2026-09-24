@@ -137,6 +137,16 @@
   <!-- ============ TEXT TO SPEECH ============ -->
   <div id="mode-tts" class="hide">
     <div class="panel">
+      <div class="row" style="margin-bottom:12px">
+        <label class="chk">
+          Voice
+          <select id="ttsLang">
+            <option value="ur" selected>Urdu</option>
+            <option value="ar">Arabic</option>
+          </select>
+        </label>
+        <span class="sub" id="ttsLangNote" style="margin:0"></span>
+      </div>
       <textarea id="text" class="urdu" placeholder="اردو متن یہاں لکھیں..."></textarea>
       <div class="row" style="justify-content:space-between;margin-top:10px">
         <span class="count"><span id="chars">0</span> characters</span>
@@ -341,11 +351,28 @@ $('#toSpeech').onclick = () => {
 };
 
 /* ---------- text to speech ---------- */
-const SAMPLE = "السلام علیکم، ہمارے پروگرام میں خوش آمدید۔ آج کی گفتگو میں ہم نوجوانوں کے لیے روزگار کے نئے مواقع پر بات کریں گے۔ امید ہے یہ گفتگو آپ کے لیے مفید ثابت ہوگی۔";
+const SAMPLES = {
+  ur: "السلام علیکم، ہمارے پروگرام میں خوش آمدید۔ آج کی گفتگو میں ہم نوجوانوں کے لیے روزگار کے نئے مواقع پر بات کریں گے۔ امید ہے یہ گفتگو آپ کے لیے مفید ثابت ہوگی۔",
+  ar: "مرحبا بكم في برنامجنا اليوم سوف نتحدث عن موضوع مهم جدا. شركتنا تقدم برامج مختلفة لتعليم الشباب مهارات جديدة."
+};
+const PLACEHOLDER = {ur: "اردو متن یہاں لکھیں...", ar: "اكتب النص العربي هنا..."};
 let lastUrl = null;
 
 $('#text').addEventListener('input', () => $('#chars').textContent = $('#text').value.length);
-$('#sample').onclick = () => { $('#text').value = SAMPLE; $('#text').dispatchEvent(new Event('input')); };
+$('#sample').onclick = () => {
+  $('#text').value = SAMPLES[$('#ttsLang').value];
+  $('#text').dispatchEvent(new Event('input'));
+};
+
+$('#ttsLang').onchange = () => {
+  const ar = $('#ttsLang').value === 'ar';
+  $('#text').placeholder = PLACEHOLDER[$('#ttsLang').value];
+  /* The English-word lexicon was mined from Urdu recordings; there's no Arabic one,
+     and the Arabic voice has no digits in its vocabulary at all. */
+  $('#ttsLangNote').textContent = ar
+    ? 'Arabic voice: numbers are spelled out, but English words can’t be pronounced.'
+    : '';
+};
 
 $('#speak').onclick = async () => {
   const text = $('#text').value.trim();
@@ -361,6 +388,7 @@ $('#speak').onclick = async () => {
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
         text,
+        language: $('#ttsLang').value,
         split: $('#split').checked,
         normalize: $('#normalize').checked,
         speaking_rate: parseFloat($('#rate').value)

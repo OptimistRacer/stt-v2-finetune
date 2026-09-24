@@ -24,6 +24,11 @@ HERE = Path(__file__).resolve().parent
 LEXICON_PATH = HERE / "tts_lexicon.json"
 VOCAB_PATH = HERE / "urdu_tts_final" / "vocab.json"
 
+# The Arabic voice's vocabulary contains no digits at all (the Urdu one does), so an
+# unconverted number doesn't mispronounce -- it disappears. Arabic number words come
+# from num2words rather than a hand-written table.
+ARABIC_VOICE = "facebook/mms-tts-ara"
+
 # Optional diacritics the vocabulary lacks; Urdu is normally written without them.
 STRIP_CHARS = str.maketrans("", "", "ًٌٍَُِّْٓٔ")
 LATIN_WORD = re.compile(r"[A-Za-z][A-Za-z'\-]*")
@@ -72,25 +77,47 @@ def load_lexicon(path=LEXICON_PATH):
     return {k: v["urdu"] for k, v in json.loads(Path(path).read_text(encoding="utf-8")).items()}
 
 
-def load_vocab(path=VOCAB_PATH):
+_VOCAB_CACHE = {}
+
+
+def load_vocab(path=VOCAB_PATH, language="ur"):
+    if language == "ar":
+        if "ar" not in _VOCAB_CACHE:
+            from transformers import AutoTokenizer
+
+            _VOCAB_CACHE["ar"] = set(AutoTokenizer.from_pretrained(ARABIC_VOICE).get_vocab().keys())
+        return _VOCAB_CACHE["ar"]
     if not Path(path).exists():
         return None
     return set(json.loads(Path(path).read_text(encoding="utf-8")).keys())
 
 
-def normalize_for_tts(text: str, lexicon=None, vocab=None):
+def arabic_number(n: int) -> str | None:
+    from num2words import num2words
+
+    try:
+        return num2words(n, lang="ar")
+    except (OverflowError, NotImplementedError, ValueError):
+        return None
+
+
+def normalize_for_tts(text: str, lexicon=None, vocab=None, language="ur"):
     """Returns (normalized_text, report). The report lists what was converted and --
     more importantly -- what could not be, so callers can warn rather than emit audio
-    with words silently missing."""
-    lexicon = load_lexicon() if lexicon is None else lexicon
-    vocab = load_vocab() if vocab is None else vocab
+    with words silently missing.
+
+    The English->script lexicon is Urdu-only; Arabic has no equivalent yet, so English
+    words in Arabic text are reported as unsayable rather than mangled."""
+    lexicon = (load_lexicon() if language == "ur" else {}) if lexicon is None else lexicon
+    vocab = load_vocab(language=language) if vocab is None else vocab
+    spell = arabic_number if language == "ar" else number_to_urdu
     report = {"numbers": [], "words": [], "unknown_words": [], "unsayable_chars": []}
 
     text = unicodedata.normalize("NFC", text or "").translate(ARABIC_INDIC).translate(STRIP_CHARS)
 
     def sub_number(m):
         raw = m.group(0)
-        words = number_to_urdu(int(raw.replace(",", "")))
+        words = spell(int(raw.replace(",", "")))
         if words is None:
             report["numbers"].append({"from": raw, "to": None})
             return raw
@@ -112,22 +139,23 @@ def normalize_for_tts(text: str, lexicon=None, vocab=None):
     text = re.sub(r"[ \t]+", " ", text).strip()
 
     if vocab:
-        # Sentence-splitting relies on ۔ ? !, and the tokenizer ignores what it can't
-        # represent, so only flag characters that would vanish mid-word.
-        leftover = {c for c in text if c not in vocab and not c.isspace() and c not in "۔؟!،"}
+        # Sentence punctuation (۔ for Urdu, . for Arabic, plus ؟ ! ،) is used for
+        # splitting and then harmlessly ignored by the tokenizer, so don't report it --
+        # only flag characters that would vanish mid-word and lose meaning.
+        leftover = {c for c in text if c not in vocab and not c.isspace() and c not in "۔؟?!،.:;"}
         report["unsayable_chars"] = sorted(leftover)
 
     return text, report
 
 
-def has_sayable(text: str, vocab=None) -> bool:
+def has_sayable(text: str, vocab=None, language="ur") -> bool:
     """Whether the voice would produce anything at all for this text.
 
     The tokenizer silently drops characters outside its vocabulary, so a chunk of only
     Latin letters reduces to an empty sequence and VITS then dies inside
     `_relative_position_to_absolute_position` with 'narrow(): length must be
     non-negative'. Callers use this to skip such chunks instead of crashing."""
-    vocab = load_vocab() if vocab is None else vocab
+    vocab = load_vocab(language=language) if vocab is None else vocab
     if not vocab:
         return bool(text.strip())
     return any(c in vocab and not c.isspace() for c in text)

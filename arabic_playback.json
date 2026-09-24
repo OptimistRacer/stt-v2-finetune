@@ -1,0 +1,74 @@
+[
+ {
+  "noise_scale": 0.5,
+  "noise_scale_duration": 0.5,
+  "speaking_rate": 0.9,
+  "wer": 0.107
+ },
+ {
+  "noise_scale": 0.5,
+  "noise_scale_duration": 0.8,
+  "speaking_rate": 0.9,
+  "wer": 0.124
+ },
+ {
+  "noise_scale": 0.667,
+  "noise_scale_duration": 0.8,
+  "speaking_rate": 0.9,
+  "wer": 0.128
+ },
+ {
+  "noise_scale": 0.667,
+  "noise_scale_duration": 0.5,
+  "speaking_rate": 0.9,
+  "wer": 0.128
+ },
+ {
+  "noise_scale": 0.33,
+  "noise_scale_duration": 0.8,
+  "speaking_rate": 1.0,
+  "wer": 0.138
+ },
+ {
+  "noise_scale": 0.33,
+  "noise_scale_duration": 0.5,
+  "speaking_rate": 1.0,
+  "wer": 0.138
+ },
+ {
+  "noise_scale": 0.33,
+  "noise_scale_duration": 0.5,
+  "speaking_rate": 0.9,
+  "wer": 0.138
+ },
+ {
+  "noise_scale": 0.33,
+  "noise_scale_duration": 0.8,
+  "speaking_rate": 0.9,
+  "wer": 0.144
+ },
+ {
+  "noise_scale": 0.5,
+  "noise_scale_duration": 0.5,
+  "speaking_rate": 1.0,
+  "wer": 0.152
+ },
+ {
+  "noise_scale": 0.667,
+  "noise_scale_duration": 0.5,
+  "speaking_rate": 1.0,
+  "wer": 0.176
+ },
+ {
+  "noise_scale": 0.667,
+  "noise_scale_duration": 0.8,
+  "speaking_rate": 1.0,
+  "wer": 0.196
+ },
+ {
+  "noise_scale": 0.5,
+  "noise_scale_duration": 0.8,
+  "speaking_rate": 1.0,
+  "wer": 0.196
+ }
+]
