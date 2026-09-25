@@ -51,3 +51,7 @@ arabic_test/
 # Nexdata's free Gulf samples -- vendor demo files under a commercial licence,
 # kept locally for measurement but not redistributed here
 gulf_sample/
+
+# Candidate voice models: isolated environments and logs (models live in the HF cache)
+candidates/venv_*/
+candidates/*.log

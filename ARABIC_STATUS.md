@@ -59,6 +59,9 @@ wordings on 5 clips; that's fitting to noise.
 | **Nexdata 849h Saudi** | yes | yes | yes | yes -- paid; GitHub repo has free samples (used above) |
 | Quran corpora (everyayah etc.) | yes | no | no | **no** -- classical register; would recite, not speak. Same trap as the Iqbal poetry |
 | YouTube podcasts (third-party) | yes | varies | yes | **no** -- not ours; downloading breaks YouTube's terms |
+| Kaggle "Organic Gulf Arabic Dialect" (ebubekr53) | no | yes | yes | **no** -- text only (translation-app queries), small sample, CC BY-NC 4.0 |
+| HF `oddadmix` Arabic Voice Collection / `dialectal-arabic-lahgtna-v2` | yes | yes (sa, bh, ye) | yes | **rights unclear** -- ~3,000 h, 337 GB, but no licence stated, audio re-hosted from others' YouTube channels/podcasts (`original_video_id`), AI-generated transcripts. Test split (3,056 rows) is the lowest-risk use: internal eval only |
+| Common Voice Arabic (CC0 mirror `fsicoli/common_voice_19_0`) | yes | ~none | no | yes -- 57.8 h with audio, read speech, mostly MSA; train split is only 24 speakers |
 
 ## What's needed next
 
