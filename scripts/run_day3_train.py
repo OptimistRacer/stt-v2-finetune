@@ -33,6 +33,7 @@ from transformers.trainer_utils import get_last_checkpoint
 from src.training.augment import Augmenter
 from src.training.dataset import ManifestAudioDataset, WhisperCollator, load_manifest
 from src.training.lora_setup import load_lora_model, load_processor
+from src.training.thermal import ThermalGuard, gpu_temperature
 
 # See src/training/lora_setup.py's module docstring for why.
 torch.backends.cuda.matmul.allow_tf32 = False
@@ -106,6 +107,20 @@ def run(config_path: str, max_train_examples: int | None, max_steps: int | None)
         label_names=["labels"],
     )
 
+    callbacks = []
+    thermal = cfg.get("thermal") or {}
+    if thermal.get("enabled"):
+        callbacks.append(ThermalGuard(
+            target_c=thermal.get("target_c"),
+            gain_s_per_c=thermal.get("gain_s_per_c", 0.25),
+            max_rest_s=thermal.get("max_rest_s", 4.0),
+            pause_at_c=thermal.get("pause_at_c", 80),
+            resume_at_c=thermal.get("resume_at_c", 70),
+            check_every_steps=thermal.get("check_every_steps", 1),
+        ))
+        print(f"[day3] thermal guard ON: target {thermal.get('target_c')}C, hard stop at "
+              f"{thermal.get('pause_at_c', 80)}C (GPU now {gpu_temperature()}C)")
+
     trainer = Seq2SeqTrainer(
         model=model,
         args=args,
@@ -113,6 +128,7 @@ def run(config_path: str, max_train_examples: int | None, max_steps: int | None)
         eval_dataset=eval_ds,
         data_collator=collator,
         processing_class=processor.feature_extractor,
+        callbacks=callbacks,
     )
 
     resume_from = get_last_checkpoint(t["output_dir"]) if Path(t["output_dir"]).is_dir() else None

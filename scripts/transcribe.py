@@ -22,7 +22,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 from faster_whisper import WhisperModel
 
-DEFAULT_MODEL = r"D:\Audion-Data\Urdu\checkpoints\stt_v2_lora_augmented\export\ct2"
+# stt_v3_lora_cv (+~20 h Common Voice, configs/day3_lora_cv.yaml) beat stt_v2_lora_augmented
+# on every split with VAD: all 17.87 vs 18.23, FLEURS 19.96 vs 20.13, podcast 12.35 vs
+# 13.23, Common Voice holdout 23.21 vs 26.90 WER. The previous model is kept on disk.
+DEFAULT_MODEL = r"D:\Audion-Data\Urdu\checkpoints\stt_v3_lora_cv\export\ct2"
 
 
 def _ts(seconds: float, sep: str = ",") -> str:

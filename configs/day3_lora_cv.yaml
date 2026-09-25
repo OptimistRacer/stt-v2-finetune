@@ -1,0 +1,73 @@
+# day3_lora_augmented.yaml plus ~20 h of Common Voice Urdu from the CC0 mirror
+# (scripts/fetch_common_voice_mirror.py, merged by scripts/merge_cv_manifest.py).
+#
+# Everything else is deliberately identical to the shipped config -- same LoRA, same
+# learning rate, same augmentation -- so any difference in the results is attributable
+# to the data. Only two changes:
+#   - manifest_path: the merged manifest, with podcast train clips oversampled 3x
+#   - num_train_epochs 3 -> 2: there's ~3x more data, so 2 epochs is already ~5x the
+#     optimisation steps of the shipped run
+#
+# Acceptance rule: this only replaces the shipped model if conversational (podcast)
+# accuracy doesn't regress -- not just the overall number. See merge_cv_manifest.py
+# for why.
+base_model: "openai/whisper-large-v3"
+language: "urdu"
+task: "transcribe"
+
+manifest_path: "D:/Audion-Data/Urdu/open_datasets/manifest_combined_cv.jsonl"
+train_split: "train"
+eval_split: "validation"
+sample_rate: 16000
+
+augment:
+  enabled: true
+  p_clean: 0.35
+  p_noise: 0.6
+  p_babble: 0.3
+  p_reverb: 0.3
+  p_telephone: 0.15
+  p_gain: 0.4
+  snr_range: [5.0, 25.0]
+  babble_pool: 24
+  seed: 0
+
+# The GPU hit 85 C with fans at 97% and no headroom on the first attempt at this run;
+# this machine has crashed outright under sustained GPU load before. Pause when hot,
+# resume once cooled -- it drops ~30 C in seconds once idle, so pauses are short.
+# Checked every step: under load this card climbs ~5 C/s, so checking every 5 steps
+# (~6 s) let it overshoot an 80 C trigger up to 88 C, close to its ~90 C throttle point.
+# Run steady and moderate rather than flat out: rest a little after each step,
+# proportional to how far above target_c the card is, so it settles near 65 C with
+# steady (quieter) fans instead of cycling between full load and full stop. The hard
+# stop at 75 C is only a safety net. The user asked for this explicitly -- slower is fine.
+thermal:
+  enabled: true
+  target_c: 65
+  gain_s_per_c: 0.25
+  max_rest_s: 4.0
+  pause_at_c: 75
+  resume_at_c: 65
+  check_every_steps: 1
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+
+training:
+  output_dir: "D:/Audion-Data/Urdu/checkpoints/stt_v3_lora_cv"
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  warmup_steps: 50
+  num_train_epochs: 2
+  bf16: true
+  eval_strategy: "steps"
+  eval_steps: 250
+  save_steps: 250
+  save_total_limit: 5
+  logging_steps: 25
