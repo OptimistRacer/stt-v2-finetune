@@ -80,3 +80,24 @@ Check the speakers are actually Gulf -- Egyptian or Levantine audio won't fix th
 The STT project's existing correction workflow (`src/correction/export_for_review.py`
 -> correct -> `import_corrections.py`) means transcripts can be machine-drafted and
 then human-fixed, which is far faster than typing from scratch.
+
+## Tried: fine-tune on Common Voice Arabic (2026-09-29) -- rejected, retry running
+
+`stt_ar_lora_cv` (stt-v2-finetune `configs/day3_lora_ar_cv.yaml`, 31 h, 943 speakers,
+2 epochs). WER vs base large-v3 (VAD on, same clips):
+
+| test | base large-v3 | fine-tune |
+|---|---|---|
+| CV holdout (MSA read speech, 1,000 clips, speaker-disjoint) | 15.67% | **12.40%** |
+| Saudi (Lahgtna test, 273) | **17.61%** | 21.39% |
+| Bahraini (193) | **31.63%** | 34.39% |
+| Yemeni (115) | **29.87%** | 32.10% |
+| Nexdata Saudi (5) | **22.78%** | 27.85% |
+
+Better at MSA, worse at every Gulf set, so the app keeps base large-v3. Cause: 23% of
+CV Arabic training sentences carry full tashkeel, and the fine-tune learned to slip into
+a diacritized, formal mode that mis-hears dialect (it also picked up Egyptian/Levantine
+forms like كده, رح from CV speakers). Retry with diacritics stripped from the targets
+(`scripts/clean_arabic_manifest.py`, `configs/day3_lora_ar_cv_clean.yaml`). Lahgtna
+references are AI-generated, so read absolute numbers as approximate; the
+before/after comparison on identical clips is the signal.

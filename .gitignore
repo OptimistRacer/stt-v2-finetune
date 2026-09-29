@@ -55,3 +55,5 @@ gulf_sample/
 # Candidate voice models: isolated environments and logs (models live in the HF cache)
 candidates/venv_*/
 candidates/*.log
+candidates/listen*.html
+candidates/listen_key.json
