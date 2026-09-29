@@ -1,0 +1,72 @@
+# Retry of day3_lora_ar_cv.yaml with diacritics stripped from the training transcripts
+# (scripts/clean_arabic_manifest.py). The first run beat base large-v3 on MSA but
+# regressed every Gulf set; its outputs slipped into a diacritized, formal mode learned
+# from the 23% of Common Voice sentences written with full tashkeel. Same recipe otherwise.
+#
+# Arabic: LoRA fine-tune of base large-v3 on Common Voice Arabic from the CC0 mirror
+# (scripts/fetch_common_voice_mirror.py --lang ar --max_per_speaker 300 --speaker_disjoint).
+#
+# Same recipe as day3_lora_cv.yaml (the Urdu run that shipped as stt_v3_lora_cv), so the
+# only new variable is the language and data.
+#
+# Caveat that decides acceptance: Common Voice Arabic is read speech, almost all Modern
+# Standard Arabic (only ~10 clips labelled Saudi/Gulf). Training on read speech alone once
+# broke Urdu code-switching, so this can push the model toward formal Arabic. It only
+# replaces base large-v3 for Arabic if Gulf accuracy doesn't regress -- measured on the
+# Lahgtna Saudi/Bahraini/Yemeni test clips (fetch_gulf_eval.py in the TTS repo) and the
+# 5 Nexdata samples -- not just on the Common Voice holdout.
+base_model: "openai/whisper-large-v3"
+language: "arabic"
+task: "transcribe"
+
+manifest_path: "D:/Audion-Data/Arabic/open_datasets/manifest_common_voice_ar_clean.jsonl"
+train_split: "train"
+eval_split: "validation"
+sample_rate: 16000
+
+augment:
+  enabled: true
+  p_clean: 0.35
+  p_noise: 0.6
+  p_babble: 0.3
+  p_reverb: 0.3
+  p_telephone: 0.15
+  p_gain: 0.4
+  snr_range: [5.0, 25.0]
+  babble_pool: 24
+  seed: 0
+
+# Gentle pace, as the user asked: settle near 65 C with quiet fans; 75 C hard stop is a
+# safety net only. See src/training/thermal.py.
+thermal:
+  enabled: true
+  target_c: 65
+  gain_s_per_c: 0.25
+  max_rest_s: 4.0
+  pause_at_c: 75
+  resume_at_c: 65
+  check_every_steps: 1
+
+lora:
+  r: 8
+  alpha: 16
+  dropout: 0.1
+  target_modules: ["q_proj", "v_proj"]
+
+training:
+  output_dir: "D:/Audion-Data/Arabic/checkpoints/stt_ar_lora_cv_clean"
+  per_device_train_batch_size: 4
+  per_device_eval_batch_size: 4
+  gradient_accumulation_steps: 4
+  learning_rate: 1.0e-4
+  weight_decay: 0.01
+  warmup_steps: 50
+  num_train_epochs: 2
+  bf16: true
+  eval_strategy: "steps"
+  eval_steps: 250
+  save_steps: 250
+  # Keep every checkpoint (~13 of them, small since only the LoRA adapter trains): an
+  # earlier one may suit Gulf speech better if later steps drift toward formal Arabic.
+  save_total_limit: 20
+  logging_steps: 25
