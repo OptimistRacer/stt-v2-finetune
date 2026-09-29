@@ -139,10 +139,17 @@
     <div class="panel">
       <div class="row" style="margin-bottom:12px">
         <label class="chk">
-          Voice
+          Language
           <select id="ttsLang">
             <option value="ur" selected>Urdu</option>
             <option value="ar">Arabic</option>
+          </select>
+        </label>
+        <label class="chk">
+          Voice
+          <select id="engine">
+            <option value="meta" selected>Standard (Meta)</option>
+            <option value="omnivoice">Natural (OmniVoice)</option>
           </select>
         </label>
         <span class="sub" id="ttsLangNote" style="margin:0"></span>
@@ -364,15 +371,20 @@ $('#sample').onclick = () => {
   $('#text').dispatchEvent(new Event('input'));
 };
 
-$('#ttsLang').onchange = () => {
+function updateVoiceNote() {
   const ar = $('#ttsLang').value === 'ar';
+  const omni = $('#engine').value === 'omnivoice';
   $('#text').placeholder = PLACEHOLDER[$('#ttsLang').value];
   /* The English-word lexicon was mined from Urdu recordings; there's no Arabic one,
-     and the Arabic voice has no digits in its vocabulary at all. */
-  $('#ttsLangNote').textContent = ar
-    ? 'Arabic voice: numbers are spelled out, but English words can’t be pronounced.'
-    : '';
-};
+     and the Arabic Meta voice has no digits in its vocabulary at all. */
+  const notes = [];
+  if (ar && !omni) notes.push('Arabic voice: numbers are spelled out, but English words can’t be pronounced.');
+  /* OmniVoice runs in a separate helper that starts on first use; its weights are CC-BY-NC. */
+  if (omni) notes.push('Natural voice: the first request takes about a minute to start. Demo use only (non-commercial licence).');
+  $('#ttsLangNote').textContent = notes.join(' ');
+}
+$('#ttsLang').onchange = updateVoiceNote;
+$('#engine').onchange = updateVoiceNote;
 
 $('#speak').onclick = async () => {
   const text = $('#text').value.trim();
@@ -389,6 +401,7 @@ $('#speak').onclick = async () => {
       body: JSON.stringify({
         text,
         language: $('#ttsLang').value,
+        engine: $('#engine').value,
         split: $('#split').checked,
         normalize: $('#normalize').checked,
         speaking_rate: parseFloat($('#rate').value)

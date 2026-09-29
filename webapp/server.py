@@ -13,18 +13,22 @@ Usage:
     python webapp/server.py --host 0.0.0.0 --port 8095   # reachable from the LAN
 """
 import argparse
+import atexit
 import base64
 import io
+import json
 import shutil
 import socket
 import subprocess
 import sys
 import tempfile
 import time
+import urllib.request
 from pathlib import Path
 
 import numpy as np
 import scipy.io.wavfile
+import soundfile as sf
 import torch
 from fastapi import FastAPI, File, Form, UploadFile
 from fastapi.responses import HTMLResponse, JSONResponse
@@ -53,12 +57,66 @@ class SpeakRequest(BaseModel):
     speaking_rate: float | None = None
     seed: int = 1234
     language: str = "ur"
+    engine: str = "meta"  # "meta" (default MMS voices) or "omnivoice" (extra voice)
 
 
 # Playback settings measured per voice, by synthesizing held-out sentences and scoring
 # what a recognizer hears back. Urdu's are already baked into its exported config
 # (0.33/0.5/0.9, 0.132 -> 0.085). Arabic's are applied here: 0.196 -> 0.107.
 ARABIC_PLAYBACK = {"noise_scale": 0.5, "noise_scale_duration": 0.5, "speaking_rate": 0.9}
+
+# Extra voice: OmniVoice won the blind listening test for both Urdu and Arabic, and a
+# recognizer heard every word of its test sentences (WER 0.0 vs Meta's 5.8 Urdu / 13.2
+# Arabic). It needs Python 3.11 and its own packages, so it runs as a local helper
+# process in its own venv (candidates/omnivoice_worker.py), started on first use. Meta
+# stays the default. OmniVoice's weights are CC-BY-NC: demos yes, commercial use no.
+OMNIVOICE_DIR = HERE.parent / "candidates"
+OMNIVOICE_PY = OMNIVOICE_DIR / "venv_omnivoice" / "Scripts" / "python.exe"
+OMNIVOICE_URL = "http://127.0.0.1:8096"
+ENGINES = ("meta", "omnivoice")
+# The page's speed menu is in Meta's units, where 0.9 is "Normal".
+META_NORMAL_RATE = 0.9
+
+
+def _omnivoice_up() -> bool:
+    try:
+        with urllib.request.urlopen(OMNIVOICE_URL + "/health", timeout=2) as r:
+            return r.status == 200
+    except OSError:
+        return False
+
+
+def ensure_omnivoice(timeout_s: float = 180) -> None:
+    """Start the OmniVoice helper if it isn't running, and wait until it's ready."""
+    if _omnivoice_up():
+        return
+    proc = STATE.get("omnivoice_proc")
+    if proc is None or proc.poll() is not None:
+        print("[server] starting OmniVoice helper ...")
+        log = open(OMNIVOICE_DIR / "omnivoice_worker.log", "a", encoding="utf-8")
+        STATE["omnivoice_proc"] = subprocess.Popen(
+            [str(OMNIVOICE_PY), "omnivoice_worker.py", "--port", "8096"],
+            cwd=OMNIVOICE_DIR, stdout=log, stderr=subprocess.STDOUT)
+        # Don't leave it holding GPU memory after the app exits.
+        atexit.register(STATE["omnivoice_proc"].terminate)
+    deadline = time.time() + timeout_s
+    while time.time() < deadline:
+        if _omnivoice_up():
+            print("[server] OmniVoice helper ready")
+            return
+        if STATE["omnivoice_proc"].poll() is not None:
+            break
+        time.sleep(1)
+    raise RuntimeError("The OmniVoice voice didn't start; see candidates/omnivoice_worker.log.")
+
+
+def omnivoice_say(text: str, language: str, speed: float) -> tuple[np.ndarray, int]:
+    body = json.dumps({"text": text, "language": language, "speed": speed}).encode()
+    req = urllib.request.Request(OMNIVOICE_URL + "/speak", data=body,
+                                 headers={"Content-Type": "application/json"})
+    with urllib.request.urlopen(req, timeout=300) as r:
+        audio, sr = sf.read(io.BytesIO(r.read()), dtype="float32")
+    return audio, sr
 
 
 def get_tts(language: str = "ur"):
@@ -197,6 +255,8 @@ async def transcribe_endpoint(
 def synthesize(req: SpeakRequest):
     if req.language not in VOICES:
         return JSONResponse({"error": f"No voice for language {req.language!r}."}, status_code=400)
+    if req.engine not in ENGINES:
+        return JSONResponse({"error": f"Unknown voice {req.engine!r}."}, status_code=400)
     text = (req.text or "").strip()
     if not text:
         return JSONResponse({"error": "Type some text first."}, status_code=400)
@@ -213,7 +273,6 @@ def synthesize(req: SpeakRequest):
         text, report = normalize_for_tts(text, language=req.language)
         note = describe(report)
 
-    tts = get_tts(req.language)
     # Sentence-splitting matters: on a 7-sentence paragraph it halved the word error
     # against feeding the whole thing in at once (0.067 vs 0.135).
     chunks = (split_sentences(text, language=req.language) if req.split
@@ -225,19 +284,33 @@ def synthesize(req: SpeakRequest):
 
     t0 = time.time()
     pieces, sr = [], 16000
-    original_rate = tts.model.speaking_rate
-    try:
-        if req.speaking_rate is not None:
-            tts.model.speaking_rate = req.speaking_rate
-        for i, chunk in enumerate(chunks):
-            torch.manual_seed(req.seed + i)
-            out = tts(chunk)
-            sr = out["sampling_rate"]
-            pieces.append(out["audio"].squeeze().astype(np.float32))
-            if i < len(chunks) - 1:
-                pieces.append(np.zeros(int(PAUSE_S * sr), dtype=np.float32))
-    finally:
-        tts.model.speaking_rate = original_rate
+    if req.engine == "omnivoice":
+        try:
+            ensure_omnivoice()
+            speed = (req.speaking_rate or META_NORMAL_RATE) / META_NORMAL_RATE
+            for i, chunk in enumerate(chunks):
+                audio, sr = omnivoice_say(chunk, req.language, speed)
+                pieces.append(np.asarray(audio, dtype=np.float32).squeeze())
+                if i < len(chunks) - 1:
+                    pieces.append(np.zeros(int(PAUSE_S * sr), dtype=np.float32))
+        except (RuntimeError, OSError) as e:
+            print(f"[server] OmniVoice failed: {e}")
+            return JSONResponse({"error": f"The OmniVoice voice failed: {e}"}, status_code=500)
+    else:
+        tts = get_tts(req.language)
+        original_rate = tts.model.speaking_rate
+        try:
+            if req.speaking_rate is not None:
+                tts.model.speaking_rate = req.speaking_rate
+            for i, chunk in enumerate(chunks):
+                torch.manual_seed(req.seed + i)
+                out = tts(chunk)
+                sr = out["sampling_rate"]
+                pieces.append(out["audio"].squeeze().astype(np.float32))
+                if i < len(chunks) - 1:
+                    pieces.append(np.zeros(int(PAUSE_S * sr), dtype=np.float32))
+        finally:
+            tts.model.speaking_rate = original_rate
 
     audio = np.concatenate(pieces)
     elapsed = time.time() - t0
@@ -255,6 +328,7 @@ def synthesize(req: SpeakRequest):
         "spoken_text": text,
         "note": note,
         "language": req.language,
+        "engine": req.engine,
     }
 
 

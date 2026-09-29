@@ -57,3 +57,5 @@ candidates/venv_*/
 candidates/*.log
 candidates/listen*.html
 candidates/listen_key.json
+candidates/omnivoice_worker.log
+candidates/test_server.log
