@@ -4,6 +4,22 @@ Local codebase for the STT v2 7-Day Plan (Auton8/DeepPulse pre-task, feeds into 
 self-hosted STT). Code lives here and is git-tracked; audio data lives alongside it in
 `E:\Audion-Data\Urdu\` (not tracked in git — see `.gitignore`).
 
+## Current state (2026-10-02)
+
+- **Urdu: done and serving.** `stt_v3_lora_cv` (LoRA on Whisper large-v3, trained on
+  FLEURS + podcasts + ~20 h of Common Voice) is what `scripts/transcribe.py` and the web
+  UI load by default. 17.87% WER on the served path -- see "More Urdu data" below.
+- **Arabic: experiment finished, nothing shipped.** Fine-tuning on Common Voice Arabic
+  clearly helps read Modern Standard Arabic (15.67% -> 11.47% WER) but costs accuracy on
+  Gulf dialect speech, and the cost grows with training steps. Base large-v3 remains the
+  safe Arabic model; an early checkpoint (500) is the only fine-tune that comes close on
+  Gulf. See "Arabic fine-tune experiment".
+- **Still open:** accent tagging and the accent-wise report (need human labels), and
+  measurement on real demo-environment audio. See "Open items" at the bottom.
+
+Sections below are in the order the work happened, with the original 7-Day Plan status
+snapshot (2026-09-11) after the Urdu work and the newer sections after it.
+
 ## Why split into "prep" and "gpu" scripts
 
 - `scripts/run_day1_prep.py` — denoise, loudness-normalize, segment into clips, build a
@@ -602,7 +618,273 @@ it picks whichever of the two boxes diverges from the original transcript, so a
 misfiled chunk is recovered rather than lost (chunk 3 of this run was filled in the
 "what the model heard" box).
 
+## Web UI (2026-09-14)
+
+`webapp/` is a local FastAPI server plus a single page: upload a file (click or
+drag-drop) or record from the mic, Urdu rendered right-to-left with per-segment
+timestamps, download `.txt` / `.srt`, optional code-switch pass. Everything runs on this
+machine -- audio goes to a temp file, is transcribed, and is deleted. Options and notes
+are in `webapp/README.md`.
+
+```bash
+python webapp/server.py --preload          # then open http://127.0.0.1:8080
+```
+
+The server is Urdu-only (it fixes the language to `ur`) and loads the served `stt_v3`
+model; it does not use the Arabic experiment models.
+
+Three double-click launchers sit in the repo root:
+`INSTALL_REQUIREMENTS.bat` (CUDA torch + faster-whisper + web deps, checks ffmpeg),
+`START_WEBAPP.bat` (starts the server and opens the browser), and `TRANSCRIBE_FILE.bat`
+(drag an audio file onto it; writes `<name>.txt` and `<name>.srt` next to the audio).
+
+## Evaluating the model as served (2026-09-24)
+
+`run_day4_eval.py` scores the *training* runtime (HF `generate()`), but what ships runs
+through faster-whisper on the CT2 export, and the two decoders are not the same.
+`scripts/eval_served.py` scores the served path over the same manifest splits and
+reports read-aloud and conversational subsets separately (FLEURS-only numbers once hid
+the code-switching regression). It reproduces the 18.45% WER / 7.57% CER above exactly
+(read-aloud 20.42%, conversational 13.23%).
+
+It also makes decoding settings testable. Sweep on the 336-clip test split:
+
+| variant | WER |
+|---|---|
+| `vad` | **18.23%** (`transcribe.py --vad`; the web UI does not enable it) |
+| `beam8` | 18.41% |
+| baseline | 18.45% |
+| `no_temp_fallback` | 18.45% (fallback never triggers on these clips) |
+| `patience2` | 18.45% (no effect at beam 5) |
+| `beam8_no_context` | 18.52% |
+| `no_context` | 18.62% |
+| `best_of5_no_context` | 18.62% |
+
+The VAD gain is 25 fewer errors in 11,644 words and holds in 93% of bootstrap
+resamples -- likely real, but small. Decoding tuning is close to exhausted; meaningful
+Urdu gains need more training data, not decoding changes.
+
+```bash
+python scripts/eval_served.py --split test                       # baseline
+python scripts/eval_served.py --split test --params '{"vad_filter": true}'
+python scripts/eval_served.py --split test --sweep --limit 120   # compare variants
+```
+
+## More Urdu data: Common Voice, and `stt_v3` (2026-09-25)
+
+Common Voice left Hugging Face in October 2025, so `configs/opendata_urdu.yaml`'s
+`mozilla-foundation/common_voice_17_0` entry now holds only a README. The CC0 mirror
+`fsicoli/common_voice_19_0` ships raw tar archives plus TSVs, so
+`scripts/fetch_common_voice_mirror.py` reads it directly and writes a project-format
+manifest. The mirror only carries audio for train/dev/test: for Urdu 17,212 of the
+66,973 validated clips (20.8 h of 76.4 h). The rest needs a Mozilla Data Collective
+account. 1,000 clips from CV test are held out as an extra read-speech benchmark.
+
+`scripts/merge_cv_manifest.py` merges it with FLEURS + podcasts into
+`manifest_combined_cv.jsonl`. CV would be ~87% of the data, so podcast *train* clips are
+repeated 3x to keep conversational speech weighted -- the same read-speech-dominance
+failure as the FLEURS-only run. Existing manifests are left untouched so earlier results
+stay reproducible.
+
+```bash
+python scripts/fetch_common_voice_mirror.py
+python scripts/merge_cv_manifest.py
+python scripts/run_day3_train.py --config configs/day3_lora_cv.yaml
+python scripts/run_day5_export.py --config configs/day3_lora_cv.yaml
+```
+
+`configs/day3_lora_cv.yaml` is the shipped recipe with two changes only (the new
+manifest, and 2 epochs instead of 3 since there is ~3x more data), so differences are
+attributable to the data. Acceptance rule: it replaces the shipped model only if
+conversational (podcast) accuracy does not regress, not just the overall number.
+
+Served-path WER (`eval_served.py`, VAD decoding), as recorded in the commit for this run:
+
+| test set | `stt_v2_lora_augmented` | `stt_v3_lora_cv` |
+|---|---|---|
+| all | 18.23% | **17.87%** |
+| podcast | 13.23% | **12.35%** |
+| FLEURS | 20.13% | **19.96%** |
+| CV holdout | 26.90% | **23.21%** |
+
+Podcast improved, so the acceptance rule passes, and `stt_v3_lora_cv` is now
+`DEFAULT_MODEL` in `scripts/transcribe.py` (the previous model is kept on disk). Read
+the gains with care: the CV-holdout gain is the least meaningful row (the new model
+trained on CV, and the Urdu holdout is random clips, not speaker-disjoint, so some
+held-out speakers also appear in training), and the overall and FLEURS gains are small.
+
+### GPU thermal pacing
+
+This machine has crashed outright under GPU load before (see the crash post-mortem), and
+the first attempt at this run had the RTX 5090 at 85 C with fans at 97%.
+`src/training/thermal.py` adds a `ThermalGuard` callback, configured under `thermal:` in
+the training YAML. Two layers: after each step it rests `gain_s_per_c` seconds per degree
+above `target_c` (capped at `max_rest_s`) so the card settles near the target and the
+fans stay steady rather than ramping; and a hard stop at `pause_at_c` waits until it falls
+to `resume_at_c`. It fails open if `nvidia-smi` can't be read.
+
+Measured: the Urdu run averaged 66 C with fans ~32%. On the Arabic run (below), over the
+~2 h from step 1250 to 3000 the guard logged an average of 66 C and rested ~76 min in
+total, while fans held at 31-33% in every sample taken. The 75 C hard stop did trigger --
+75 hard pauses and a peak of 77 C, because temperature climbs ~5 C/s and is only checked
+per step -- so the cost of a quiet run is time, not noise.
+
+## Arabic fine-tune experiment (2026-09-25 to 2026-10-02)
+
+Question: does the Urdu recipe (LoRA on large-v3 with Common Voice read speech) also
+improve Arabic, in particular Gulf dialect? Acceptance rule, set before training: the
+fine-tune only replaces base large-v3 for Arabic if Gulf accuracy does not regress,
+measured on dialect test clips and not just the Common Voice holdout. Training on read
+speech alone had already broken Urdu code-switching once, so this was a real risk.
+
+### Data
+
+Common Voice Arabic from the same CC0 mirror: 28,553 train / 10,352 dev / 10,474 test
+clips, 26,648 kept. It is read speech, almost all Modern Standard Arabic (about ten clips
+labelled Saudi/Gulf). The train split is 32.5 h from only 24 speakers, so
+`fetch_common_voice_mirror.py --lang ar` adds two options: `--max_per_speaker 300` so the
+model learns Arabic rather than those voices, and `--speaker_disjoint` to hold out whole
+*speakers* from CV test. Result: 25,347 train clips (31.0 h, 943 speakers), 301
+validation, 1,000 test, no speaker overlap. (The Urdu holdout is random clips, which
+flatters its score.)
+
+### Test sets
+
+| set | clips | what it is |
+|---|---|---|
+| Saudi | 273 | Lahgtna v2 test split |
+| Bahraini | 193 | Lahgtna v2 test split |
+| Yemeni | 115 | Lahgtna v2 test split |
+| Nexdata | 5 | Gulf sample in the TTS repo -- anecdotal at this size |
+| CV holdout | 1,000 | speaker-disjoint Modern Standard Arabic read speech |
+
+The three dialect sets come from `oddadmix/dialectal-arabic-lahgtna-v2`, built by
+`fetch_gulf_eval.py` in the TTS repo into `D:\Audion-Data\Arabic\gulf_eval_lahgtna`,
+outside every git repo. That dataset states no licence and re-hosts audio from other
+people's channels, so it is used **for evaluation only**. Its transcripts are
+AI-generated, so absolute WER against them is approximate; the signal is the
+*comparison* between models on identical clips. Scoring is `eval_arabic.py` in the TTS
+repo (faster-whisper on the CT2 export). It normalises text first -- drops diacritics and
+punctuation, folds alef variants and `ى/ي`, `ؤ`, `ئ` -- so spelling variants don't count
+as errors.
+
+### Run 1: diacritized training text
+
+`configs/day3_lora_ar_cv.yaml` -- same recipe as Urdu (LoRA r=8, lr 1e-4, 2 epochs,
+augmentation, thermal pacing). Read Modern Standard Arabic improved (CV holdout 15.67 ->
+12.40) but every Gulf set got worse (Saudi 17.61 -> 21.39, Bahraini 31.63 -> 34.39,
+Yemeni 29.87 -> 32.10). Comparing outputs showed why: 23% of CV Arabic sentences are
+written with full diacritics (tashkeel), and the model learned to switch into that formal
+mode, producing diacritized, MSA-leaning text that mis-hears dialect (`مكان الذهب` became
+`مَا كَانَتْ ذَهَبُ`). Everyday Arabic, the Gulf transcripts and the app are undiacritized.
+
+### Run 2: diacritics stripped
+
+`scripts/clean_arabic_manifest.py` removes diacritics and tatweel and re-attaches a
+stand-alone `و` to the next word (`و كيف` -> `وكيف`): 9,834 of 26,648 transcripts changed,
+nothing else. `configs/day3_lora_ar_cv_clean.yaml` is otherwise identical, and keeps every
+250-step checkpoint so an earlier one can be tried if later steps drift toward formal
+Arabic.
+
+### Results (WER %)
+
+| test set | base large-v3 | run 1 | run 2 final (3170) | run 2 ckpt-1000 | run 2 ckpt-500 |
+|---|---|---|---|---|---|
+| Saudi (273) | **17.61** | 21.39 | 19.47 | 18.69 | 18.25 |
+| Bahraini (193) | **31.63** | 34.39 | 32.25 | 32.03 | 32.12 |
+| Yemeni (115) | 29.87 | 32.10 | 31.71 | 30.00 | **29.66** |
+| Nexdata (5) | **22.78** | 27.85 | 24.05 | 25.32 | 24.05 |
+| CV holdout (1000) | 15.67 | 12.40 | **11.47** | 11.69 | 12.45 |
+
+Whether the gaps are real, from a paired bootstrap over clips against base (positive =
+worse than base; WER recomputed per clip with the scorer's normalisation, and it
+reproduces every stored summary):
+
+| Gulf subset | model | WER diff vs base | 95% CI |
+|---|---|---|---|
+| Saudi (273) | final | +1.85 | [+1.08, +2.64] |
+| Saudi (273) | ckpt-500 | +0.63 | [-0.03, +1.34] |
+| Bahraini (193) | final | +0.62 | [-0.40, +1.64] |
+| Bahraini (193) | ckpt-500 | +0.49 | [-0.62, +1.60] |
+| Yemeni (115) | final | +1.84 | [+0.64, +2.98] |
+| Yemeni (115) | ckpt-500 | -0.22 | [-1.19, +0.77] |
+| **Gulf pooled (581)** | **final** | **+1.49** | **[+0.92, +2.04]** |
+| **Gulf pooled (581)** | **ckpt-1000** | **+0.71** | **[+0.17, +1.25]** |
+| **Gulf pooled (581)** | **ckpt-500** | **+0.44** | **[-0.06, +0.97]** |
+
+Reproduce with `scripts/bootstrap_vs_base.py`, which reads the per-clip JSON files and
+checks its recomputed WER against each file's stored summary before resampling:
+
+```bash
+python scripts/bootstrap_vs_base.py --eval_dir D:/Audion-Data/Arabic/eval \
+    --base base --candidates clean ckpt500 ckpt1000 --sets sa bh ye
+```
+
+### What it shows
+
+- **Stripping diacritics helped but did not fix it.** Versus run 1, every Gulf set
+  improved and the Saudi regression roughly halved (+3.8 -> +1.9 WER against base), but
+  the final model is still significantly worse than base on Saudi and Yemeni and on the
+  pooled Gulf set.
+- **The drift grows with training steps.** Saudi 18.25 -> 18.69 -> 19.47 and Yemeni
+  29.66 -> 30.00 -> 31.71 from step 500 to 1000 to 3170; Bahraini is flat. Most of the
+  Modern Standard Arabic gain arrives early (12.45 at step 500 vs 11.47 at the end), so
+  later steps mostly add Gulf cost. Likely cause: read-MSA-only training pulls the model
+  toward formal Arabic -- an interpretation, not tested directly.
+- **Checkpoint-500 is the only fine-tune near base on Gulf.** Pooled +0.44 WER, whose
+  interval just touches zero, with Yemeni slightly better than base (CER too: 13.81 vs
+  14.65) and read MSA ~3 points better. Strictly it is a hair worse on Saudi, and the
+  5-clip Nexdata set is too small to lean on.
+- **Selection bias.** ckpt-500 was picked after seeing these same Gulf sets, so its
+  numbers are slightly flattering. Confirming it needs a Gulf test set it hasn't been
+  compared on.
+
+### Decision
+
+Nothing is deployed and the Arabic model in use is unchanged. Under the acceptance rule
+the final model fails. Checkpoint-500 is the one worth considering, and whether it is
+worth using depends on traffic: mostly Modern Standard Arabic or mixed -> likely yes;
+mostly Gulf dialect -> keep base large-v3.
+
+### Reproduce
+
+```bash
+python scripts/fetch_common_voice_mirror.py --lang ar --max_per_speaker 300 --speaker_disjoint
+python scripts/clean_arabic_manifest.py
+python scripts/run_day3_train.py --config configs/day3_lora_ar_cv_clean.yaml
+
+# export one checkpoint to its own folder (does not touch the final model's export)
+python scripts/run_day5_export.py --config configs/day3_lora_ar_cv_clean.yaml \
+    --adapter_dir D:/Audion-Data/Arabic/checkpoints/stt_ar_lora_cv_clean/checkpoint-500 \
+    --out_root    D:/Audion-Data/Arabic/checkpoints/stt_ar_lora_cv_clean/export_ckpt500
+
+# score it (eval_arabic.py lives in the TTS repo, D:\Audion-Data\TTS)
+python eval_arabic.py --dir D:/Audion-Data/Arabic/gulf_eval_lahgtna/sa --language ar \
+    --model "D:\Audion-Data\Arabic\checkpoints\stt_ar_lora_cv_clean\export_ckpt500\ct2" --out sa.json
+```
+
+Checkpoints are under `D:\Audion-Data\Arabic\checkpoints\` (`stt_ar_lora_cv`,
+`stt_ar_lora_cv_clean`); per-clip results are in `D:\Audion-Data\Arabic\eval\` with
+prefixes `base_`, `new_` (run 1), `clean_` (run 2 final), `ckpt500_`, `ckpt1000_`. The
+helper shell scripts there are outside this repo.
+
+### Operational notes
+
+- **Resuming:** training auto-resumes from the latest checkpoint, so re-run the same
+  command. This run was resumed twice: after the first launch stopped near step 1330 on
+  2026-09-29 (cause not determined; no traceback in the log), and at step 3000 after a
+  background-task time limit killed it at step 3014.
+- **Don't run two exports against one folder.** `run_day5_export.py` writes fixed
+  `merged_hf` and `ct2` paths and refuses to overwrite `ct2` without `--force`; use
+  `--out_root` per run. A leftover waiter job and a manual launch once both exported and
+  scored after training ended, which interleaved the log and produced a harmless
+  `FileExistsError`. The numbers above come from the stored per-clip JSON files, not
+  that log.
+
 ## Status against the 7-Day Plan (as of 2026-09-11)
+
+> Snapshot from 2026-09-11. Since then the served model changed to `stt_v3_lora_cv` and
+> the Arabic experiment was run -- see "Current state" at the top and the sections above.
 
 The STT track is complete and deployable. Two STT items and the whole Emotion track are
 not done -- recorded here rather than left implicit.
@@ -641,15 +923,29 @@ mean Day 7's "both models in pipeline" is half-satisfied by construction.
 
 ### Biggest remaining risk
 
-Every number in this README comes from FLEURS, 3 podcasts, and *synthetic* noise. The
-model has never been scored on audio from the actual demo environment. 10-15 minutes
-recorded through the real mic/room/phone, with a rough human transcript, would convert
-"good model, assumed conditions" into "good model, measured conditions". That is the
-single highest-value thing left to do.
+As of 2026-09-11, every number here came from FLEURS, 3 podcasts, and *synthetic* noise.
+The one measurement since on genuinely different audio (the 35-minute lecture, see
+"Real-world evaluation") used a reference built by correcting the model's own output, so
+it understates error. The model has still never been scored on independently transcribed
+audio from the actual demo environment. 10-15 minutes recorded through the real
+mic/room/phone, with a rough human transcript, would convert "good model, assumed
+conditions" into "good model, measured conditions". That remains the single
+highest-value thing left to do for Urdu.
 
-## Roadmap (Days 2-7)
+## Open items
 
-Not scaffolded yet — build each day's script once the prior day's output exists and the
-approach is confirmed, rather than stubbing out unused code now. See
-`STT v2 7Day Plan.xlsx` for the full task list per day (accent/emotion tagging, LoRA
-fine-tuning, WER/CER + accent-wise eval, CTranslate2/ONNX export, integration test).
+- **Accent tagging and the accent-wise WER report** (Karachi/Lahori/Punjabi): need
+  someone who can tell them apart by ear; nothing in this pipeline can.
+- **Independent real-environment Urdu measurement**, as above.
+- **Arabic decision:** choose between base large-v3 and checkpoint-500 (see "Arabic
+  fine-tune experiment"), and if ckpt-500 is a candidate, confirm it on a Gulf test set
+  not used to select it. Optionally score checkpoints 250 and 750 to see whether less
+  training stays closer to base. If a better Arabic fine-tune is wanted, it probably needs
+  dialectal training data rather than more read Modern Standard Arabic -- a hypothesis
+  from the drift pattern, not something tested.
+- **VAD in the web app:** `eval_served.py` found VAD the best decoding setting (18.23%),
+  but the web UI does not enable it -- see "Evaluating the model as served". Turning it on
+  is a one-line change if wanted.
+- **Out of scope by decision (2026-09-08):** the Emotion track.
+
+See `STT v2 7Day Plan.xlsx` for the original task list per day.
