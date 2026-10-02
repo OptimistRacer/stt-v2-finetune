@@ -14,6 +14,13 @@ self-hosted STT). Code lives here and is git-tracked; audio data lives alongside
   Gulf dialect speech, and the cost grows with training steps. Base large-v3 remains the
   safe Arabic model; an early checkpoint (500) is the only fine-tune that comes close on
   Gulf. See "Arabic fine-tune experiment".
+- **Deployed on this PC (2026-10-02):** the merged speech app -- speech to text with this
+  model plus text to speech, Urdu and Arabic -- lives in the separate TTS repo
+  (`D:\Audion-Data\TTS`). It starts hidden at Windows login as the scheduled task
+  `UrduSpeechWebapp`, listens on port 8095 for the local network
+  (`http://192.168.0.10:8095`, `http://localhost:8095` on this PC) and is restarted if it
+  dies. Operating notes: `D:\Audion-Data\TTS\deploy\README.txt`. Its Arabic transcription
+  uses base large-v3, not the fine-tunes.
 - **Still open:** accent tagging and the accent-wise report (need human labels), and
   measurement on real demo-environment audio. See "Open items" at the bottom.
 
@@ -651,7 +658,7 @@ It also makes decoding settings testable. Sweep on the 336-clip test split:
 
 | variant | WER |
 |---|---|
-| `vad` | **18.23%** (`transcribe.py --vad`; the web UI does not enable it) |
+| `vad` | **18.23%** (`transcribe.py --vad`; on by default in the merged app, off in this repo's `webapp/`) |
 | `beam8` | 18.41% |
 | baseline | 18.45% |
 | `no_temp_fallback` | 18.45% (fallback never triggers on these clips) |
@@ -943,9 +950,9 @@ highest-value thing left to do for Urdu.
   training stays closer to base. If a better Arabic fine-tune is wanted, it probably needs
   dialectal training data rather than more read Modern Standard Arabic -- a hypothesis
   from the drift pattern, not something tested.
-- **VAD in the web app:** `eval_served.py` found VAD the best decoding setting (18.23%),
-  but the web UI does not enable it -- see "Evaluating the model as served". Turning it on
-  is a one-line change if wanted.
+- **VAD in this repo's `webapp/`:** `eval_served.py` found VAD the best decoding setting
+  (18.23%), but this repo's own UI does not enable it (the merged app below does) -- see
+  "Evaluating the model as served". Turning it on here is a one-line change if wanted.
 - **Out of scope by decision (2026-09-08):** the Emotion track.
 
 See `STT v2 7Day Plan.xlsx` for the original task list per day.
