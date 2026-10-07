@@ -1,0 +1,94 @@
+{
+ "name": "Parvaaz",
+ "speaker_mean_pitch_hz": 118.5,
+ "pitch_bin": "moderate pitch",
+ "rate_edges_letters_per_s": [
+  7.73,
+  8.61,
+  9.29,
+  9.91,
+  10.75,
+  12.13
+ ],
+ "expressiveness_edges_pitch_std_hz": [
+  18.88,
+  23.82,
+  27.26,
+  32.83
+ ],
+ "train": {
+  "rows": 10473,
+  "rate": {
+   "very slowly": 524,
+   "slightly fast": 2096,
+   "fast": 1571,
+   "slightly slowly": 2094,
+   "moderate speed": 2093,
+   "slowly": 1571,
+   "very fast": 524
+  },
+  "noise": {
+   "clean": 1720,
+   "slightly clean": 5452,
+   "balanced in clarity": 2877,
+   "slightly noisy": 285,
+   "very clean": 126,
+   "noisy": 12,
+   "very noisy": 1
+  },
+  "reverb": {
+   "slightly close-sounding": 130,
+   "very close-sounding": 10319,
+   "slightly distant-sounding": 24
+  },
+  "monotony": {
+   "monotone": 2618,
+   "slightly expressive and animated": 3141,
+   "very expressive and animated": 1048,
+   "expressive and animated": 2618,
+   "very monotone": 1048
+  },
+  "examples": [
+   "In a moderate-pitched voice that is monotone, Parvaaz speaks very slowly in a clear voice, as if speaking to a voice assistant. The audio is clean and slightly close-sounding.",
+   "In a moderate-pitched voice that is slightly expressive and animated, Parvaaz speaks slightly fast in a clear voice, as if speaking to a voice assistant. The audio is clean and very close-sounding.",
+   "Parvaaz speaks in a clear voice, as if speaking to a voice assistant, fast, with a moderate-pitched voice that is slightly expressive and animated. The recording is slightly clean and very close-sounding."
+  ]
+ },
+ "test": {
+  "rows": 1168,
+  "rate": {
+   "slightly fast": 255,
+   "very fast": 62,
+   "fast": 161,
+   "moderate speed": 226,
+   "slowly": 158,
+   "slightly slowly": 247,
+   "very slowly": 59
+  },
+  "noise": {
+   "slightly clean": 610,
+   "clean": 195,
+   "slightly noisy": 29,
+   "balanced in clarity": 319,
+   "very clean": 15
+  },
+  "reverb": {
+   "very close-sounding": 1143,
+   "slightly distant-sounding": 10,
+   "slightly close-sounding": 14,
+   "distant-sounding": 1
+  },
+  "monotony": {
+   "expressive and animated": 296,
+   "monotone": 284,
+   "slightly expressive and animated": 336,
+   "very monotone": 128,
+   "very expressive and animated": 124
+  },
+  "examples": [
+   "Parvaaz speaks in a clear voice, as if speaking to a voice assistant, slightly fast, with a moderate-pitched voice that is expressive and animated. The recording is slightly clean and very close-sounding.",
+   "Parvaaz delivers his words slightly fast in a clear voice, as if speaking to a voice assistant; his moderate-pitched voice is monotone. The recording sounds clean and very close-sounding.",
+   "Parvaaz delivers his words slightly fast in a clear voice, as if speaking to a voice assistant; his moderate-pitched voice is expressive and animated. The recording sounds clean and slightly distant-sounding."
+  ]
+ }
+}

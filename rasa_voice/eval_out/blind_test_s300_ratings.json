@@ -1,0 +1,80 @@
+{
+ "ratings": {
+  "s0A": "2",
+  "s0B": "4",
+  "s0C": "4",
+  "s1A": "4",
+  "s1B": "4",
+  "s1C": "2",
+  "s2A": "2",
+  "s2B": "4",
+  "s2C": "4",
+  "s3A": "4",
+  "s3B": "4",
+  "s3C": "2",
+  "s4A": "4",
+  "s4B": "4",
+  "s4C": "1",
+  "s5A": "4",
+  "s5B": "2",
+  "s5C": "4"
+ },
+ "key": {
+  "0": {
+   "A": "Meta Standard (non-commercial)",
+   "B": "OmniVoice (non-commercial)",
+   "C": "Parvaaz (ours, commercial OK)"
+  },
+  "1": {
+   "A": "OmniVoice (non-commercial)",
+   "B": "Parvaaz (ours, commercial OK)",
+   "C": "Meta Standard (non-commercial)"
+  },
+  "2": {
+   "A": "Meta Standard (non-commercial)",
+   "B": "OmniVoice (non-commercial)",
+   "C": "Parvaaz (ours, commercial OK)"
+  },
+  "3": {
+   "A": "Parvaaz (ours, commercial OK)",
+   "B": "OmniVoice (non-commercial)",
+   "C": "Meta Standard (non-commercial)"
+  },
+  "4": {
+   "A": "Parvaaz (ours, commercial OK)",
+   "B": "OmniVoice (non-commercial)",
+   "C": "Meta Standard (non-commercial)"
+  },
+  "5": {
+   "A": "OmniVoice (non-commercial)",
+   "B": "Meta Standard (non-commercial)",
+   "C": "Parvaaz (ours, commercial OK)"
+  }
+ },
+ "averages": {
+  "Meta Standard (non-commercial)": [
+   2,
+   2,
+   2,
+   2,
+   1,
+   2
+  ],
+  "OmniVoice (non-commercial)": [
+   4,
+   4,
+   4,
+   4,
+   4,
+   4
+  ],
+  "Parvaaz (ours, commercial OK)": [
+   4,
+   4,
+   4,
+   4,
+   4,
+   4
+  ]
+ }
+}

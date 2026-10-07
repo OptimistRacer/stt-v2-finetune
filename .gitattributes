@@ -1,0 +1,3 @@
+# Keep these byte-exact on checkout: bash rejects CRLF, and a patch must match its target.
+*.sh text eol=lf
+*.patch -text

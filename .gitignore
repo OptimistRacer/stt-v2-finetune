@@ -59,3 +59,36 @@ candidates/listen*.html
 candidates/listen_key.json
 candidates/omnivoice_worker.log
 candidates/test_server.log
+
+# Owned-voice work: scripts, summaries and scores are tracked; data, models and
+# environments stay on disk (all regenerable -- see rasa_voice/README.md)
+rasa_urdu/
+rasa_voice/rasa_male_hf/*
+!rasa_voice/rasa_male_hf/summary.json
+rasa_voice/rasa_male_tags/
+rasa_voice/rasa_male_desc/*
+!rasa_voice/rasa_male_desc/summary.json
+rasa_voice/smoke_*/
+rasa_voice/parvaaz_train/
+rasa_voice/parvaaz_codes/
+rasa_voice/parvaaz_codes_tmp/
+rasa_voice/eval_models/
+rasa_voice/eval_out/*
+!rasa_voice/eval_out/scores.json
+!rasa_voice/eval_out/heldout_texts.json
+!rasa_voice/eval_out/blind_test_s300_ratings.json
+rasa_voice/desc_log.txt
+venv_dataspeech/
+parvaaz/venv_demucs/
+parvaaz/shorts_raw/
+parvaaz/work/
+parvaaz/stems/
+parvaaz/audit/
+
+# Upstream clones used for training (their own git repos). Our changes to parler-tts are
+# kept as rasa_voice/parler-tts-local.patch; dataspeech is used unmodified.
+parler-tts/
+dataspeech/
+
+# Desktop shortcut
+TTS.lnk

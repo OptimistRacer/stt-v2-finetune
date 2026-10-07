@@ -1,0 +1,46 @@
+{
+ "dropped": {
+  "proper_noun": 2782,
+  "duration": 600
+ },
+ "train": {
+  "clips": 10473,
+  "hours": 21.25,
+  "styles": {
+   "WIKI": 3409,
+   "CONV": 2370,
+   "NEWS": 866,
+   "BOOK": 652,
+   "DISGUST": 482,
+   "HAPPY": 465,
+   "SURPRISE": 464,
+   "ANGER": 451,
+   "FEAR": 445,
+   "SAD": 381,
+   "ALEXA": 196,
+   "BB": 130,
+   "UMANG": 90,
+   "DIGI": 72
+  }
+ },
+ "test": {
+  "clips": 1168,
+  "hours": 2.43,
+  "styles": {
+   "WIKI": 378,
+   "CONV": 269,
+   "NEWS": 94,
+   "BOOK": 73,
+   "DISGUST": 53,
+   "HAPPY": 52,
+   "SURPRISE": 52,
+   "ANGER": 50,
+   "FEAR": 50,
+   "SAD": 43,
+   "ALEXA": 21,
+   "BB": 15,
+   "UMANG": 10,
+   "DIGI": 8
+  }
+ }
+}

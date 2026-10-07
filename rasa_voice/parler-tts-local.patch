@@ -1,0 +1,109 @@
+diff --git a/training/run_parler_tts_training.py b/training/run_parler_tts_training.py
+index 1e368e4..235d7aa 100644
+--- a/training/run_parler_tts_training.py
++++ b/training/run_parler_tts_training.py
+@@ -428,12 +428,15 @@ def main():
+             max_length=max_target_length,
+             padding=padding,
+         )
+-        encoder_signature = set(inspect.signature(audio_decoder.forward).parameters)
++        # Local patch: look at encode()'s own parameters. transformers' DacModel (the codec
++        # Indic Parler-TTS uses) takes n_quantizers and no bandwidth or padding_mask, and
++        # returns (bsz, codebooks, seq_len) rather than Encodec's (1, bsz, codebooks, seq_len).
++        encoder_signature = set(inspect.signature(audio_decoder.encode).parameters)
+ 
+         def apply_audio_decoder(batch):
+             len_audio = batch.pop("len_audio")
+             audio_decoder.to(batch["input_values"].device).eval()
+-            if bandwidth is not None:
++            if bandwidth is not None and "bandwidth" in encoder_signature:
+                 batch["bandwidth"] = bandwidth
+             elif "num_quantizers" in encoder_signature:
+                 batch["num_quantizers"] = num_codebooks
+@@ -443,11 +446,13 @@ def main():
+                 batch["n_quantizers"] = num_codebooks
+ 
+             with torch.no_grad():
+-                labels = audio_decoder.encode(**batch)["audio_codes"]
++                labels = audio_decoder.encode(**{k: v for k, v in batch.items() if k in encoder_signature})["audio_codes"]
++            if labels.dim() == 4:
++                labels = labels.squeeze(0)
+             output = {}
+             output["len_audio"] = len_audio
+-            # (1, bsz, codebooks, seq_len) -> (bsz, seq_len, codebooks)
+-            output["labels"] = labels.squeeze(0).transpose(1, 2)
++            # (bsz, codebooks, seq_len) -> (bsz, seq_len, codebooks)
++            output["labels"] = labels.transpose(1, 2)
+ 
+             # if `pad_to_max_length`, the maximum corresponding audio length of the current batch is max_duration*sampling_rate
+             max_length = len_audio.max() if padding != "max_length" else max_target_length
+@@ -603,7 +608,8 @@ def main():
+         if accelerator.is_main_process:
+             vectorized_datasets.save_to_disk(
+                 data_args.save_to_disk,
+-                num_proc=min(data_args.preprocessing_num_workers, len(vectorized_datasets["eval"]) - 1),
++                # Local patch: there is no "eval" split when training without --do_eval.
++                num_proc=max(1, min(data_args.preprocessing_num_workers, min(len(d) for d in vectorized_datasets.values()) - 1)),
+             )
+         accelerator.wait_for_everyone()
+         logger.info(f"Dataset saved at {data_args.save_to_disk}")
+@@ -876,6 +882,43 @@ def main():
+         "min_new_tokens": num_codebooks + 1,
+     }
+ 
++    # Local patch: keep the GPU at a steady, moderate temperature so the fans stay quiet
++    # (same rules as stt-v2-finetune/src/training/thermal.py). After each micro-batch: rest
++    # GAIN seconds per degree above TARGET (capped), and if it still reaches PAUSE, wait
++    # until it is back to RESUME. Fails open if the temperature can't be read.
++    import subprocess
++    import time as _time
++
++    _target = float(os.environ.get("THERMAL_TARGET_C", 65))
++    _gain, _max_rest = 0.25, 4.0
++    _pause, _resume = float(os.environ.get("THERMAL_PAUSE_C", 75)), float(os.environ.get("THERMAL_RESUME_C", 65))
++    _thermal = {"rested_s": 0.0, "pauses": 0, "peak": 0}
++
++    def _gpu_temp():
++        try:
++            out = subprocess.run(["nvidia-smi", "--query-gpu=temperature.gpu", "--format=csv,noheader,nounits"],
++                                 capture_output=True, text=True, timeout=10)
++            return int(out.stdout.strip().splitlines()[0])
++        except (OSError, ValueError, IndexError, subprocess.TimeoutExpired):
++            return None
++
++    def thermal_pace():
++        t = _gpu_temp()
++        if t is None:
++            return
++        _thermal["peak"] = max(_thermal["peak"], t)
++        if t >= _pause:
++            _thermal["pauses"] += 1
++            start = _time.time()
++            while t is not None and t > _resume and _time.time() - start < 600:
++                _time.sleep(1)
++                t = _gpu_temp()
++            _thermal["rested_s"] += _time.time() - start
++        elif t > _target:
++            rest = min(_max_rest, _gain * (t - _target))
++            _time.sleep(rest)
++            _thermal["rested_s"] += rest
++
+     # Define gradient update step fn
+     def train_step(
+         batch,
+@@ -1044,6 +1087,7 @@ def main():
+                     loss, train_metric = train_step(batch, accelerator, autocast_kwargs, num_items_in_batch, gradient_accumulation_steps)
+                     accelerator.backward(loss)
+                     # losses.append(loss.detach())
++                thermal_pace()
+             
+             grad_norm = accelerator.clip_grad_norm_(model.parameters(), training_args.max_grad_norm)
+             optimizer.step()
+@@ -1061,6 +1105,7 @@ def main():
+                     f"Step... ({cur_step} / {total_train_steps} | Loss:"
+                     f" {train_metric['loss']}, Learning Rate:"
+                     f" {lr_scheduler.get_last_lr()[0]})"
++                    f" [GPU peak {_thermal['peak']}C, rested {_thermal['rested_s'] / 60:.1f} min, hard pauses {_thermal['pauses']}]"
+                 )
+                 train_metric["grad_norm"] = grad_norm.detach().item() if isinstance(grad_norm, torch.Tensor) else grad_norm
+                 log_metric(
