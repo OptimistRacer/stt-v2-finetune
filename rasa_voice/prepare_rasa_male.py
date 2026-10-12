@@ -21,6 +21,7 @@ Choices, each from looking at the data:
 Run with a Python that has `datasets` < 4 (venv_parler or venv_dataspeech):
     ..\\candidates\\venv_parler\\Scripts\\python.exe prepare_rasa_male.py
 """
+import argparse
 import json
 import re
 import unicodedata
@@ -52,8 +53,16 @@ def foreign_letters(text: str) -> bool:
 
 
 def main():
+    # Defaults reproduce the male-only set Parvaaz v1 was trained on. Parvaaz v2 adds the
+    # female speaker: --genders Male Female --out rasa_mf_hf
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--genders", nargs="+", default=["Male"])
+    ap.add_argument("--out", default="rasa_male_hf")
+    a = ap.parse_args()
+    global OUT
+    OUT = HERE / a.out
     index = json.loads((SRC / "shard_index.json").read_text(encoding="utf-8"))
-    shards = [SRC / r["file"] for r in index if "Male" in r["genders"]]
+    shards = [SRC / r["file"] for r in index if set(a.genders) & set(r["genders"])]
     missing = [s for s in shards if not s.exists()]
     if missing:
         raise SystemExit(f"{len(missing)} shard(s) not downloaded yet, e.g. {missing[0].name}")
@@ -63,7 +72,7 @@ def main():
     for shard in shards:
         split = "test" if shard.name.startswith("test-") else "train"
         for r in pq.read_table(shard).to_pylist():
-            if r["gender"] != "Male":
+            if r["gender"] not in a.genders:
                 continue
             dur = float(r["duration"])
             text = clean(r["text"])
@@ -75,10 +84,10 @@ def main():
                 dropped["text"] += 1
             else:
                 kept[split].append({"id": r["filename"], "audio": {"bytes": r["audio"]["bytes"], "path": r["filename"] + ".wav"},
-                                    "text": text, "style": r["style"], "duration": dur})
+                                    "text": text, "style": r["style"], "gender": r["gender"], "duration": dur})
 
     features = Features({"id": Value("string"), "audio": Audio(sampling_rate=48000), "text": Value("string"),
-                         "style": Value("string"), "duration": Value("float32")})
+                         "style": Value("string"), "gender": Value("string"), "duration": Value("float32")})
     (OUT / "data").mkdir(parents=True, exist_ok=True)
     summary = {"dropped": dict(dropped)}
     for split, rows in kept.items():
@@ -91,6 +100,9 @@ def main():
             Dataset.from_list(part, features=features).to_parquet(
                 str(OUT / "data" / f"{split}-{i:05d}-of-{n_shards:05d}.parquet"))
         summary[split] = {"clips": len(rows), "hours": round(sum(r["duration"] for r in rows) / 3600, 2),
+                          "genders": {g: {"clips": sum(r["gender"] == g for r in rows),
+                                          "hours": round(sum(r["duration"] for r in rows if r["gender"] == g) / 3600, 2)}
+                                      for g in sorted({r["gender"] for r in rows})},
                           "styles": dict(Counter(r["style"] for r in rows).most_common())}
     (OUT / "summary.json").write_text(json.dumps(summary, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(summary, ensure_ascii=False, indent=1))

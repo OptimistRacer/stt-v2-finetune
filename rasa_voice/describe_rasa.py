@@ -33,7 +33,10 @@ from datasets import Dataset, load_from_disk
 HERE = Path(__file__).resolve().parent
 DATASPEECH = HERE.parent / "dataspeech" / "examples" / "tags_to_annotations"
 OUT = HERE / "rasa_male_desc"
-NAME = "Parvaaz"
+# One name per speaker: a request's description must contain the name to get that voice.
+# Parvaaz (male) is the product voice; the female speaker only adds Urdu training data (v2).
+NAMES = {"Male": "Parvaaz", "Female": "Sana"}
+PRONOUN = {"Male": "his", "Female": "her"}
 
 STYLE = {
     "CONV": "in a natural, conversational tone",
@@ -55,7 +58,7 @@ URDU_LETTER = re.compile(r"[ء-غف-يٱ-ۓ]")
 TEMPLATES = [
     "{name} speaks {style}, {rate}, with a {pitch} voice that is {mono}. The recording is {noise} and {reverb}.",
     "In a {pitch} voice that is {mono}, {name} speaks {rate} {style}. The audio is {noise} and {reverb}.",
-    "{name} delivers his words {rate} {style}; his {pitch} voice is {mono}. The recording sounds {noise} and {reverb}.",
+    "{name} delivers {pron} words {rate} {style}; {pron} {pitch} voice is {mono}. The recording sounds {noise} and {reverb}.",
 ]
 
 
@@ -77,8 +80,12 @@ def main():
     words = json.loads((DATASPEECH / "v02_text_bins.json").read_text())
     ds = load_from_disk(a.tags)
     splits = list(ds.keys())
-    cols = ["id", "text", "style", "duration", "utterance_pitch_mean", "utterance_pitch_std", "snr", "c50", "speech_duration"]
+    cols = ["id", "text", "style", "gender", "duration", "utterance_pitch_mean", "utterance_pitch_std", "snr", "c50",
+            "speech_duration"]
     tables = {s: ds[s].select_columns([c for c in cols if c in ds[s].column_names]).to_pandas() for s in splits}
+    for df in tables.values():
+        if "gender" not in df:  # the v1 male-only dataset has no gender column
+            df["gender"] = "Male"
 
     def rate_of(df):
         letters = df["text"].map(lambda t: len(URDU_LETTER.findall(t)))
@@ -86,39 +93,55 @@ def main():
         return letters / secs
 
     train = tables["train"]
-    rate_edges = [0.0, *np.percentile(rate_of(train), [5, 20, 40, 60, 80, 95]).tolist(), 1e9]
-    # Expressiveness is also graded against this speaker's own range: on v02's absolute
-    # edges (from English multi-speaker audiobooks) nearly every clip is "monotone", which
-    # would leave nothing to learn the difference from.
-    mono_edges = [0.0, *np.percentile(train["utterance_pitch_std"].dropna(), [10, 35, 65, 90]).tolist(), 1e9]
-    speaker_pitch = float(train["utterance_pitch_mean"].mean())
-    pitch_word = binned([speaker_pitch], edges["pitch_bins_male"], words["speaker_level_pitch_bins"])[0]
-
-    report = {"name": NAME, "speaker_mean_pitch_hz": round(speaker_pitch, 1), "pitch_bin": pitch_word,
-              "rate_edges_letters_per_s": [round(x, 2) for x in rate_edges[1:-1]],
-              "expressiveness_edges_pitch_std_hz": [round(x, 2) for x in mono_edges[1:-1]]}
+    # Speaking rate and expressiveness are graded against each speaker's own range: on
+    # v02's absolute edges (from English multi-speaker audiobooks) nearly every clip is
+    # "monotone", which would leave nothing to learn the difference from. Pitch level uses
+    # v02's per-gender bins at the speaker level, as DataSpeech does.
+    spk = {}
+    for g, tg in train.groupby("gender"):
+        mean_pitch = float(tg["utterance_pitch_mean"].mean())
+        spk[g] = {
+            "rate_edges": [0.0, *np.percentile(rate_of(tg), [5, 20, 40, 60, 80, 95]).tolist(), 1e9],
+            "mono_edges": [0.0, *np.percentile(tg["utterance_pitch_std"].dropna(), [10, 35, 65, 90]).tolist(), 1e9],
+            "pitch": binned([mean_pitch], edges[f"pitch_bins_{g.lower()}"], words["speaker_level_pitch_bins"])[0],
+            "mean_pitch": mean_pitch,
+            "medians": {c: float(tg[c].median()) for c in ("snr", "c50", "utterance_pitch_std")},
+        }
+    report = {g: {"name": NAMES[g], "speaker_mean_pitch_hz": round(s["mean_pitch"], 1), "pitch_bin": s["pitch"],
+                  "rate_edges_letters_per_s": [round(x, 2) for x in s["rate_edges"][1:-1]],
+                  "expressiveness_edges_pitch_std_hz": [round(x, 2) for x in s["mono_edges"][1:-1]]}
+              for g, s in spk.items()}
     rng = random.Random(0)
     (OUT / "data").mkdir(parents=True, exist_ok=True)
     for split, df in tables.items():
-        rate = binned(rate_of(df), rate_edges, words["speaker_rate_bins"])
-        # A few clips get no SNR/C50 (brouhaha found no speech frames to average over);
-        # fill with the speaker's typical value rather than 0, which would read as "very noisy".
-        noise = binned(df["snr"].fillna(train["snr"].median()), edges["noise"], words["snr_bins"])
-        reverb = binned(df["c50"].fillna(train["c50"].median()), edges["reverberation"], words["reverberation_bins"])
-        mono = binned(df["utterance_pitch_std"].fillna(train["utterance_pitch_std"].median()), mono_edges, words["utterance_level_std"])
-        out = []
-        for i, row in df.reset_index(drop=True).iterrows():
+        df = df.reset_index(drop=True)
+        rates = rate_of(df)
+        out, counts = [], Counter()
+        for i, row in df.iterrows():
+            g, s = row["gender"], spk[row["gender"]]
+            # A few clips get no SNR/C50 (brouhaha found no speech frames to average over);
+            # fill with the speaker's typical value rather than 0, which would read as "very noisy".
+            val = lambda c: row[c] if row[c] == row[c] else s["medians"][c]  # NaN check
+            rate = binned([rates[i]], s["rate_edges"], words["speaker_rate_bins"])[0]
+            noise = binned([val("snr")], edges["noise"], words["snr_bins"])[0]
+            reverb = binned([val("c50")], edges["reverberation"], words["reverberation_bins"])[0]
+            mono = binned([val("utterance_pitch_std")], s["mono_edges"], words["utterance_level_std"])[0]
             style = STYLE.get(row["style"], "in a clear voice, as if speaking to a voice assistant"
                               if row["style"] in ASSISTANT_STYLES else "in a natural tone")
-            d = rng.choice(TEMPLATES).format(name=NAME, style=style, rate=RATE[rate[i]], pitch=pitch_word.replace("-pitch", "-pitched").replace("moderate pitch", "moderate-pitched"),
-                                             mono=mono[i], noise=noise[i], reverb=reverb[i])
+            pitch = s["pitch"].replace("-pitch", "-pitched").replace("moderate pitch", "moderate-pitched")
+            d = rng.choice(TEMPLATES).format(name=NAMES[g], pron=PRONOUN[g], style=style, rate=RATE[rate], pitch=pitch,
+                                             mono=mono, noise=noise, reverb=reverb)
             out.append({"id": row["id"], "description": d[0].upper() + d[1:]})
+            counts[(g, "rate", rate)] += 1
+            counts[(g, "monotony", mono)] += 1
+            counts[(g, "noise", noise)] += 1
         for old in (OUT / "data").glob(f"{split}-*.parquet"):
             old.unlink()
         Dataset.from_list(out).to_parquet(str(OUT / "data" / f"{split}-00000-of-00001.parquet"))
-        report[split] = {"rows": len(out), "rate": dict(Counter(rate)), "noise": dict(Counter(noise)),
-                         "reverb": dict(Counter(reverb)), "monotony": dict(Counter(mono)),
-                         "examples": [o["description"] for o in out[:3]]}
+        report[split] = {"rows": len(out),
+                         "by_speaker": {g: {k: {w: n for (gg, kk, w), n in counts.items() if gg == g and kk == k}
+                                            for k in ("rate", "monotony", "noise")} for g in spk},
+                         "examples": [o["description"] for o in out[:2]] + [o["description"] for o in out[-2:]]}
     (OUT / "summary.json").write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
     print(json.dumps(report, ensure_ascii=False, indent=1))
 

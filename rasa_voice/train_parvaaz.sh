@@ -7,7 +7,8 @@
 #   - parler-tts/training/run_parler_tts_training.py carries a local patch for the DAC codec
 #
 #   bash train_parvaaz.sh smoke     # 10 steps on the 50-clip sample
-#   bash train_parvaaz.sh full      # the real run
+#   bash train_parvaaz.sh full      # Parvaaz v1 (male only)
+#   bash train_parvaaz.sh v2        # Parvaaz v2 (male + female)
 set -e
 MODE=${1:-smoke}
 R=D:/Audion-Data/TTS/rasa_voice
@@ -17,6 +18,11 @@ export PYTHONUTF8=1 PYTHONIOENCODING=utf-8 WANDB_MODE=disabled
 if [ "$MODE" = smoke ]; then
   DATA=$R/smoke_hf; DESC=$R/smoke_desc; OUT=$R/smoke_train; CODES=$R/smoke_codes
   RUN=(--max_steps 10 --gradient_accumulation_steps 1 --warmup_steps 2 --logging_steps 1 --save_steps 10)
+elif [ "$MODE" = v2 ]; then
+  # Parvaaz v2: Rasa Urdu male (Parvaaz) + female ("Sana", training data only), ~2x the data.
+  DATA=$R/rasa_mf_hf; DESC=$R/rasa_mf_desc; OUT=$R/parvaaz_v2_train; CODES=$R/parvaaz_v2_codes
+  RUN=(--num_train_epochs ${EPOCHS:-2} --gradient_accumulation_steps 8 --warmup_steps 100 --logging_steps 10
+       --save_steps 300 --save_total_limit 12)
 else
   DATA=$R/rasa_male_hf; DESC=$R/rasa_male_desc; OUT=$R/parvaaz_train; CODES=$R/parvaaz_codes
   # Effective batch 4 x 8 = 32 clips; 2 epochs of 10,473 clips is ~655 updates. A checkpoint

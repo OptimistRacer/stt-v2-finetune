@@ -154,6 +154,31 @@ Disk clean-up (2026-10-12): smoke-test folders and the optimizer/scheduler/RNG s
 checkpoint deleted (30 GB). All checkpoint weights (`pytorch_model.bin`) are kept; checkpoints
 can no longer resume training, only be evaluated or exported.
 
+## Parvaaz v2: more Urdu data (2026-10-12, in progress)
+
+Aim: better voice quality than v1 by training on twice the data. The user chose Rasa's female
+Urdu speaker (same studio quality, CC BY 4.0) over IndicVoices-R (49 GB, variable quality).
+
+- Data: `prepare_rasa_male.py --genders Male Female --out rasa_mf_hf` -> **20,107 train clips,
+  42.15 h** (male 21.25 h = v1's set, female 20.9 h) + 2,237 test clips. Descriptions
+  (`describe_rasa.py`, now per speaker) name the female voice "Sana" (training data only,
+  not a product voice); her pitch is graded on DataSpeech's female scale (209.5 Hz,
+  "slightly high"). The generalised scripts reproduce v1's descriptions exactly.
+- Run unattended: `run_v2_pipeline.cmd` -> `run_v2_pipeline.sh` (download, build, measure,
+  describe, `train_parvaaz.sh v2`); logs `v2_pipeline.log`, `train_v2.log`.
+- Training: 1,256 updates (2 epochs, batch 4 x 8), 13:49-16:45, ~7.7 s per update;
+  checkpoints `parvaaz_v2_train\checkpoint-300/600/900/1200/1256` (optimizer state still
+  inside, ~4 GB each -- delete once a checkpoint is chosen).
+- **GPU memory lesson:** mid-run it slowed 7x (67 s per update) because the app's idle voice
+  helpers (Parvaaz 6 GB, OmniVoice 5 GB) pushed GPU memory past 32 GB, spilling to system RAM
+  (signature: ~100% "utilisation" at ~130 W). Stopping the two helpers (user approved)
+  restored full speed. Before any GPU job, check for idle helpers.
+- Evaluation (`eval_v2.sh`): **stopped part-way at the user's request.** Generated so far:
+  checkpoints 300, 1200, 1256 (both takes, all 26 sentences), 600 partly, 900 not started;
+  nothing scored yet. Resume with `bash eval_v2.sh` (held-out clips already made are
+  skipped), then a blind test of the best v2 checkpoint vs v1 step 300 and OmniVoice
+  (`build_blind_test.py`). v2 replaces v1 in the app only if it wins by ear.
+
 ## Next steps
 
 1. Deploy the self-check (and the Arabic voice, `..\arabic_voice\`) -- needs an app restart; ask first.

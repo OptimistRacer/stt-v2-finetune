@@ -97,3 +97,14 @@ TTS.lnk
 parvaaz_voice/*
 !parvaaz_voice/ATTRIBUTION.md
 !parvaaz_voice/voice.json
+
+# Parvaaz v2 (male + female) data, training output and logs stay local
+rasa_voice/rasa_mf_hf/*
+!rasa_voice/rasa_mf_hf/summary.json
+rasa_voice/rasa_mf_tags/
+rasa_voice/rasa_mf_desc/*
+!rasa_voice/rasa_mf_desc/summary.json
+rasa_voice/parvaaz_v2_train/
+rasa_voice/parvaaz_v2_codes/
+rasa_voice/parvaaz_v2_codes_tmp/
+rasa_voice/desc_v2_log.txt
