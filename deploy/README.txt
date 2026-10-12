@@ -15,6 +15,8 @@ Open:        this PC      http://localhost:8095
 Firewall:    the existing inbound rule "Urdu Speech Webapp" (Private networks, port 8095).
              Nothing was changed there. There is no login: anyone on that network can use it.
 GPU memory:  both models stay loaded, roughly 7-8 GB of GPU memory, while it runs.
+             Each extra voice adds a helper process once it is first used:
+             OmniVoice (port 8096) and Parvaaz (port 8097, about 4-5 GB).
 
 Start / stop (PowerShell)
 -------------------------

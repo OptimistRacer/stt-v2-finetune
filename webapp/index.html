@@ -148,8 +148,10 @@
         <label class="chk">
           Voice
           <select id="engine">
-            <option value="meta" selected>Standard (Meta)</option>
+            <option value="meta">Standard (Meta)</option>
             <option value="omnivoice">Natural (OmniVoice)</option>
+            <option value="parvaaz" selected>Parvaaz (ours)</option>
+            <option value="chatterbox">Arabic voice (ours)</option>
           </select>
         </label>
         <span class="sub" id="ttsLangNote" style="margin:0"></span>
@@ -373,18 +375,38 @@ $('#sample').onclick = () => {
 
 function updateVoiceNote() {
   const ar = $('#ttsLang').value === 'ar';
+  /* Each of our voices speaks one language. Urdu offers only ours: Standard (Meta) and
+     Natural (OmniVoice) are non-commercial (CC BY-NC). Arabic lists them as demo voices
+     next to ours (removing them was asked for Urdu only). */
+  /* ARABIC_OURS: switch on together with the server restart that adds the 'chatterbox'
+     engine -- the page is served live, the server code isn't. */
+  const ARABIC_OURS = false;
+  const OURS = ARABIC_OURS ? {parvaaz: 'ur', chatterbox: 'ar'} : {parvaaz: 'ur', chatterbox: 'none'};
+  const engine = $('#engine');
+  for (const o of engine.options) {
+    const nonCommercial = o.value === 'meta' || o.value === 'omnivoice';
+    o.hidden = o.disabled = o.value in OURS ? OURS[o.value] !== $('#ttsLang').value : !ar && nonCommercial;
+  }
+  if (engine.selectedOptions[0].disabled) engine.value = ar ? (ARABIC_OURS ? 'chatterbox' : 'meta') : 'parvaaz';
   const omni = $('#engine').value === 'omnivoice';
+  const parvaaz = $('#engine').value === 'parvaaz';
+  const arOurs = $('#engine').value === 'chatterbox';
   $('#text').placeholder = PLACEHOLDER[$('#ttsLang').value];
   /* The English-word lexicon was mined from Urdu recordings; there's no Arabic one,
      and the Arabic Meta voice has no digits in its vocabulary at all. */
   const notes = [];
-  if (ar && !omni) notes.push('Arabic voice: numbers are spelled out, but English words can’t be pronounced.');
+  if (ar && !omni && !arOurs) notes.push('Arabic voice: numbers are spelled out, but English words can’t be pronounced. Demo use only (non-commercial licence).');
   /* OmniVoice runs in a separate helper that starts on first use; its weights are CC-BY-NC. */
   if (omni) notes.push('Natural voice: the first request takes about a minute to start. Demo use only (non-commercial licence).');
+  /* Parvaaz: our fine-tune of Indic Parler-TTS on AI4Bharat's Rasa (CC BY 4.0) -- credit required. */
+  /* Our Arabic voice: Chatterbox (MIT) with a synthetic voice designed by VoxCPM2 (Apache-2.0); no speed control. */
+  if (arOurs) notes.push('Arabic voice (ours): licensed for commercial use; a synthetic voice, not a real person. The speed menu doesn’t change it. The first request takes about a minute to start.');
+  if (parvaaz) notes.push('Parvaaz: our own voice, licensed for commercial use (credit: Rasa dataset by AI4Bharat). Urdu only. The first request takes about a minute to start.');
   $('#ttsLangNote').textContent = notes.join(' ');
 }
 $('#ttsLang').onchange = updateVoiceNote;
 $('#engine').onchange = updateVoiceNote;
+updateVoiceNote();  // apply the per-language voice list on first load too
 
 $('#speak').onclick = async () => {
   const text = $('#text').value.trim();

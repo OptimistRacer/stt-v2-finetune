@@ -1,0 +1,100 @@
+{
+ "ratings": {
+  "s0D": "1",
+  "s0C": "1",
+  "s0B": "2",
+  "s0A": "2",
+  "s1A": "1",
+  "s1B": "3",
+  "s1C": "2",
+  "s1D": "2",
+  "s2A": "1",
+  "s2B": "2",
+  "s2C": "2",
+  "s2D": "1",
+  "s3A": "4",
+  "s3B": "2",
+  "s3C": "1",
+  "s3D": "2",
+  "s4A": "2",
+  "s4B": "4",
+  "s4C": "2",
+  "s4D": "1",
+  "s5A": "3",
+  "s5B": "2",
+  "s5C": "1",
+  "s5D": "4"
+ },
+ "key": {
+  "0": {
+   "A": "OmniVoice (non-commercial)",
+   "B": "Meta Standard (non-commercial)",
+   "C": "Chatterbox (commercial OK)",
+   "D": "VoxCPM2 (commercial OK)"
+  },
+  "1": {
+   "A": "VoxCPM2 (commercial OK)",
+   "B": "Meta Standard (non-commercial)",
+   "C": "OmniVoice (non-commercial)",
+   "D": "Chatterbox (commercial OK)"
+  },
+  "2": {
+   "A": "VoxCPM2 (commercial OK)",
+   "B": "Chatterbox (commercial OK)",
+   "C": "OmniVoice (non-commercial)",
+   "D": "Meta Standard (non-commercial)"
+  },
+  "3": {
+   "A": "Meta Standard (non-commercial)",
+   "B": "OmniVoice (non-commercial)",
+   "C": "VoxCPM2 (commercial OK)",
+   "D": "Chatterbox (commercial OK)"
+  },
+  "4": {
+   "A": "OmniVoice (non-commercial)",
+   "B": "Meta Standard (non-commercial)",
+   "C": "Chatterbox (commercial OK)",
+   "D": "VoxCPM2 (commercial OK)"
+  },
+  "5": {
+   "A": "OmniVoice (non-commercial)",
+   "B": "Chatterbox (commercial OK)",
+   "C": "VoxCPM2 (commercial OK)",
+   "D": "Meta Standard (non-commercial)"
+  }
+ },
+ "averages": {
+  "OmniVoice (non-commercial)": [
+   2,
+   2,
+   2,
+   2,
+   2,
+   3
+  ],
+  "Meta Standard (non-commercial)": [
+   2,
+   3,
+   1,
+   4,
+   4,
+   4
+  ],
+  "Chatterbox (commercial OK)": [
+   1,
+   2,
+   2,
+   2,
+   2,
+   2
+  ],
+  "VoxCPM2 (commercial OK)": [
+   1,
+   1,
+   1,
+   1,
+   1,
+   1
+  ]
+ }
+}

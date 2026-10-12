@@ -92,3 +92,8 @@ dataspeech/
 
 # Desktop shortcut
 TTS.lnk
+
+# Exported Parvaaz model (3.8 GB weights stay local; attribution and voice settings are tracked)
+parvaaz_voice/*
+!parvaaz_voice/ATTRIBUTION.md
+!parvaaz_voice/voice.json

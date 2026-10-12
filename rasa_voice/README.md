@@ -1,6 +1,7 @@
 # Parvaaz: an Urdu voice we can use in a product
 
-Status: **trained and passing**, not yet in the app (2026-10-07).
+Status: **in the app** since 2026-10-12 as Voice "Parvaaz (ours)" (step 300, the checkpoint
+rated in the blind test). Trained and evaluated 2026-10-07.
 
 ## Why this exists
 
@@ -107,17 +108,55 @@ Re-apply after a fresh clone: `git -C parler-tts apply ..\rasa_voice\parler-tts-
 - Generation runs about real time (fp32, no compile) -- fine for a demo, worth speeding up
   (bf16 / SDPA / torch.compile) before heavy use.
 
-## Next steps (pick up here)
+## Serving (2026-10-12)
 
-1. Choose the checkpoint by ear: step 300 or step 654 tie on clarity (see Seed re-check).
-   Rate `outputs\blind_test_s654.html` the same way as the step-300 test and compare.
-2. Export it as a clean, standalone model folder (weights + config + tokenizer +
-   generation config + an ATTRIBUTION note) -- the checkpoints also hold ~4 GB of
-   optimizer state each that a served model doesn't need.
-3. Add it to the speech app as a third voice (`webapp/server.py` engine + Voice menu
-   option; its own "sayable" check, since `has_sayable` uses Meta's character list).
-   **This needs the deployed app (scheduled task UrduSpeechWebapp, port 8095) restarted --
-   ask first.**
-4. Disk clean-up once the checkpoint is chosen: `smoke_train\` (11 GB), optimizer states.
-5. Later: Arabic voice the same way; optionally the Parvaaz host's own voice from the
-   channel's shorts (`..\parvaaz\audit_shorts.py` is ready, waiting for the files).
+- `export_parvaaz.py --step 300` -> `..\parvaaz_voice\` (3.76 GB safetensors, tokenizer, generation
+  config, `ATTRIBUTION.md`, `voice.json` with the description template). No optimizer state.
+- `parvaaz_worker.py`: local helper on 127.0.0.1:8097 in `..\candidates\venv_parler`, started by
+  the app on first use (about 20 s), log `parvaaz_worker.log`. Speed is asked for in the
+  description ("slightly slowly" / "at a moderate speed" / "slightly fast" for the app's
+  Slower / Normal / Faster); fixed seed per sentence.
+- `..\webapp\server.py`: engine `parvaaz` (Urdu only; numbers spelled out and English words
+  mapped by the existing normaliser; English words it doesn't know are read as written, and
+  the note says so). `..\webapp\index.html`: Voice option "Parvaaz (ours)", disabled for Arabic.
+- `..\deploy\stop_webapp.ps1` also stops this helper.
+- Checked through the running app: two Urdu sentences heard back word for word; "کل صبح 10 بجے
+  ہماری meeting ہے" -> "dus" spelled out and "meeting" spoken as میٹنگ; Arabic refused cleanly.
+- To serve step 654 instead: `export_parvaaz.py --step 654`, then restart the app.
+
+## Settings sweep and self-check (2026-10-12)
+
+The user asked for clearer pronunciation and better voice quality. `sweep_parvaaz.py` tried 7
+settings on the 6 shared + 20 held-out sentences, two takes each (`sweep_score.py`, Urdu judge):
+
+| setting | one take | best of 2 takes |
+|---|---|---|
+| step 654, today's wording, temperature 1.0 | **13.1%** | 10.6% |
+| step 654, "very clean recording" | 15.4% | 12.4% |
+| step 654, temperature 0.7 | 19.7% | 11.0% |
+| step 654, very clean + 0.7 | 17.7% | 12.4% |
+| step 654, 0.7 + "slightly slowly" | 25.0% | 16.4% |
+| step 654, base model's "high quality" wording + 0.7 | 15.7% | 10.1% |
+| step 300, very clean + 0.7 | 21.2% | 14.8% |
+
+Lower sampling temperature makes this model mispronounce *more*, and slowing it down is worst.
+Blind voice-quality test (`listening_tests/blind_test_parvaaz_quality_ratings.json`): OmniVoice
+4.33, **Parvaaz today (step 300) 4.00**, the three step-654 variants 3.67 each. Decision: keep
+step 300 with today's settings; improve pronunciation with the **self-check** instead.
+
+Self-check (in `webapp/server.py`, `best_take`): each sentence is heard back by the app's own
+recogniser and regenerated, up to 3 takes, if words come out wrong; the clearest take is kept.
+English words left in Latin script are allowed one mismatch each. Keeping the best of 3 takes
+measured 3.6% -> 1.2% on the shared sentences and 18.0% -> 12.8% on unseen ones (step 654
+seed data). Tested offline; goes live with the next app restart.
+
+Disk clean-up (2026-10-12): smoke-test folders and the optimizer/scheduler/RNG state in every
+checkpoint deleted (30 GB). All checkpoint weights (`pytorch_model.bin`) are kept; checkpoints
+can no longer resume training, only be evaluated or exported.
+
+## Next steps
+
+1. Deploy the self-check (and the Arabic voice, `..\arabic_voice\`) -- needs an app restart; ask first.
+2. Voice quality beyond settings needs training: more Urdu data (Rasa's female speaker,
+   IndicVoices-R) or the Parvaaz host's own shorts (`..\parvaaz\audit_shorts.py`, waiting for files).
+3. Speed: generation is roughly real time on fp32; bf16 / SDPA / torch.compile could help.

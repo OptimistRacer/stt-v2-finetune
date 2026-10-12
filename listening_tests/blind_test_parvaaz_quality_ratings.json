@@ -1,0 +1,120 @@
+{
+ "ratings": {
+  "s0A": "4",
+  "s0B": "3",
+  "s0C": "4",
+  "s0D": "4",
+  "s0E": "3",
+  "s1A": "4",
+  "s1B": "5",
+  "s1C": "3",
+  "s1D": "4",
+  "s1E": "4",
+  "s2A": "3",
+  "s2B": "4",
+  "s2C": "5",
+  "s2D": "4",
+  "s2E": "5",
+  "s3A": "3",
+  "s3B": "4",
+  "s3C": "3",
+  "s3D": "4",
+  "s3E": "3",
+  "s4A": "4",
+  "s4B": "4",
+  "s4C": "5",
+  "s4D": "4",
+  "s4E": "4",
+  "s5D": "3",
+  "s5C": "3",
+  "s5B": "5",
+  "s5A": "4",
+  "s5E": "4"
+ },
+ "key": {
+  "0": {
+   "A": "Parvaaz step 654, same settings",
+   "B": "OmniVoice (yardstick, non-commercial)",
+   "C": "Parvaaz step 654, 'high quality' wording, calmer",
+   "D": "Parvaaz step 654, 'very clean recording'",
+   "E": "Parvaaz today (step 300)"
+  },
+  "1": {
+   "A": "Parvaaz today (step 300)",
+   "B": "OmniVoice (yardstick, non-commercial)",
+   "C": "Parvaaz step 654, 'very clean recording'",
+   "D": "Parvaaz step 654, 'high quality' wording, calmer",
+   "E": "Parvaaz step 654, same settings"
+  },
+  "2": {
+   "A": "Parvaaz step 654, same settings",
+   "B": "Parvaaz step 654, 'very clean recording'",
+   "C": "Parvaaz today (step 300)",
+   "D": "Parvaaz step 654, 'high quality' wording, calmer",
+   "E": "OmniVoice (yardstick, non-commercial)"
+  },
+  "3": {
+   "A": "Parvaaz step 654, 'very clean recording'",
+   "B": "Parvaaz step 654, same settings",
+   "C": "Parvaaz step 654, 'high quality' wording, calmer",
+   "D": "Parvaaz today (step 300)",
+   "E": "OmniVoice (yardstick, non-commercial)"
+  },
+  "4": {
+   "A": "Parvaaz step 654, 'very clean recording'",
+   "B": "Parvaaz step 654, same settings",
+   "C": "OmniVoice (yardstick, non-commercial)",
+   "D": "Parvaaz step 654, 'high quality' wording, calmer",
+   "E": "Parvaaz today (step 300)"
+  },
+  "5": {
+   "A": "Parvaaz today (step 300)",
+   "B": "OmniVoice (yardstick, non-commercial)",
+   "C": "Parvaaz step 654, 'high quality' wording, calmer",
+   "D": "Parvaaz step 654, same settings",
+   "E": "Parvaaz step 654, 'very clean recording'"
+  }
+ },
+ "averages": {
+  "Parvaaz step 654, same settings": [
+   4,
+   4,
+   3,
+   4,
+   4,
+   3
+  ],
+  "OmniVoice (yardstick, non-commercial)": [
+   3,
+   5,
+   5,
+   3,
+   5,
+   5
+  ],
+  "Parvaaz step 654, 'high quality' wording, calmer": [
+   4,
+   4,
+   4,
+   3,
+   4,
+   3
+  ],
+  "Parvaaz step 654, 'very clean recording'": [
+   4,
+   3,
+   4,
+   3,
+   4,
+   4
+  ],
+  "Parvaaz today (step 300)": [
+   3,
+   4,
+   5,
+   4,
+   4,
+   4
+  ]
+ }
+}

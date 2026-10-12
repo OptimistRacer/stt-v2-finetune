@@ -9,15 +9,17 @@ Every clip is loudness-matched (same RMS) before embedding: louder clips tend to
 preferred, which would muddy a naturalness judgement. Sample rates are left native
 (Meta 16 kHz, OmniVoice 24 kHz, Parler 44.1 kHz) -- that is what each would serve.
 
-    python build_blind_test.py step450          (main environment)
+    python build_blind_test.py s300            (Urdu: Parvaaz vs OmniVoice vs Meta; main environment)
+    python build_blind_test.py arabic --lang ar --voices voxcpm=VoxCPM2 chatterbox=Chatterbox ...
+                                               (any voices under candidates/out/<dir>/)
 Writes C:\\Users\\Sistems-AI\\stt-v2-finetune\\outputs\\blind_test_<tag>.html
 """
 import base64
 import html
 import io
+import argparse
 import json
 import random
-import sys
 from pathlib import Path
 
 import numpy as np
@@ -40,10 +42,18 @@ def clip_uri(path: Path) -> str:
 
 
 def main():
-    tag = sys.argv[1]
-    voices = {f"parvaaz_{tag}": "Parvaaz (ours, commercial OK)", "omnivoice": "OmniVoice (non-commercial)",
-              "meta": "Meta Standard (non-commercial)"}
-    sentences = json.loads((CAND / "sentences.json").read_text(encoding="utf-8"))["ur"]
+    ap = argparse.ArgumentParser()
+    ap.add_argument("tag")
+    ap.add_argument("--lang", default="ur")
+    ap.add_argument("--voices", nargs="+", default=None, help="dir=Label pairs, dirs under candidates/out/")
+    a = ap.parse_args()
+    tag, lang = a.tag, a.lang
+    if a.voices:
+        voices = dict(v.split("=", 1) for v in a.voices)
+    else:
+        voices = {f"parvaaz_{tag}": "Parvaaz (ours, commercial OK)", "omnivoice": "OmniVoice (non-commercial)",
+                  "meta": "Meta Standard (non-commercial)"}
+    sentences = json.loads((CAND / "sentences.json").read_text(encoding="utf-8"))[lang]
     rng = random.Random(2026)
     key, blocks = {}, []
     for i, text in enumerate(sentences):
@@ -54,9 +64,9 @@ def main():
         for j, v in enumerate(order):
             letter = chr(65 + j)
             radios = "".join(f'<label><input type="radio" name="s{i}{letter}" value="{n}">{n}</label>' for n in range(1, 6))
-            rows.append(f'<div class="clip"><b>{letter}</b><audio controls preload="none" src="{clip_uri(CAND / "out" / v / f"ur_{i}.wav")}"></audio>'
+            rows.append(f'<div class="clip"><b>{letter}</b><audio controls preload="none" src="{clip_uri(CAND / "out" / v / f"{lang}_{i}.wav")}"></audio>'
                         f'<div class="rate" data-s="{i}" data-l="{letter}">{radios}</div><span class="who" data-s="{i}" data-l="{letter}"></span></div>')
-        blocks.append(f'<div class="item"><p class="sent" dir="rtl" lang="ur">{html.escape(text)}</p>{"".join(rows)}</div>')
+        blocks.append(f'<div class="item"><p class="sent" dir="rtl" lang="{lang}">{html.escape(text)}</p>{"".join(rows)}</div>')
 
     page = f"""<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Blind voice test</title><style>
@@ -71,7 +81,7 @@ audio{{width:100%}} .rate{{grid-column:2;display:flex;gap:14px;font-size:14px}} 
 background:var(--card);color:var(--fg);cursor:pointer;margin-right:8px}} #summary{{margin-top:14px}}
 </style></head><body><main>
 <h1>Blind test: which voice sounds most natural?</h1>
-<p class="lead">For each sentence, three voices play as A, B and C, shuffled every time. Rate each one:
+<p class="lead">For each sentence, {len(voices)} voices play as {', '.join(chr(65 + j) for j in range(len(voices)))}, shuffled every time. Rate each one:
 <b>5</b> = sounds like a real person, <b>1</b> = robotic. When you're done, press Reveal, then Download and send me the file.</p>
 {''.join(blocks)}
 <button id="reveal">Reveal which is which</button><button id="dl">Download my ratings</button><div id="summary"></div>
