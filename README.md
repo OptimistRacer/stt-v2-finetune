@@ -51,6 +51,27 @@ Total ~2h57m. The STT v2 7-Day Plan assumed 2 podcasts (2+2h) + ~1h fresh record
 podcast files rather than 2. Not blocking for Day 1, but worth flagging if the ~5h
 assumption matters for Day 3-4 fine-tuning data volume.
 
+**Provenance (confirmed by the owner, 2026-10-12):** all three are episodes of the company's
+own Parvaaz podcast (youtube.com/@parvaaz.official). podcast2's embedded title is "What If
+Your Brain Could Unlearn Bad Habits? | Episode 04" (guest: Dr. Hiba Zaheer).
+
+### Licences for product use
+
+Every input to the served speech-to-text model allows commercial use:
+
+| input | licence | obligation |
+|---|---|---|
+| Whisper large-v3 (base model) | Apache 2.0 | keep the licence notice |
+| faster-whisper, CTranslate2 (runtime) | MIT | keep the licence notice |
+| FLEURS Urdu | CC BY 4.0 | **credit FLEURS (Google)** |
+| Common Voice Urdu (CC0 mirror `fsicoli/common_voice_19_0`) | CC0 | none |
+| Parvaaz podcasts | own content | none |
+| podcast labels | outputs of Whisper large-v3 | none |
+
+Test-only data (e.g. the Lahgtna Gulf Arabic clips) is not in any model. Arabic transcription
+uses base Whisper large-v3. Have the wording checked before launch -- this is a reading of
+the licences, not legal advice.
+
 ## Running Day 1
 
 **1. Local (CPU) — prep + segment:**
