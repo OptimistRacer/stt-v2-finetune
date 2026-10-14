@@ -23,8 +23,9 @@ OUT = HERE.parent / "parvaaz_voice"
 ATTRIBUTION = """# Parvaaz voice -- attribution and licences
 
 This text-to-speech voice is a fine-tune of **Indic Parler-TTS** (`ai4bharat/indic-parler-tts`,
-Apache License 2.0) on the Urdu male speaker of the **Rasa** dataset by **AI4Bharat**
-(`ai4bharat/Rasa`, Creative Commons Attribution 4.0, CC BY 4.0).
+Apache License 2.0) on {data} of the **Rasa** dataset by **AI4Bharat**
+(`ai4bharat/Rasa`, Creative Commons Attribution 4.0, CC BY 4.0). The voice is Rasa's male
+Urdu speaker.
 
 CC BY 4.0 allows commercial use provided the source is credited. Suggested credit wherever
 the voice is used (app "about" page, product documentation):
@@ -40,8 +41,15 @@ Have the exact wording, and any voice-likeness questions, confirmed before a com
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--step", type=int, default=300)
+    ap.add_argument("--run", choices=["v1", "v2"], default="v1",
+                    help="v1: male-only training (parvaaz_train); v2: male + female (parvaaz_v2_train)")
     a = ap.parse_args()
-    src = HERE / "eval_models" / f"step{a.step}"
+    global OUT
+    if a.run == "v2":
+        OUT = HERE.parent / "parvaaz_voice_v2"  # next to v1, so the app keeps v1 until switched
+    src = HERE / "eval_models" / (f"v2_step{a.step}" if a.run == "v2" else f"step{a.step}")
+    run_dir = "parvaaz_v2_train" if a.run == "v2" else "parvaaz_train"
+    data = ("the Urdu male and female speakers" if a.run == "v2" else "the Urdu male speaker")
     if not (src / "pytorch_model.bin").exists():
         raise SystemExit(f"No checkpoint at {src} -- run make_eval_models.ps1 first")
 
@@ -52,14 +60,15 @@ def main():
     model.save_pretrained(OUT, safe_serialization=True)
     tok.save_pretrained(OUT)
     shutil.copy(src / "preprocessor_config.json", OUT / "preprocessor_config.json")
-    (OUT / "ATTRIBUTION.md").write_text(ATTRIBUTION, encoding="utf-8")
+    (OUT / "ATTRIBUTION.md").write_text(ATTRIBUTION.format(data=data), encoding="utf-8")
     (OUT / "voice.json").write_text(json.dumps({
         "name": "Parvaaz",
-        "checkpoint": f"rasa_voice/parvaaz_train/checkpoint-{a.step}",
+        "checkpoint": f"rasa_voice/{run_dir}/checkpoint-{a.step}",
         "language": "ur",
         "description_template": ("Parvaaz speaks {tone}, {rate}, with a moderate-pitched voice that is slightly "
                                  "expressive and animated. The recording is clean and very close-sounding."),
-        "note": "Reads Urdu script only; English words and digits must be converted to Urdu script first.",
+        "note": ("Trained on Urdu script only. The app spells out numbers and maps known English words to "
+                 "Urdu script first; unknown English words are read as written (correct in the one case checked)."),
     }, indent=1), encoding="utf-8")
     size = sum(p.stat().st_size for p in OUT.rglob("*") if p.is_file()) / 1e9
     print(f"[export] step {a.step} -> {OUT} ({size:.2f} GB)")

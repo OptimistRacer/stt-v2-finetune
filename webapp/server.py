@@ -61,7 +61,7 @@ class SpeakRequest(BaseModel):
     seed: int = 1234
     self_check: bool = True  # our own voices: hear each sentence back, retake if words come out wrong
     language: str = "ur"
-    engine: str = "meta"  # "meta" / "omnivoice" (non-commercial demo voices) or one of HELPERS (ours)
+    engine: str = ""  # one of HELPERS (ours); empty = our voice for the language. meta/omnivoice are refused.
 
 
 # Playback settings measured per voice, by synthesizing held-out sentences and scoring
@@ -90,7 +90,10 @@ OMNIVOICE_URL = "http://127.0.0.1:8096"
 HELPERS = {
     "parvaaz": {"label": "Parvaaz", "language": "ur", "port": 8097, "dir": HERE.parent / "rasa_voice",
                 "python": HERE.parent / "candidates" / "venv_parler" / "Scripts" / "python.exe",
-                "script": "parvaaz_worker.py"},
+                "script": "parvaaz_worker.py",
+                # v2 (male + female training, checkpoint 1200): blind test 4.67, tied with OmniVoice
+                # (v1 4.17); word error 1.9% vs v1's 5.5% on the shared sentences.
+                "args": ["--model_dir", str(HERE.parent / "parvaaz_voice_v2")]},
     "chatterbox": {"label": "Arabic", "language": "ar", "port": 8098, "dir": HERE.parent / "candidates",
                    "python": HERE.parent / "candidates" / "venv_chatterbox" / "Scripts" / "python.exe",
                    "script": "chatterbox_worker.py"},
@@ -159,7 +162,7 @@ def ensure_helper(name: str, timeout_s: float = 180) -> None:
         print(f"[server] starting {h['label']} voice helper ...")
         log = open(h["dir"] / h["script"].replace(".py", ".log"), "a", encoding="utf-8")
         STATE[f"{name}_proc"] = subprocess.Popen(
-            [str(h["python"]), h["script"], "--port", str(h["port"])],
+            [str(h["python"]), h["script"], "--port", str(h["port"]), *h.get("args", [])],
             cwd=h["dir"], stdout=log, stderr=subprocess.STDOUT)
         atexit.register(STATE[f"{name}_proc"].terminate)  # don't leave it holding GPU memory
     deadline = time.time() + timeout_s
@@ -375,16 +378,17 @@ async def transcribe_endpoint(
 def synthesize(req: SpeakRequest):
     if req.language not in VOICES:
         return JSONResponse({"error": f"No voice for language {req.language!r}."}, status_code=400)
+    if not req.engine:
+        req.engine = next(name for name, h in HELPERS.items() if h["language"] == req.language)
     if req.engine not in ENGINES:
         return JSONResponse({"error": f"Unknown voice {req.engine!r}."}, status_code=400)
     if req.engine in HELPERS and req.language != HELPERS[req.engine]["language"]:
         h = HELPERS[req.engine]
         return JSONResponse({"error": f"The {h['label']} voice speaks {LANGUAGES[h['language']]} only."}, status_code=400)
-    # Urdu offers only our own voice: Meta's and OmniVoice's weights are CC BY-NC. Arabic
-    # still lists them as demo voices next to ours (the user asked only for Urdu).
-    if req.language == "ur" and req.engine in ("meta", "omnivoice"):
-        return JSONResponse({"error": "For Urdu only the Parvaaz voice is offered (the others are non-commercial)."},
-                            status_code=400)
+    # Only our own, commercially usable voices are offered (2026-10-14, for product use):
+    # Meta's and OmniVoice's weights are CC BY-NC. The code paths stay for internal demos.
+    if req.engine in ("meta", "omnivoice"):
+        return JSONResponse({"error": "That voice isn't offered: its licence is non-commercial."}, status_code=400)
     text = (req.text or "").strip()
     if not text:
         return JSONResponse({"error": "Type some text first."}, status_code=400)
@@ -511,7 +515,8 @@ if __name__ == "__main__":
         if not Path(path).exists():
             sys.exit(f"No {label} model at {path}")
     if a.preload:
-        get_tts()
+        # Only the Urdu recogniser: the Meta voice is no longer offered, and our voices load
+        # in their own helpers on first use.
         get_stt()
 
     port = a.port

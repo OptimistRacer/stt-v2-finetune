@@ -375,19 +375,15 @@ $('#sample').onclick = () => {
 
 function updateVoiceNote() {
   const ar = $('#ttsLang').value === 'ar';
-  /* Each of our voices speaks one language. Urdu offers only ours: Standard (Meta) and
-     Natural (OmniVoice) are non-commercial (CC BY-NC). Arabic lists them as demo voices
-     next to ours (removing them was asked for Urdu only). */
-  /* ARABIC_OURS: switch on together with the server restart that adds the 'chatterbox'
-     engine -- the page is served live, the server code isn't. */
-  const ARABIC_OURS = false;
-  const OURS = ARABIC_OURS ? {parvaaz: 'ur', chatterbox: 'ar'} : {parvaaz: 'ur', chatterbox: 'none'};
+  /* Only our own, commercially usable voices are offered (2026-10-14): each speaks one
+     language. Standard (Meta) and Natural (OmniVoice) are non-commercial (CC BY-NC) and
+     stay hidden; the server refuses them too. */
+  const OURS = {parvaaz: 'ur', chatterbox: 'ar'};
   const engine = $('#engine');
   for (const o of engine.options) {
-    const nonCommercial = o.value === 'meta' || o.value === 'omnivoice';
-    o.hidden = o.disabled = o.value in OURS ? OURS[o.value] !== $('#ttsLang').value : !ar && nonCommercial;
+    o.hidden = o.disabled = !(o.value in OURS) || OURS[o.value] !== $('#ttsLang').value;
   }
-  if (engine.selectedOptions[0].disabled) engine.value = ar ? (ARABIC_OURS ? 'chatterbox' : 'meta') : 'parvaaz';
+  if (engine.selectedOptions[0].disabled) engine.value = ar ? 'chatterbox' : 'parvaaz';
   const omni = $('#engine').value === 'omnivoice';
   const parvaaz = $('#engine').value === 'parvaaz';
   const arOurs = $('#engine').value === 'chatterbox';

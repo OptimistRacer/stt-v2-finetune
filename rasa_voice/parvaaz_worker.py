@@ -27,8 +27,9 @@ import torch
 from parler_tts import ParlerTTSForConditionalGeneration
 from transformers import AutoTokenizer
 
+# Default v1 (parvaaz_voice); the app passes --model_dir to pick another export (e.g. v2).
 MODEL_DIR = Path(__file__).resolve().parent.parent / "parvaaz_voice"
-VOICE = json.loads((MODEL_DIR / "voice.json").read_text(encoding="utf-8"))
+VOICE = None
 TONES = {"conversational": "in a natural, conversational tone", "reading": "in a calm, informative reading voice",
          "news": "like a news presenter", "story": "like a storyteller narrating a book",
          "happy": "in a happy, cheerful tone", "sad": "in a sad, sorrowful tone"}
@@ -88,10 +89,13 @@ class Handler(BaseHTTPRequestHandler):
 
 
 def main():
-    global MODEL, TOK, DESC_TOK
+    global MODEL, TOK, DESC_TOK, MODEL_DIR, VOICE
     ap = argparse.ArgumentParser()
     ap.add_argument("--port", type=int, default=8097)
+    ap.add_argument("--model_dir", default=str(MODEL_DIR))
     args = ap.parse_args()
+    MODEL_DIR = Path(args.model_dir)
+    VOICE = json.loads((MODEL_DIR / "voice.json").read_text(encoding="utf-8"))
     MODEL = ParlerTTSForConditionalGeneration.from_pretrained(MODEL_DIR).to("cuda:0").eval()
     TOK = AutoTokenizer.from_pretrained(MODEL_DIR)
     DESC_TOK = AutoTokenizer.from_pretrained(MODEL.config.text_encoder._name_or_path)

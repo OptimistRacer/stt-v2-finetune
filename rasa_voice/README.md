@@ -1,7 +1,8 @@
 # Parvaaz: an Urdu voice we can use in a product
 
-Status: **in the app** since 2026-10-12 as Voice "Parvaaz (ours)" (step 300, the checkpoint
-rated in the blind test). Trained and evaluated 2026-10-07.
+Status: **v2 (step 1200) live in the app** since 2026-10-14 as Voice "Parvaaz (ours)", the
+default and only Urdu voice, with the self-check on. v1 (step 300, in the app 2026-10-12 to
+2026-10-14) is kept in `..\parvaaz_voice\` for rollback.
 
 ## Why this exists
 
@@ -154,7 +155,7 @@ Disk clean-up (2026-10-12): smoke-test folders and the optimizer/scheduler/RNG s
 checkpoint deleted (30 GB). All checkpoint weights (`pytorch_model.bin`) are kept; checkpoints
 can no longer resume training, only be evaluated or exported.
 
-## Parvaaz v2: more Urdu data (2026-10-12, in progress)
+## Parvaaz v2: more Urdu data (2026-10-12 to 2026-10-14)
 
 Aim: better voice quality than v1 by training on twice the data. The user chose Rasa's female
 Urdu speaker (same studio quality, CC BY 4.0) over IndicVoices-R (49 GB, variable quality).
@@ -173,15 +174,38 @@ Urdu speaker (same studio quality, CC BY 4.0) over IndicVoices-R (49 GB, variabl
   helpers (Parvaaz 6 GB, OmniVoice 5 GB) pushed GPU memory past 32 GB, spilling to system RAM
   (signature: ~100% "utilisation" at ~130 W). Stopping the two helpers (user approved)
   restored full speed. Before any GPU job, check for idle helpers.
-- Evaluation (`eval_v2.sh`): **stopped part-way at the user's request.** Generated so far:
-  checkpoints 300, 1200, 1256 (both takes, all 26 sentences), 600 partly, 900 not started;
-  nothing scored yet. Resume with `bash eval_v2.sh` (held-out clips already made are
-  skipped), then a blind test of the best v2 checkpoint vs v1 step 300 and OmniVoice
-  (`build_blind_test.py`). v2 replaces v1 in the app only if it wins by ear.
+- Evaluation (`eval_v2.sh`, all checkpoints, two takes each; scores in `eval_out/scores.json`)
+  and a blind test (`listening_tests/blind_test_parvaaz_v2_ratings.json`, 6 sentences, 1-5):
+
+  | voice | blind test | word error, shared sentences | word error, unseen sentences |
+  |---|---|---|---|
+  | **v2 step 1200** | **4.67** | **1.9%** | **14.2%** |
+  | v2 step 1256 (final) | 4.33 | | |
+  | v1 step 300 (was in the app) | 4.17 | 5.5% | 16.9% |
+  | OmniVoice (non-commercial yardstick) | 4.67 | | |
+  | real Rasa recordings (recogniser's floor) | | | 12.1% |
+
+  v2 step 1200 ties OmniVoice by ear and beats v1 on both error measures, so it replaced v1.
+- Export: `export_parvaaz.py --run v2 --step 1200` -> `..\parvaaz_voice_v2\` (3.76 GB,
+  ATTRIBUTION.md now credits both Rasa Urdu speakers' data). `parvaaz_worker.py --model_dir`
+  picks the export; the app passes `parvaaz_voice_v2`.
+
+## Deployment (2026-10-14)
+
+- The app (`webapp/server.py`) now offers **only our voices**: Parvaaz v2 for Urdu (helper on
+  port 8097) and the Arabic voice (`..\arabic_voice\`, Chatterbox helper on 8098). An empty
+  Voice picks our voice for the language; Meta and OmniVoice requests are refused (licence
+  non-commercial), and the page hides them. The self-check is on for both voices.
+- Tested after the restart: Urdu and Arabic defaults, refusals, page menus. First request
+  after a restart loads the helper (~26 s Urdu, ~60 s Arabic); later ones are faster.
+- GPU memory with both helpers loaded: ~18-19 GB. **Stop the helpers before any training.**
+- Disk clean-up: optimizer/scheduler/RNG state deleted from every v2 checkpoint (19 GB). The
+  weights are kept for evaluation or export, not for resuming training.
 
 ## Next steps
 
-1. Deploy the self-check (and the Arabic voice, `..\arabic_voice\`) -- needs an app restart; ask first.
-2. Voice quality beyond settings needs training: more Urdu data (Rasa's female speaker,
-   IndicVoices-R) or the Parvaaz host's own shorts (`..\parvaaz\audit_shorts.py`, waiting for files).
+1. Voice-likeness check of Parvaaz (Rasa's male speaker) before a commercial launch; use the
+   credit in `..\parvaaz_voice_v2\ATTRIBUTION.md`.
+2. Voice quality: the Parvaaz host's own shorts (`..\parvaaz\audit_shorts.py`, waiting for
+   files) or IndicVoices-R.
 3. Speed: generation is roughly real time on fp32; bf16 / SDPA / torch.compile could help.

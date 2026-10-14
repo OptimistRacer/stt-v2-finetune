@@ -16,8 +16,10 @@ for d in eval_models/v2_step*; do
   n=${d##*v2_step}
   for seed in 0 1; do
     tag=v2s${n}_seed$seed
-    (cd ../candidates && TTS_SEED=$seed venv_parler/Scripts/python.exe gen_candidate.py parvaaz_$tag \
-        D:/Audion-Data/TTS/rasa_voice/$d 2>&1 | { grep -E "done|Error|Traceback" || true; })
+    if [ "$(ls ../candidates/out/parvaaz_$tag/*.wav 2>/dev/null | wc -l)" -lt 6 ]; then  # skip if already made
+      (cd ../candidates && TTS_SEED=$seed venv_parler/Scripts/python.exe gen_candidate.py parvaaz_$tag \
+          D:/Audion-Data/TTS/rasa_voice/$d 2>&1 | { grep -E "done|Error|Traceback" || true; })
+    fi
     TTS_SEED=$seed $P gen_heldout.py $tag $d 2>&1 | { grep -E "done|Error|Traceback" || true; }
     tags+=($tag)
   done

@@ -14,9 +14,14 @@ Open:        this PC      http://localhost:8095
              other PCs    http://192.168.0.10:8095   (this PC's address on "Ethernet 2")
 Firewall:    the existing inbound rule "Urdu Speech Webapp" (Private networks, port 8095).
              Nothing was changed there. There is no login: anyone on that network can use it.
-GPU memory:  both models stay loaded, roughly 7-8 GB of GPU memory, while it runs.
-             Each extra voice adds a helper process once it is first used:
-             OmniVoice (port 8096) and Parvaaz (port 8097, about 4-5 GB).
+Voices:      only our own (commercially usable) voices are offered since 2026-10-14:
+             Urdu = Parvaaz v2 (helper on port 8097, model D:\Audion-Data\TTS\parvaaz_voice_v2)
+             Arabic = our Arabic voice (Chatterbox helper on port 8098, D:\Audion-Data\TTS\arabic_voice)
+             Meta and OmniVoice are refused (non-commercial licences).
+             Each helper starts on the first request for its language (~26 s Urdu, ~60 s Arabic).
+GPU memory:  the speech-to-text model stays loaded while it runs; with both voice helpers
+             loaded the total is about 18-19 GB. Stop the app (stop_webapp.ps1) before any
+             training on this GPU, or training spills into system RAM and runs ~7x slower.
 
 Start / stop (PowerShell)
 -------------------------

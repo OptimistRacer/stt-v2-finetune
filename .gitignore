@@ -108,3 +108,8 @@ rasa_voice/parvaaz_v2_train/
 rasa_voice/parvaaz_v2_codes/
 rasa_voice/parvaaz_v2_codes_tmp/
 rasa_voice/desc_v2_log.txt
+
+# Exported Parvaaz v2 model (weights local; attribution and voice settings tracked)
+parvaaz_voice_v2/*
+!parvaaz_voice_v2/ATTRIBUTION.md
+!parvaaz_voice_v2/voice.json

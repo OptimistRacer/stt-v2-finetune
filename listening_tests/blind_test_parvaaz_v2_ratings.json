@@ -1,0 +1,100 @@
+{
+ "ratings": {
+  "s0A": "4",
+  "s0B": "4",
+  "s0C": "4",
+  "s0D": "4",
+  "s1A": "4",
+  "s1B": "5",
+  "s1C": "5",
+  "s1D": "5",
+  "s2A": "4",
+  "s2B": "5",
+  "s2C": "4",
+  "s2D": "5",
+  "s3A": "4",
+  "s3B": "4",
+  "s3C": "4",
+  "s3D": "5",
+  "s4A": "4",
+  "s4B": "5",
+  "s4C": "4",
+  "s4D": "5",
+  "s5A": "5",
+  "s5B": "5",
+  "s5C": "4",
+  "s5D": "5"
+ },
+ "key": {
+  "0": {
+   "A": "Parvaaz v2 final (step 1256)",
+   "B": "OmniVoice (yardstick, non-commercial)",
+   "C": "Parvaaz v2 step 1200",
+   "D": "Parvaaz today (v1 step 300)"
+  },
+  "1": {
+   "A": "Parvaaz today (v1 step 300)",
+   "B": "OmniVoice (yardstick, non-commercial)",
+   "C": "Parvaaz v2 final (step 1256)",
+   "D": "Parvaaz v2 step 1200"
+  },
+  "2": {
+   "A": "Parvaaz today (v1 step 300)",
+   "B": "Parvaaz v2 step 1200",
+   "C": "Parvaaz v2 final (step 1256)",
+   "D": "OmniVoice (yardstick, non-commercial)"
+  },
+  "3": {
+   "A": "OmniVoice (yardstick, non-commercial)",
+   "B": "Parvaaz v2 final (step 1256)",
+   "C": "Parvaaz today (v1 step 300)",
+   "D": "Parvaaz v2 step 1200"
+  },
+  "4": {
+   "A": "Parvaaz v2 final (step 1256)",
+   "B": "OmniVoice (yardstick, non-commercial)",
+   "C": "Parvaaz v2 step 1200",
+   "D": "Parvaaz today (v1 step 300)"
+  },
+  "5": {
+   "A": "Parvaaz v2 final (step 1256)",
+   "B": "Parvaaz v2 step 1200",
+   "C": "Parvaaz today (v1 step 300)",
+   "D": "OmniVoice (yardstick, non-commercial)"
+  }
+ },
+ "averages": {
+  "Parvaaz v2 final (step 1256)": [
+   4,
+   5,
+   4,
+   4,
+   4,
+   5
+  ],
+  "OmniVoice (yardstick, non-commercial)": [
+   4,
+   5,
+   5,
+   4,
+   5,
+   5
+  ],
+  "Parvaaz v2 step 1200": [
+   4,
+   5,
+   5,
+   5,
+   4,
+   5
+  ],
+  "Parvaaz today (v1 step 300)": [
+   4,
+   4,
+   4,
+   4,
+   5,
+   4
+  ]
+ }
+}

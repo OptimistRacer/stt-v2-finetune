@@ -1,0 +1,7 @@
+{
+ "name": "Parvaaz",
+ "checkpoint": "rasa_voice/parvaaz_v2_train/checkpoint-1200",
+ "language": "ur",
+ "description_template": "Parvaaz speaks {tone}, {rate}, with a moderate-pitched voice that is slightly expressive and animated. The recording is clean and very close-sounding.",
+ "note": "Trained on Urdu script only. The app spells out numbers and maps known English words to Urdu script first; unknown English words are read as written (correct in the one case checked)."
+}
