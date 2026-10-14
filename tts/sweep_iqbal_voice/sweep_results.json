@@ -1,0 +1,333 @@
+{
+  "sentences": [
+    "آج ہم ایک نئے موضوع پر بات کریں گے جو ہمارے سامعین کے لیے بہت اہم ہے۔ امید ہے آپ کو یہ اپیسوڈ پسند آئے گا۔",
+    "ہماری کمپنی نوجوانوں کو نئی مہارتیں سکھانے کے لیے مختلف پروگرام چلاتی ہے۔",
+    "کل صبح موسم بہت اچھا تھا اس لیے ہم سب باہر چائے پینے گئے۔"
+  ],
+  "results": [
+    {
+      "step": 0,
+      "wer": 0.133,
+      "wer_min": 0.0,
+      "wer_max": 0.231,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_00000_t0_s0.wav",
+          "stt": "آج ہم ایک نئے موضوع پر بات کریں گے جو ہمارے سامائن کے لئے بہت اہم ہے امید ہے آپ کو یہ اپنے سوٹ پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_00000_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی مہرتیں سکھانے کیلئے مختلف پروگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_00000_t2_s0.wav",
+          "stt": "کل صبح موسم بہت اچھا تھا اس لیے ہم سب باہر چائے پینے گئے"
+        }
+      ],
+      "voice_sim": 0.221
+    },
+    {
+      "step": 500,
+      "wer": 0.461,
+      "wer_min": 0.269,
+      "wer_max": 0.692,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_00500_t0_s0.wav",
+          "stt": "آج ہم دیر میں موضوع پر بات کریں جو ہمارے صاحبین کے لئے بہت ہرانے امید ہے قبقل اپس پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_00500_t1_s0.wav",
+          "stt": "ہماری کپنی نوجوانوں کو نئی مہرتے سکھانے کیلئے مختلف پروگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_00500_t2_s0.wav",
+          "stt": "کہ اس وقت ہم عوسم بہت زیادہ تھا اس لیے ہم سب باہر چارے پہلی گئے"
+        }
+      ],
+      "voice_sim": 0.767,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 1000,
+      "wer": 0.383,
+      "wer_min": 0.192,
+      "wer_max": 0.769,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_01000_t0_s0.wav",
+          "stt": "آج ہم کے ایک نئے موضوع پر بات کریں گے جو ہمارے سامعین کے لیے بہت اہالہ امید ہے کہ آپ کو یہ بقیشن پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_01000_t1_s0.wav",
+          "stt": "ہماری کپنی نوجوانوں کو نئی مہارتیں سکھانے کیلئے مختلف طور اگام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_01000_t2_s0.wav",
+          "stt": "پر اس سوپ میں موسم بہت زیادہ اچھا تھا اس لیے ہم سب بار چائے پینے گئے"
+        }
+      ],
+      "voice_sim": 0.788,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 1500,
+      "wer": 0.364,
+      "wer_min": 0.214,
+      "wer_max": 0.538,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_01500_t0_s0.wav",
+          "stt": "آج ہم ایک نو موضوع پر بات کریں گے جو ہمارے سامین کے یہ بہت رہنہ امید ہے کہ آپ کو یہ اتشم پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_01500_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی محطے سکھانے کیلئے مختلف طور اگام چلناتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_01500_t2_s0.wav",
+          "stt": "پر اس صبح موسم بہت غشا تھا اس لیے ہم سب باہر چائے پی نہیں رہے"
+        }
+      ],
+      "voice_sim": 0.81,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 2000,
+      "wer": 0.208,
+      "wer_min": 0.071,
+      "wer_max": 0.385,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_02000_t0_s0.wav",
+          "stt": "آج ہم کے ایک نئے موضوع پر بات کریں گے جو ہمارے سانائن کے لئے بہت ارانہ ہے امید ہے آپ کو یہ قطعہ سن پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_02000_t1_s0.wav",
+          "stt": "ہماری کپنی نوجوانوں کو نئی مہارتیں سکھانے کے لیے مختلف پرگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_02000_t2_s0.wav",
+          "stt": "کل صبح موسم بہت اچھا تھا اس لیے ہم سب باہر چائے پینے لے"
+        }
+      ],
+      "voice_sim": 0.82,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 2500,
+      "wer": 0.316,
+      "wer_min": 0.143,
+      "wer_max": 0.615,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_02500_t0_s0.wav",
+          "stt": "آج ہم کی ایک نموذو پر بات کریں گے جو ہمارے سامعین کے لیے بہت اہم ہے امید ہے آپ کو یہ اکیسون پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_02500_t1_s0.wav",
+          "stt": "ہماری نوجوانوں کو نئی محرفیں سکھانے کیلئے مختلف قرو رام جلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_02500_t2_s0.wav",
+          "stt": "کرسودہ موسم بہت اچھا تھا اس لیے ہم سب باہر چائے پینے گئے"
+        }
+      ],
+      "voice_sim": 0.815,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 3000,
+      "wer": 0.158,
+      "wer_min": 0.071,
+      "wer_max": 0.231,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_03000_t0_s0.wav",
+          "stt": "آج ہم ایک نئے موضوع پر بات کریں گے جو ہمارے سامائن کے لیے بہت اہم ہے امید ہے آپ کو یہ قطعسون تسندہ آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_03000_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی مہارتیں سکھانے کیلئے مختلف پروگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_03000_t2_s0.wav",
+          "stt": "پر صبح موسم بہت اچھا تھا اس لیے ہم سب باہر چائے پینے گئے"
+        }
+      ],
+      "voice_sim": 0.829,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 3500,
+      "wer": 0.239,
+      "wer_min": 0.077,
+      "wer_max": 0.385,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_03500_t0_s0.wav",
+          "stt": "آج ہم ٹیک نموضوع پر بات کرے تھے جو ہمارے سامعین کے لئے بہت رہنا ہے امید ہے آپ کو یہ اپیسون پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_03500_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی مہارتیں سیکھانے کے لیے مختلف پروگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_03500_t2_s0.wav",
+          "stt": "پر صبح موسم بہت اتچا تھا اس لیے ہم سب باہر چائے پینے گئے"
+        }
+      ],
+      "voice_sim": 0.821,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 4000,
+      "wer": 0.331,
+      "wer_min": 0.269,
+      "wer_max": 0.385,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_04000_t0_s0.wav",
+          "stt": "آج ہم ٹیک موضوع پر بات کریں گے جو ہمارے سامائن کہ یہ بہت زیادہ ایک امید ہے آپ کو یہ اکیسون پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_04000_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی مہارتیں سیکھانے کیلئے مختلف پرگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_04000_t2_s0.wav",
+          "stt": "کل سودھ موسم بہت زیادہ چاہتا اس لیے ہم سب باہر چائے پیئے نہیں گئے"
+        }
+      ],
+      "voice_sim": 0.825,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 4500,
+      "wer": 0.27,
+      "wer_min": 0.214,
+      "wer_max": 0.423,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_04500_t0_s0.wav",
+          "stt": "بعد ہم ٹیک نموضوع پر بات کر رہے ہیں جو ہمارے سامعین کے لئے بہترین ہے امید ہے آپ کو یہ اپیسو پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_04500_t1_s0.wav",
+          "stt": "ہماری کمکنی نوجوانوں کو نئی مہارتیں سیکھانے کے لیے مختلف توروگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_04500_t2_s0.wav",
+          "stt": "کل سودھ موسم بہت رتا چا تھا اس لیے ہم سب باہر چائے پینے گئے"
+        }
+      ],
+      "voice_sim": 0.813,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 5000,
+      "wer": 0.213,
+      "wer_min": 0.071,
+      "wer_max": 0.308,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_05000_t0_s0.wav",
+          "stt": "بعد ہم ایک نئے موضوع پر بات کر رہے ہیں جو ہمارے سامعین کے لیے بہت ہی ایک امیل ہے آپ کو یہ اپیسون پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_05000_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی مہارتیں سیکھانے کے لیے مختلف توروگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_05000_t2_s0.wav",
+          "stt": "کل صبح موسم بہت غچہ تھا اس لیے ہم سب باہر چائے پینے گئے"
+        }
+      ],
+      "voice_sim": 0.831,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 5500,
+      "wer": 0.241,
+      "wer_min": 0.077,
+      "wer_max": 0.429,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_05500_t0_s0.wav",
+          "stt": "آج ہم ایک موضوع پر بات کریں گے جو ہمارے سامعین کے لیے بہت احسان ہے امید ہے آپ کو یہ اپیسو پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_05500_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی مہارتیں سکھانے کے لیے مختلف پرگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_05500_t2_s0.wav",
+          "stt": "کل سودھ و موسم بہت رہتا چاہتا اس لیے ہم سب باہر چائے پھی نہیں گئے"
+        }
+      ],
+      "voice_sim": 0.837,
+      "n_missing_keys": 0
+    },
+    {
+      "step": 6000,
+      "wer": 0.28,
+      "wer_min": 0.214,
+      "wer_max": 0.429,
+      "examples": [
+        {
+          "sentence": 0,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_06000_t0_s0.wav",
+          "stt": "پا آج ہم ایک موضوع پر بات کر رہے ہیں جو ہمارے سامعین کے لیے بہت رہنا ہے امید ہے آپ کو یہ اپیسو پسند آئے گا"
+        },
+        {
+          "sentence": 1,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_06000_t1_s0.wav",
+          "stt": "ہماری کمپنی نوجوانوں کو نئی مہارتیں سیکھانے کیلئے مختلف پروگرام چلاتی ہے"
+        },
+        {
+          "sentence": 2,
+          "wav": "D:\\Audion-Data\\TTS\\sweep_iqbal_voice\\step_06000_t2_s0.wav",
+          "stt": "کرسود و موسم بہت رہتا چاہتا اس لیے ہم سب باہر چائے پی لی گئے"
+        }
+      ],
+      "voice_sim": 0.836,
+      "n_missing_keys": 0
+    }
+  ]
+}

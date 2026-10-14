@@ -1,0 +1,74 @@
+{
+ "a0_v1_retry": {
+  "clips": 6,
+  "takes": 2,
+  "one_take": {
+   "wer": 2.9,
+   "cer": 0.6
+  },
+  "best_of_takes": {
+   "wer": 2.9,
+   "cer": 0.6
+  }
+ },
+ "a1_v1_t06": {
+  "clips": 6,
+  "takes": 2,
+  "one_take": {
+   "wer": 2.9,
+   "cer": 0.6
+  },
+  "best_of_takes": {
+   "wer": 1.5,
+   "cer": 0.3
+  }
+ },
+ "a2_v1_calm": {
+  "clips": 6,
+  "takes": 2,
+  "one_take": {
+   "wer": 2.9,
+   "cer": 0.6
+  },
+  "best_of_takes": {
+   "wer": 1.5,
+   "cer": 0.3
+  }
+ },
+ "a3_v1_cfg05": {
+  "clips": 6,
+  "takes": 2,
+  "one_take": {
+   "wer": 5.1,
+   "cer": 1.0
+  },
+  "best_of_takes": {
+   "wer": 1.5,
+   "cer": 0.3
+  }
+ },
+ "a4_v3_t06": {
+  "clips": 6,
+  "takes": 2,
+  "one_take": {
+   "wer": 4.4,
+   "cer": 1.0
+  },
+  "best_of_takes": {
+   "wer": 1.5,
+   "cer": 0.3
+  }
+ },
+ "a5_v3_calm05": {
+  "clips": 6,
+  "takes": 2,
+  "one_take": {
+   "wer": 0.0,
+   "cer": 0.0
+  },
+  "best_of_takes": {
+   "wer": 0.0,
+   "cer": 0.0
+  }
+ }
+}

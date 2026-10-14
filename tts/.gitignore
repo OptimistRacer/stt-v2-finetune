@@ -1,0 +1,115 @@
+# Large binaries and generated audio -- already safe on disk, not worth versioning
+raw_episodes/
+host_clips/
+host_id_clips/
+host_id_clips_v2/
+dataset_test/
+vits_dataset/train/*.wav
+vits_dataset/validation/*.wav
+*.wav
+
+# Downloaded model weights / checkpoints
+f5tts_model/
+mms_urd_train_checkpoint/
+vits_finetuned_host/
+vits_finetuned_host_v2/
+vits_finetuned_host_v3/
+vits_finetuned_host_light/
+vits_finetuned_iqbal_control/
+vits_iqbal_voice/
+vits_iqbal_voice_clean/
+urdu_tts_iqbal_voice/
+urdu_tts_iqbal_clean/
+urdu_tts_final/
+urdu_tts_weights/
+
+# Dataset audio (metadata.csv / manifests are tracked, the wavs are not)
+vits_dataset_v2/train/
+vits_dataset_v2/validation/
+vits_dataset_v3/train/*.wav
+vits_dataset_v3/validation/*.wav
+iqbal_dataset/train/*.wav
+iqbal_dataset/validation/*.wav
+iqbal_dataset_clean/train/*.wav
+iqbal_dataset_clean/validation/*.wav
+
+__pycache__/
+
+# Abandoned routes (kept on disk for reference, not worth tracking)
+tortoise-tts-fast/
+tortoise_check/
+
+# finetune-hf-vits is its own git clone with its own history/commits
+finetune-hf-vits/
+
+# Logs
+*.log
+webapp_api_test.wav
+webapp_server.log
+arabic_test/
+
+# Nexdata's free Gulf samples -- vendor demo files under a commercial licence,
+# kept locally for measurement but not redistributed here
+gulf_sample/
+
+# Candidate voice models: isolated environments and logs (models live in the HF cache)
+candidates/venv_*/
+candidates/*.log
+candidates/listen*.html
+candidates/listen_key.json
+candidates/omnivoice_worker.log
+candidates/test_server.log
+
+# Owned-voice work: scripts, summaries and scores are tracked; data, models and
+# environments stay on disk (all regenerable -- see rasa_voice/README.md)
+rasa_urdu/
+rasa_voice/rasa_male_hf/*
+!rasa_voice/rasa_male_hf/summary.json
+rasa_voice/rasa_male_tags/
+rasa_voice/rasa_male_desc/*
+!rasa_voice/rasa_male_desc/summary.json
+rasa_voice/smoke_*/
+rasa_voice/parvaaz_train/
+rasa_voice/parvaaz_codes/
+rasa_voice/parvaaz_codes_tmp/
+rasa_voice/eval_models/
+rasa_voice/eval_out/*
+!rasa_voice/eval_out/scores.json
+!rasa_voice/eval_out/heldout_texts.json
+!rasa_voice/eval_out/blind_test_s300_ratings.json
+rasa_voice/desc_log.txt
+venv_dataspeech/
+parvaaz/venv_demucs/
+parvaaz/shorts_raw/
+parvaaz/work/
+parvaaz/stems/
+parvaaz/audit/
+
+# Upstream clones used for training (their own git repos). Our changes to parler-tts are
+# kept as rasa_voice/parler-tts-local.patch; dataspeech is used unmodified.
+parler-tts/
+dataspeech/
+
+# Desktop shortcut
+TTS.lnk
+
+# Exported Parvaaz model (3.8 GB weights stay local; attribution and voice settings are tracked)
+parvaaz_voice/*
+!parvaaz_voice/ATTRIBUTION.md
+!parvaaz_voice/voice.json
+
+# Parvaaz v2 (male + female) data, training output and logs stay local
+rasa_voice/rasa_mf_hf/*
+!rasa_voice/rasa_mf_hf/summary.json
+rasa_voice/rasa_mf_tags/
+rasa_voice/rasa_mf_desc/*
+!rasa_voice/rasa_mf_desc/summary.json
+rasa_voice/parvaaz_v2_train/
+rasa_voice/parvaaz_v2_codes/
+rasa_voice/parvaaz_v2_codes_tmp/
+rasa_voice/desc_v2_log.txt
+
+# Exported Parvaaz v2 model (weights local; attribution and voice settings tracked)
+parvaaz_voice_v2/*
+!parvaaz_voice_v2/ATTRIBUTION.md
+!parvaaz_voice_v2/voice.json

@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Urdu Speech</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0f1115; --panel:#171a21; --line:#262b36; --text:#e7e9ee;
+    --muted:#9aa3b2; --accent:#4f8cff; --accent-dim:#2f5fb3; --ok:#3fb950; --warn:#d29922;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font:15px/1.55 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+  .wrap{max-width:900px;margin:0 auto;padding:28px 20px 60px}
+  h1{font-size:22px;margin:0 0 4px}
+  .sub{color:var(--muted);font-size:13px;margin-bottom:24px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:20px;margin-bottom:16px}
+  .row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+  button{font:inherit;border:0;border-radius:8px;padding:11px 18px;cursor:pointer;
+         background:var(--accent);color:#fff;font-weight:600}
+  button:hover:not(:disabled){background:var(--accent-dim)}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  button.ghost{background:#222735;color:var(--text);border:1px solid var(--line)}
+  button.rec{background:#b3392f}
+  #drop{border:2px dashed var(--line);border-radius:10px;padding:30px;text-align:center;
+        color:var(--muted);cursor:pointer;transition:.15s}
+  #drop:hover,#drop.over{border-color:var(--accent);color:var(--text);background:#1b1f29}
+  .tabs{display:flex;gap:6px;margin-bottom:18px}
+  .tab{padding:9px 16px;border-radius:8px;cursor:pointer;color:var(--muted);
+       border:1px solid transparent;font-weight:600;font-size:14px}
+  .tab.on{background:var(--panel);border-color:var(--line);color:var(--text)}
+  .modes{display:flex;gap:8px;margin-bottom:20px;border-bottom:1px solid var(--line);padding-bottom:16px}
+  .mode{padding:10px 20px;border-radius:9px;cursor:pointer;color:var(--muted);
+        border:1px solid var(--line);font-weight:600;font-size:15px;background:#12151c}
+  .mode.on{background:var(--accent);border-color:var(--accent);color:#fff}
+  .urdu{font-family:'Noto Nastaliq Urdu',serif;direction:rtl;text-align:right;
+        font-size:20px;line-height:2.4}
+  textarea{width:100%;min-height:180px;background:#12151c;color:var(--text);
+           border:1px solid var(--line);border-radius:10px;padding:16px;resize:vertical}
+  textarea:focus{outline:0;border-color:var(--accent)}
+  #out{white-space:pre-wrap;max-height:460px;overflow:auto;padding:8px 4px}
+  .seg{display:flex;gap:14px;padding:9px 6px;border-bottom:1px solid #1e222c}
+  .seg:hover{background:#1b1f29}
+  .t{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums;
+     min-width:52px;padding-top:10px;direction:ltr}
+  .stats{display:flex;gap:22px;flex-wrap:wrap;color:var(--muted);font-size:13px;margin-bottom:14px}
+  .stats b{color:var(--text)}
+  .hide{display:none}
+  .err{color:#ff7b72}
+  #timer{font-variant-numeric:tabular-nums;color:var(--warn);font-weight:600}
+  label.chk{display:flex;gap:8px;align-items:center;color:var(--muted);font-size:14px;cursor:pointer}
+  .bar{height:3px;background:var(--line);border-radius:3px;overflow:hidden;margin-top:14px}
+  .bar i{display:block;height:100%;width:35%;background:var(--accent);
+         animation:slide 1.1s ease-in-out infinite}
+  @keyframes slide{0%{transform:translateX(-100%)}100%{transform:translateX(385%)}}
+  audio{width:100%;margin-top:6px}
+  select{font:inherit;background:#222735;color:var(--text);border:1px solid var(--line);
+         border-radius:8px;padding:9px 12px}
+  .count{color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Urdu Speech</h1>
+  <div class="sub">Transcribe audio and speak text &middot; runs locally on this machine</div>
+
+  <div class="modes">
+    <div class="mode on" data-mode="stt">Speech &rarr; Text</div>
+    <div class="mode" data-mode="tts">Text &rarr; Speech</div>
+  </div>
+
+  <!-- ============ SPEECH TO TEXT ============ -->
+  <div id="mode-stt">
+    <div class="tabs">
+      <div class="tab on" data-tab="file">Upload audio</div>
+      <div class="tab" data-tab="mic">Record voice</div>
+    </div>
+
+    <div class="panel" id="pane-file">
+      <div id="drop">
+        <b>Click to choose an audio file</b><br>or drag &amp; drop here
+        <div style="font-size:12px;margin-top:8px">mp3, wav, m4a, mp4, ogg, webm</div>
+      </div>
+      <input type="file" id="file" accept="audio/*,video/*" class="hide">
+      <div id="fname" class="sub" style="margin:12px 0 0"></div>
+    </div>
+
+    <div class="panel hide" id="pane-mic">
+      <div class="row">
+        <button id="recBtn" class="rec">Start recording</button>
+        <span id="timer"></span>
+      </div>
+      <audio id="playback" controls class="hide"></audio>
+    </div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <div class="row">
+          <label class="chk">
+            Language
+            <select id="lang">
+              <option value="ur" selected>Urdu</option>
+              <option value="ar">Arabic</option>
+            </select>
+          </label>
+          <label class="chk" id="csWrap">
+            <input type="checkbox" id="cs">
+            Write English words in English script
+          </label>
+          <label class="chk">
+            <input type="checkbox" id="vad" checked>
+            Skip silence
+          </label>
+        </div>
+        <button id="go" disabled>Transcribe</button>
+      </div>
+      <div id="langNote" class="sub hide" style="margin:10px 0 0"></div>
+      <div id="progress" class="bar hide"><i></i></div>
+      <div id="status" class="sub" style="margin:12px 0 0"></div>
+    </div>
+
+    <div class="panel hide" id="results">
+      <div class="stats" id="stats"></div>
+      <div class="row" style="margin-bottom:12px">
+        <button class="ghost" id="dlTxt">Download .txt</button>
+        <button class="ghost" id="dlSrt">Download .srt</button>
+        <button class="ghost" id="copy">Copy text</button>
+        <button class="ghost" id="toggleTs">Hide timestamps</button>
+        <button id="toSpeech">Speak this text &rarr;</button>
+      </div>
+      <div id="out" class="urdu"></div>
+    </div>
+  </div>
+
+  <!-- ============ TEXT TO SPEECH ============ -->
+  <div id="mode-tts" class="hide">
+    <div class="panel">
+      <div class="row" style="margin-bottom:12px">
+        <label class="chk">
+          Language
+          <select id="ttsLang">
+            <option value="ur" selected>Urdu</option>
+            <option value="ar">Arabic</option>
+          </select>
+        </label>
+        <label class="chk">
+          Voice
+          <select id="engine">
+            <option value="meta">Standard (Meta)</option>
+            <option value="omnivoice">Natural (OmniVoice)</option>
+            <option value="parvaaz" selected>Parvaaz (ours)</option>
+            <option value="chatterbox">Arabic voice (ours)</option>
+          </select>
+        </label>
+        <span class="sub" id="ttsLangNote" style="margin:0"></span>
+      </div>
+      <textarea id="text" class="urdu" placeholder="اردو متن یہاں لکھیں..."></textarea>
+      <div class="row" style="justify-content:space-between;margin-top:10px">
+        <span class="count"><span id="chars">0</span> characters</span>
+        <button class="ghost" id="sample">Insert sample text</button>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <div class="row">
+          <label class="chk">
+            <input type="checkbox" id="split" checked>
+            Split long text into sentences
+          </label>
+          <label class="chk">
+            <input type="checkbox" id="normalize" checked>
+            Spell out numbers &amp; English words
+          </label>
+          <label class="chk">
+            Speed
+            <select id="rate">
+              <option value="0.8">Slower</option>
+              <option value="0.9" selected>Normal</option>
+              <option value="1.0">Faster</option>
+            </select>
+          </label>
+        </div>
+        <button id="speak">Generate speech</button>
+      </div>
+      <div id="tProgress" class="bar hide"><i></i></div>
+      <div id="tStatus" class="sub" style="margin:12px 0 0"></div>
+    </div>
+
+    <div class="panel hide" id="tResult">
+      <div class="stats">
+        <span>Length <b id="s-dur">-</b></span>
+        <span>Sentences <b id="s-sent">-</b></span>
+        <span>Generated in <b id="s-elapsed">-</b></span>
+        <span><b id="s-speed">-</b>&times; faster than real time</span>
+      </div>
+      <div id="note" class="sub hide" style="margin:0 0 10px"></div>
+      <audio id="player" controls></audio>
+      <div class="row" style="margin-top:14px">
+        <button class="ghost" id="download">Download .wav</button>
+        <button class="ghost" id="showSpoken">Show what was spoken</button>
+      </div>
+      <div id="spoken" class="urdu hide" style="margin-top:12px;font-size:17px"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+const esc = t => t.replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+const fmt = s => {
+  const m = Math.floor(s/60), x = Math.floor(s%60);
+  return `${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`;
+};
+
+/* ---------- mode switching ---------- */
+document.querySelectorAll('.mode').forEach(m => m.onclick = () => {
+  document.querySelectorAll('.mode').forEach(x => x.classList.remove('on'));
+  m.classList.add('on');
+  const tts = m.dataset.mode === 'tts';
+  $('#mode-stt').classList.toggle('hide', tts);
+  $('#mode-tts').classList.toggle('hide', !tts);
+});
+const showMode = name => document.querySelector(`.mode[data-mode="${name}"]`).click();
+
+/* ---------- speech to text ---------- */
+let blob = null, rec = null, chunks = [], t0 = 0, tick = null, data = null, showTs = true;
+
+/* Urdu runs on the fine-tuned model; Arabic falls back to base Whisper, and the
+   code-switch dictionary is Urdu vocabulary so it doesn't apply there. */
+$('#lang').onchange = () => {
+  const arabic = $('#lang').value === 'ar';
+  $('#csWrap').classList.toggle('hide', arabic);
+  $('#langNote').classList.toggle('hide', !arabic);
+  $('#langNote').textContent = arabic
+    ? 'Arabic uses base Whisper (no Urdu-style fine-tune yet). Accuracy on Gulf dialect is unverified — formal Arabic will do better.'
+    : '';
+  $('#toSpeech').classList.toggle('hide', arabic);  // the voice speaks Urdu only
+};
+
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.remove('on'));
+  t.classList.add('on');
+  const mic = t.dataset.tab === 'mic';
+  $('#pane-file').classList.toggle('hide', mic);
+  $('#pane-mic').classList.toggle('hide', !mic);
+  blob = null; $('#go').disabled = true; $('#fname').textContent = '';
+});
+
+$('#drop').onclick = () => $('#file').click();
+$('#drop').ondragover = e => { e.preventDefault(); $('#drop').classList.add('over'); };
+$('#drop').ondragleave = () => $('#drop').classList.remove('over');
+$('#drop').ondrop = e => {
+  e.preventDefault(); $('#drop').classList.remove('over');
+  if (e.dataTransfer.files[0]) pickFile(e.dataTransfer.files[0]);
+};
+$('#file').onchange = e => e.target.files[0] && pickFile(e.target.files[0]);
+
+function pickFile(f){
+  blob = f;
+  $('#fname').innerHTML = `<b>${esc(f.name)}</b> &middot; ${(f.size/1048576).toFixed(1)} MB`;
+  $('#go').disabled = false;
+}
+
+$('#recBtn').onclick = async () => {
+  if (rec && rec.state === 'recording') {
+    rec.stop(); clearInterval(tick);
+    $('#recBtn').textContent = 'Start recording'; $('#recBtn').classList.add('rec');
+    return;
+  }
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({audio:true});
+    rec = new MediaRecorder(stream); chunks = [];
+    rec.ondataavailable = e => chunks.push(e.data);
+    rec.onstop = () => {
+      blob = new Blob(chunks, {type:'audio/webm'});
+      blob.name = 'recording.webm';
+      $('#playback').src = URL.createObjectURL(blob);
+      $('#playback').classList.remove('hide');
+      $('#go').disabled = false;
+      stream.getTracks().forEach(t => t.stop());
+    };
+    rec.start(); t0 = Date.now();
+    tick = setInterval(() => {
+      const s = Math.floor((Date.now()-t0)/1000);
+      $('#timer').textContent = fmt(s);
+    }, 250);
+    $('#recBtn').textContent = 'Stop recording'; $('#recBtn').classList.remove('rec');
+  } catch (err) {
+    $('#status').innerHTML = `<span class="err">Microphone blocked: ${err.message}</span>`;
+  }
+};
+
+$('#go').onclick = async () => {
+  if (!blob) return;
+  $('#go').disabled = true;
+  $('#progress').classList.remove('hide');
+  $('#results').classList.add('hide');
+  $('#status').textContent = 'Transcribing… (about 5 seconds per minute of audio)';
+
+  const fd = new FormData();
+  fd.append('audio', blob, blob.name || 'audio.webm');
+  fd.append('codeswitch', $('#cs').checked);
+  fd.append('language', $('#lang').value);
+  fd.append('vad', $('#vad').checked);
+
+  try {
+    const r = await fetch('/transcribe', {method:'POST', body:fd});
+    const j = await r.json();
+    if (!r.ok || j.error) throw new Error(j.error || 'Transcription failed');
+    data = j; render();
+    $('#status').textContent = '';
+  } catch (e) {
+    $('#status').innerHTML = `<span class="err">${esc(e.message)}</span>`;
+  } finally {
+    $('#progress').classList.add('hide');
+    $('#go').disabled = false;
+  }
+};
+
+function render(){
+  $('#stats').innerHTML = `
+    <span>Audio <b>${fmt(data.duration_s)}</b></span>
+    <span>Took <b>${data.elapsed_s}s</b></span>
+    <span>Speed <b>${data.speed}&times; realtime</b></span>
+    <span>Segments <b>${data.n_segments}</b></span>`;
+  $('#out').innerHTML = data.segments.map(s =>
+    `<div class="seg">${showTs ? `<div class="t">${fmt(s.start)}</div>` : ''}<div style="flex:1">${esc(s.text)}</div></div>`
+  ).join('');
+  $('#results').classList.remove('hide');
+}
+
+$('#toggleTs').onclick = () => {
+  showTs = !showTs;
+  $('#toggleTs').textContent = showTs ? 'Hide timestamps' : 'Show timestamps';
+  render();
+};
+const save = (text, name) => {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([text], {type:'text/plain;charset=utf-8'}));
+  a.download = name; a.click();
+};
+$('#dlTxt').onclick = () => data && save(data.text, 'transcript.txt');
+$('#dlSrt').onclick = () => data && save(data.srt, 'subtitles.srt');
+$('#copy').onclick = async () => {
+  if (!data) return;
+  await navigator.clipboard.writeText(data.text);
+  $('#copy').textContent = 'Copied'; setTimeout(() => $('#copy').textContent = 'Copy text', 1200);
+};
+
+/* hand the transcript straight to the voice */
+$('#toSpeech').onclick = () => {
+  if (!data) return;
+  $('#text').value = data.text;
+  $('#text').dispatchEvent(new Event('input'));
+  showMode('tts');
+  window.scrollTo({top:0, behavior:'smooth'});
+};
+
+/* ---------- text to speech ---------- */
+const SAMPLES = {
+  ur: "السلام علیکم، ہمارے پروگرام میں خوش آمدید۔ آج کی گفتگو میں ہم نوجوانوں کے لیے روزگار کے نئے مواقع پر بات کریں گے۔ امید ہے یہ گفتگو آپ کے لیے مفید ثابت ہوگی۔",
+  ar: "مرحبا بكم في برنامجنا اليوم سوف نتحدث عن موضوع مهم جدا. شركتنا تقدم برامج مختلفة لتعليم الشباب مهارات جديدة."
+};
+const PLACEHOLDER = {ur: "اردو متن یہاں لکھیں...", ar: "اكتب النص العربي هنا..."};
+let lastUrl = null;
+
+$('#text').addEventListener('input', () => $('#chars').textContent = $('#text').value.length);
+$('#sample').onclick = () => {
+  $('#text').value = SAMPLES[$('#ttsLang').value];
+  $('#text').dispatchEvent(new Event('input'));
+};
+
+function updateVoiceNote() {
+  const ar = $('#ttsLang').value === 'ar';
+  /* Only our own, commercially usable voices are offered (2026-10-14): each speaks one
+     language. Standard (Meta) and Natural (OmniVoice) are non-commercial (CC BY-NC) and
+     stay hidden; the server refuses them too. */
+  const OURS = {parvaaz: 'ur', chatterbox: 'ar'};
+  const engine = $('#engine');
+  for (const o of engine.options) {
+    o.hidden = o.disabled = !(o.value in OURS) || OURS[o.value] !== $('#ttsLang').value;
+  }
+  if (engine.selectedOptions[0].disabled) engine.value = ar ? 'chatterbox' : 'parvaaz';
+  const omni = $('#engine').value === 'omnivoice';
+  const parvaaz = $('#engine').value === 'parvaaz';
+  const arOurs = $('#engine').value === 'chatterbox';
+  $('#text').placeholder = PLACEHOLDER[$('#ttsLang').value];
+  /* The English-word lexicon was mined from Urdu recordings; there's no Arabic one,
+     and the Arabic Meta voice has no digits in its vocabulary at all. */
+  const notes = [];
+  if (ar && !omni && !arOurs) notes.push('Arabic voice: numbers are spelled out, but English words can’t be pronounced. Demo use only (non-commercial licence).');
+  /* OmniVoice runs in a separate helper that starts on first use; its weights are CC-BY-NC. */
+  if (omni) notes.push('Natural voice: the first request takes about a minute to start. Demo use only (non-commercial licence).');
+  /* Parvaaz: our fine-tune of Indic Parler-TTS on AI4Bharat's Rasa (CC BY 4.0) -- credit required. */
+  /* Our Arabic voice: Chatterbox (MIT) with a synthetic voice designed by VoxCPM2 (Apache-2.0); no speed control. */
+  if (arOurs) notes.push('Arabic voice (ours): licensed for commercial use; a synthetic voice, not a real person. The speed menu doesn’t change it. The first request takes about a minute to start.');
+  if (parvaaz) notes.push('Parvaaz: our own voice, licensed for commercial use (credit: Rasa dataset by AI4Bharat). Urdu only. The first request takes about a minute to start.');
+  $('#ttsLangNote').textContent = notes.join(' ');
+}
+$('#ttsLang').onchange = updateVoiceNote;
+$('#engine').onchange = updateVoiceNote;
+updateVoiceNote();  // apply the per-language voice list on first load too
+
+$('#speak').onclick = async () => {
+  const text = $('#text').value.trim();
+  if (!text) { $('#tStatus').innerHTML = '<span class="err">Type some Urdu text first.</span>'; return; }
+
+  $('#speak').disabled = true;
+  $('#tProgress').classList.remove('hide');
+  $('#tStatus').textContent = 'Generating…';
+
+  try {
+    const res = await fetch('/synthesize', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({
+        text,
+        language: $('#ttsLang').value,
+        engine: $('#engine').value,
+        split: $('#split').checked,
+        normalize: $('#normalize').checked,
+        speaking_rate: parseFloat($('#rate').value)
+      })
+    });
+    const d = await res.json();
+    if (!res.ok) throw new Error(d.error || 'Generation failed.');
+
+    const wav = await (await fetch('data:audio/wav;base64,' + d.audio)).blob();
+    if (lastUrl) URL.revokeObjectURL(lastUrl);
+    lastUrl = URL.createObjectURL(wav);
+
+    $('#player').src = lastUrl;
+    $('#s-dur').textContent = d.duration_s + 's';
+    $('#s-sent').textContent = d.n_sentences;
+    $('#s-elapsed').textContent = d.elapsed_s + 's';
+    $('#s-speed').textContent = d.speed ?? '-';
+    $('#note').textContent = d.note || '';
+    $('#note').classList.toggle('hide', !d.note);
+    $('#spoken').textContent = d.spoken_text || '';
+    $('#spoken').classList.add('hide');
+    $('#showSpoken').textContent = 'Show what was spoken';
+    $('#tResult').classList.remove('hide');
+    $('#tStatus').textContent = '';
+    $('#player').play().catch(() => {});
+  } catch (e) {
+    $('#tStatus').innerHTML = `<span class="err">${esc(e.message)}</span>`;
+  } finally {
+    $('#speak').disabled = false;
+    $('#tProgress').classList.add('hide');
+  }
+};
+
+$('#showSpoken').onclick = () => {
+  const hidden = $('#spoken').classList.toggle('hide');
+  $('#showSpoken').textContent = hidden ? 'Show what was spoken' : 'Hide what was spoken';
+};
+
+$('#download').onclick = () => {
+  if (!lastUrl) return;
+  const a = document.createElement('a');
+  a.href = lastUrl;
+  a.download = 'urdu_tts.wav';
+  a.click();
+};
+</script>
+</body>
+</html>

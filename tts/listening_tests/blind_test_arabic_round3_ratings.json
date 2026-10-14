@@ -1,0 +1,120 @@
+{
+ "ratings": {
+  "s0A": "4",
+  "s0B": "2",
+  "s0C": "4",
+  "s0D": "4",
+  "s0E": "4",
+  "s1A": "4",
+  "s1B": "3",
+  "s1C": "4",
+  "s1D": "4",
+  "s1E": "4",
+  "s2B": "5",
+  "s2A": "4",
+  "s2E": "4",
+  "s2D": "4",
+  "s2C": "4",
+  "s3A": "4",
+  "s3B": "5",
+  "s3C": "4",
+  "s3D": "5",
+  "s3E": "3",
+  "s4A": "5",
+  "s4B": "4",
+  "s4C": "3",
+  "s4D": "5",
+  "s4E": "4",
+  "s5A": "4",
+  "s5B": "3",
+  "s5C": "4",
+  "s5D": "4",
+  "s5E": "5"
+ },
+ "key": {
+  "0": {
+   "A": "Chatterbox voice 1 (warm), calm (commercial OK)",
+   "B": "Meta Standard (non-commercial)",
+   "C": "Chatterbox voice 1 (warm), previous round (commercial OK)",
+   "D": "Chatterbox voice 1 (warm), steadier sampling (commercial OK)",
+   "E": "Chatterbox voice 3 (presenter), calm, close to text (commercial OK)"
+  },
+  "1": {
+   "A": "Chatterbox voice 3 (presenter), calm, close to text (commercial OK)",
+   "B": "Meta Standard (non-commercial)",
+   "C": "Chatterbox voice 1 (warm), steadier sampling (commercial OK)",
+   "D": "Chatterbox voice 1 (warm), previous round (commercial OK)",
+   "E": "Chatterbox voice 1 (warm), calm (commercial OK)"
+  },
+  "2": {
+   "A": "Chatterbox voice 1 (warm), calm (commercial OK)",
+   "B": "Chatterbox voice 1 (warm), steadier sampling (commercial OK)",
+   "C": "Chatterbox voice 3 (presenter), calm, close to text (commercial OK)",
+   "D": "Chatterbox voice 1 (warm), previous round (commercial OK)",
+   "E": "Meta Standard (non-commercial)"
+  },
+  "3": {
+   "A": "Chatterbox voice 1 (warm), steadier sampling (commercial OK)",
+   "B": "Chatterbox voice 1 (warm), calm (commercial OK)",
+   "C": "Chatterbox voice 1 (warm), previous round (commercial OK)",
+   "D": "Chatterbox voice 3 (presenter), calm, close to text (commercial OK)",
+   "E": "Meta Standard (non-commercial)"
+  },
+  "4": {
+   "A": "Chatterbox voice 1 (warm), steadier sampling (commercial OK)",
+   "B": "Chatterbox voice 1 (warm), calm (commercial OK)",
+   "C": "Meta Standard (non-commercial)",
+   "D": "Chatterbox voice 1 (warm), previous round (commercial OK)",
+   "E": "Chatterbox voice 3 (presenter), calm, close to text (commercial OK)"
+  },
+  "5": {
+   "A": "Chatterbox voice 3 (presenter), calm, close to text (commercial OK)",
+   "B": "Meta Standard (non-commercial)",
+   "C": "Chatterbox voice 1 (warm), previous round (commercial OK)",
+   "D": "Chatterbox voice 1 (warm), calm (commercial OK)",
+   "E": "Chatterbox voice 1 (warm), steadier sampling (commercial OK)"
+  }
+ },
+ "averages": {
+  "Chatterbox voice 1 (warm), calm (commercial OK)": [
+   4,
+   4,
+   4,
+   5,
+   4,
+   4
+  ],
+  "Meta Standard (non-commercial)": [
+   2,
+   3,
+   4,
+   3,
+   3,
+   3
+  ],
+  "Chatterbox voice 1 (warm), previous round (commercial OK)": [
+   4,
+   4,
+   4,
+   4,
+   5,
+   4
+  ],
+  "Chatterbox voice 1 (warm), steadier sampling (commercial OK)": [
+   4,
+   4,
+   5,
+   4,
+   5,
+   5
+  ],
+  "Chatterbox voice 3 (presenter), calm, close to text (commercial OK)": [
+   4,
+   4,
+   4,
+   5,
+   4,
+   4
+  ]
+ }
+}

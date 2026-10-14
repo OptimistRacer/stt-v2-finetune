@@ -1,0 +1,8 @@
+{
+ "name": "Arabic voice (ours)",
+ "engine": "Chatterbox multilingual v3 (ResembleAI/chatterbox, MIT)",
+ "reference": "reference.wav -- a synthetic voice designed with VoxCPM2 (openbmb/VoxCPM2, Apache-2.0) from the description: 'A middle-aged Arab man with a warm, deep, natural voice, speaking calmly at a relaxed pace'. No real person's voice.",
+ "settings": {"language_id": "ar", "exaggeration": 0.5, "cfg_weight": 0.3, "temperature": 0.6},
+ "chosen": "2026-10-12 blind test, round 3: 4.50 / 5 (Meta 3.00); word error 2.9% (1.5% best of 2 takes) on the 6 shared Arabic sentences",
+ "speed": "Chatterbox has no speed setting; varying cfg_weight did not change pace reliably, so the app speed menu does not apply to this voice."
+}

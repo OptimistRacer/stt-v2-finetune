@@ -1,0 +1,67 @@
+{
+ "dropped": {
+  "proper_noun": 5105,
+  "duration": 1553,
+  "text": 1
+ },
+ "train": {
+  "clips": 20107,
+  "hours": 42.15,
+  "genders": {
+   "Female": {
+    "clips": 9634,
+    "hours": 20.9
+   },
+   "Male": {
+    "clips": 10473,
+    "hours": 21.25
+   }
+  },
+  "styles": {
+   "WIKI": 6318,
+   "CONV": 4442,
+   "NEWS": 1806,
+   "BOOK": 1743,
+   "DISGUST": 867,
+   "HAPPY": 837,
+   "SURPRISE": 823,
+   "ANGER": 812,
+   "FEAR": 763,
+   "SAD": 734,
+   "ALEXA": 348,
+   "BB": 254,
+   "UMANG": 183,
+   "DIGI": 177
+  }
+ },
+ "test": {
+  "clips": 2237,
+  "hours": 4.69,
+  "genders": {
+   "Female": {
+    "clips": 1069,
+    "hours": 2.27
+   },
+   "Male": {
+    "clips": 1168,
+    "hours": 2.43
+   }
+  },
+  "styles": {
+   "WIKI": 694,
+   "CONV": 509,
+   "NEWS": 198,
+   "BOOK": 193,
+   "DISGUST": 95,
+   "HAPPY": 93,
+   "SURPRISE": 92,
+   "ANGER": 89,
+   "FEAR": 85,
+   "SAD": 82,
+   "ALEXA": 37,
+   "BB": 29,
+   "UMANG": 21,
+   "DIGI": 20
+  }
+ }
+}

@@ -1,0 +1,86 @@
+{
+ "c0_base": {
+  "clips": 26,
+  "takes": 2,
+  "one_take": {
+   "wer": 13.1,
+   "cer": 5.9
+  },
+  "best_of_takes": {
+   "wer": 10.6,
+   "cer": 4.9
+  }
+ },
+ "c1_vclean": {
+  "clips": 26,
+  "takes": 2,
+  "one_take": {
+   "wer": 15.4,
+   "cer": 6.8
+  },
+  "best_of_takes": {
+   "wer": 12.4,
+   "cer": 4.8
+  }
+ },
+ "c2_t07": {
+  "clips": 26,
+  "takes": 2,
+  "one_take": {
+   "wer": 19.7,
+   "cer": 12.4
+  },
+  "best_of_takes": {
+   "wer": 11.0,
+   "cer": 4.4
+  }
+ },
+ "c3_vclean_t07": {
+  "clips": 26,
+  "takes": 2,
+  "one_take": {
+   "wer": 17.7,
+   "cer": 10.6
+  },
+  "best_of_takes": {
+   "wer": 12.4,
+   "cer": 6.0
+  }
+ },
+ "c4_slow_t07": {
+  "clips": 26,
+  "takes": 2,
+  "one_take": {
+   "wer": 25.0,
+   "cer": 17.9
+  },
+  "best_of_takes": {
+   "wer": 16.4,
+   "cer": 9.9
+  }
+ },
+ "c5_hq_t07": {
+  "clips": 26,
+  "takes": 2,
+  "one_take": {
+   "wer": 15.7,
+   "cer": 8.7
+  },
+  "best_of_takes": {
+   "wer": 10.1,
+   "cer": 4.5
+  }
+ },
+ "c6_s300_t07": {
+  "clips": 26,
+  "takes": 2,
+  "one_take": {
+   "wer": 21.2,
+   "cer": 14.1
+  },
+  "best_of_takes": {
+   "wer": 14.8,
+   "cer": 8.0
+  }
+ }
+}

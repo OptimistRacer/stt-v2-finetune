@@ -1,0 +1,51 @@
+[
+ {
+  "char": "ِ",
+  "codepoint": "U+0650",
+  "name": "ARABIC KASRA",
+  "rows": 29,
+  "count": 40
+ },
+ {
+  "char": "ٔ",
+  "codepoint": "U+0654",
+  "name": "ARABIC HAMZA ABOVE",
+  "rows": 7,
+  "count": 8
+ },
+ {
+  "char": "َ",
+  "codepoint": "U+064E",
+  "name": "ARABIC FATHA",
+  "rows": 2,
+  "count": 4
+ },
+ {
+  "char": "ٓ",
+  "codepoint": "U+0653",
+  "name": "ARABIC MADDAH ABOVE",
+  "rows": 2,
+  "count": 2
+ },
+ {
+  "char": "ّ",
+  "codepoint": "U+0651",
+  "name": "ARABIC SHADDA",
+  "rows": 2,
+  "count": 2
+ },
+ {
+  "char": "ْ",
+  "codepoint": "U+0652",
+  "name": "ARABIC SUKUN",
+  "rows": 1,
+  "count": 1
+ },
+ {
+  "char": "!",
+  "codepoint": "U+0021",
+  "name": "EXCLAMATION MARK",
+  "rows": 1,
+  "count": 1
+ }
+]

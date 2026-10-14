@@ -1,0 +1,952 @@
+{
+ "accept": {
+  "urdu": "ایکسپٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "adopt": {
+  "urdu": "اڈاپ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "advice": {
+  "urdu": "ایڈوائس",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "ai": {
+  "urdu": "اے آئی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "argument": {
+  "urdu": "آرگیمنٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "available": {
+  "urdu": "آویلیبل",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "beginners": {
+  "urdu": "بگنرز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "beginning": {
+  "urdu": "بگننگ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "benefit": {
+  "urdu": "بینفٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "blackberry": {
+  "urdu": "بلیک بیری",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "burnout": {
+  "urdu": "برن آؤٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "business": {
+  "urdu": "بزنس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "buyer": {
+  "urdu": "بائر",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "buyers": {
+  "urdu": "بائرز",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "calculator": {
+  "urdu": "کیلکریٹر",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "capitalize": {
+  "urdu": "کیپٹلائز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "cases": {
+  "urdu": "کیسے",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "ceo": {
+  "urdu": "سی او",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "challenges": {
+  "urdu": "چیلنجز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "change": {
+  "urdu": "چینج",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "choose": {
+  "urdu": "چوز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "clear": {
+  "urdu": "کلیر",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "climax": {
+  "urdu": "کلائمکس",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "comment": {
+  "urdu": "کومنٹ",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "commitment": {
+  "urdu": "کمٹمنٹ",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "communication": {
+  "urdu": "کمیونکیشن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "compete": {
+  "urdu": "کمپیٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "competitor": {
+  "urdu": "کامپیٹیٹر",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "computer": {
+  "urdu": "کمپیوٹر",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "confrontation": {
+  "urdu": "کنفرنٹیشن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "consignment": {
+  "urdu": "کنسائنمنٹ",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "convenience": {
+  "urdu": "کنبینینس",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "conviction": {
+  "urdu": "کنبکشن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "correct": {
+  "urdu": "کریکٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "critical": {
+  "urdu": "کرٹیکل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "cto": {
+  "urdu": "سی ٹیو",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "currently": {
+  "urdu": "کرنٹلی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "damages": {
+  "urdu": "یا ڈیمیجز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "data": {
+  "urdu": "ڈیٹا",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "deal": {
+  "urdu": "ڈیل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "define": {
+  "urdu": "ڈیفائن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "definitely": {
+  "urdu": "ڈیفنیٹلی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "demand": {
+  "urdu": "ڈیمانڈ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "design": {
+  "urdu": "ڈیزائن",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "development": {
+  "urdu": "ڈیولپمنٹ",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "difference": {
+  "urdu": "ڈیفرنس",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "digital": {
+  "urdu": "ڈیجٹل",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "directly": {
+  "urdu": "ڈائریکٹلی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "discouragement": {
+  "urdu": "ڈسکرائجمنٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "discuss": {
+  "urdu": "ڈسکس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "dispute": {
+  "urdu": "ڈسپیوٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "documentation": {
+  "urdu": "ڈاکیومنٹیشن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "drive": {
+  "urdu": "ڈرائیف",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "easy": {
+  "urdu": "ایزی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "ecosystem": {
+  "urdu": "ایکو سسٹم",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "educational": {
+  "urdu": "ایڈوکیشنل",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "email": {
+  "urdu": "ای میل",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "enjoy": {
+  "urdu": "انجوائے",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "entrepreneurs": {
+  "urdu": "آنٹروپینیورز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "environment": {
+  "urdu": "انوائرمنٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "eventually": {
+  "urdu": "ایونچلی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "example": {
+  "urdu": "ایک زیمپل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "exhibitions": {
+  "urdu": "ایگزیبیشنز",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "explain": {
+  "urdu": "ایکسپلین",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "export": {
+  "urdu": "ایکسپورٹ",
+  "count": 4,
+  "source": "paired-transcripts"
+ },
+ "exporters": {
+  "urdu": "ایکسپورٹرز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "fail": {
+  "urdu": "فیل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "favor": {
+  "urdu": "فیور",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "financial": {
+  "urdu": "فائننشل",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "focus": {
+  "urdu": "فوکس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "follow": {
+  "urdu": "فالو",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "framework": {
+  "urdu": "فریم ورک",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "fraud": {
+  "urdu": "فروٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "frauds": {
+  "urdu": "فراڈز",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "generation": {
+  "urdu": "جنریشن",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "government": {
+  "urdu": "جورمنٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "graduates": {
+  "urdu": "گریجویٹس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "growth": {
+  "urdu": "گروت",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "guest": {
+  "urdu": "گیس",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "help": {
+  "urdu": "ہیلپ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "idea": {
+  "urdu": "آئیڈیا",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "impact": {
+  "urdu": "امپیکٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "important": {
+  "urdu": "امپورٹنٹ",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "improve": {
+  "urdu": "امپروف",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "individual": {
+  "urdu": "انڈویجوال",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "industry": {
+  "urdu": "انڈسٹری",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "inserts": {
+  "urdu": "انسٹرز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "insightful": {
+  "urdu": "انسائٹفل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "interesting": {
+  "urdu": "انٹرسٹنگ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "internet": {
+  "urdu": "انٹرنیٹ",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "invite": {
+  "urdu": "انوائٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "job": {
+  "urdu": "جاب",
+  "count": 5,
+  "source": "paired-transcripts"
+ },
+ "journey": {
+  "urdu": "جرنی",
+  "count": 4,
+  "source": "paired-transcripts"
+ },
+ "knowledge": {
+  "urdu": "نالج",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "laptop": {
+  "urdu": "لیپ ٹاپ",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "lastly": {
+  "urdu": "لاسلی",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "lead": {
+  "urdu": "لیڈ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "leader": {
+  "urdu": "لیڈر",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "leaders": {
+  "urdu": "لیڈرز",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "leadership": {
+  "urdu": "لیڈرشپ",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "level": {
+  "urdu": "لیول",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "life changer": {
+  "urdu": "لائف چینجر",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "loss": {
+  "urdu": "لوس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "losses": {
+  "urdu": "لوسز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "loyalty": {
+  "urdu": "لائلٹی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "manage": {
+  "urdu": "مینج",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "margin": {
+  "urdu": "مارجن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "market": {
+  "urdu": "مارکیٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "maths": {
+  "urdu": "میچ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "meet": {
+  "urdu": "میٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "mentor": {
+  "urdu": "منٹور",
+  "count": 5,
+  "source": "paired-transcripts"
+ },
+ "mindset": {
+  "urdu": "مائنڈ سیٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "minimize": {
+  "urdu": "منیمائز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "missing": {
+  "urdu": "مسنگ",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "mobile": {
+  "urdu": "موبائل",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "motivate": {
+  "urdu": "موٹیویٹ",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "move": {
+  "urdu": "مونٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "ntn": {
+  "urdu": "اینٹین",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "organization": {
+  "urdu": "آرگنائزیشن",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "part": {
+  "urdu": "پارٹ",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "perception": {
+  "urdu": "پرسیپشن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "phase": {
+  "urdu": "فیز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "physical": {
+  "urdu": "فیزیکل",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "pocketcast": {
+  "urdu": "پاکٹکاس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "podcast": {
+  "urdu": "پاکس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "point": {
+  "urdu": "پوائنٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "politics": {
+  "urdu": "پولٹکس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "positivity": {
+  "urdu": "پوزیٹیوٹی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "priority": {
+  "urdu": "پرائیورٹی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "problem": {
+  "urdu": "پرابلم",
+  "count": 4,
+  "source": "paired-transcripts"
+ },
+ "problems": {
+  "urdu": "پرابلمز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "product": {
+  "urdu": "پروڈکٹ",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "productivity": {
+  "urdu": "پروڈکٹیوٹی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "products": {
+  "urdu": "پروڈکٹس",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "propose": {
+  "urdu": "پروپوز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "prospect": {
+  "urdu": "پروسپیکٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "reality": {
+  "urdu": "ریالیٹی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "realize": {
+  "urdu": "ریلائز",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "reason": {
+  "urdu": "ریزن",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "recently": {
+  "urdu": "ریسنٹلی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "recommend": {
+  "urdu": "ریکیمنٹ",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "requirement": {
+  "urdu": "ریکوائیمنٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "research": {
+  "urdu": "ریسرچ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "resilience": {
+  "urdu": "ریزیلینس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "resolve": {
+  "urdu": "ریزولف",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "resource": {
+  "urdu": "ریسورس",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "result": {
+  "urdu": "ریزلٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "role": {
+  "urdu": "رول",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "room": {
+  "urdu": "روم",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "scale": {
+  "urdu": "اسکیل",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "select": {
+  "urdu": "سیلیکٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "share": {
+  "urdu": "شیئر",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "shipment": {
+  "urdu": "شپمنٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "situation": {
+  "urdu": "سٹویشن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "software": {
+  "urdu": "سافٹ ویئر",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "solution": {
+  "urdu": "سولیشن",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "solve": {
+  "urdu": "سولف",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "spotify": {
+  "urdu": "سپاٹفائی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "stage": {
+  "urdu": "سٹیج",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "start": {
+  "urdu": "سٹارٹ",
+  "count": 7,
+  "source": "paired-transcripts"
+ },
+ "steps": {
+  "urdu": "اسٹیپس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "strong": {
+  "urdu": "سٹرونگ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "struggle": {
+  "urdu": "سٹرگل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "student": {
+  "urdu": "سٹوڈنٹ",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "subscribe": {
+  "urdu": "سبسکرائب",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "successful": {
+  "urdu": "سیکسیسفل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "suggest": {
+  "urdu": "سجیس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "suggestion": {
+  "urdu": "سجیشن",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "switch": {
+  "urdu": "سوچ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "target": {
+  "urdu": "ٹارگیٹ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "tariff": {
+  "urdu": "ٹیریف",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "teacher": {
+  "urdu": "ٹیچر",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "teams": {
+  "urdu": "ٹیمز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "technology": {
+  "urdu": "ٹیکنالوجی",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "through": {
+  "urdu": "تھروں",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "time": {
+  "urdu": "ٹائم",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "title": {
+  "urdu": "ٹائٹل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "trigger": {
+  "urdu": "ٹرگر",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "trust": {
+  "urdu": "ٹرس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "universities": {
+  "urdu": "یونیورسٹیز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "university": {
+  "urdu": "یونیورسٹی",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "us": {
+  "urdu": "یو ایس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "use": {
+  "urdu": "یوز",
+  "count": 3,
+  "source": "paired-transcripts"
+ },
+ "useful": {
+  "urdu": "یوزفل",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "usually": {
+  "urdu": "یوزولی",
+  "count": 2,
+  "source": "paired-transcripts"
+ },
+ "utilize": {
+  "urdu": "یوٹلائز",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "website": {
+  "urdu": "ویب سائٹ",
+  "count": 0,
+  "source": "codeswitch-dict"
+ },
+ "workplace": {
+  "urdu": "ورک پریس",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "young": {
+  "urdu": "جنگ",
+  "count": 1,
+  "source": "paired-transcripts"
+ },
+ "youngster": {
+  "urdu": "ینگسٹر",
+  "count": 1,
+  "source": "paired-transcripts"
+ }
+}

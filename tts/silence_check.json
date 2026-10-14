@@ -1,0 +1,8 @@
+{
+  "total": 123,
+  "buckets": {
+    "over_70pct_silent": 76,
+    "over_50pct_silent": 120,
+    "over_30pct_silent": 123
+  }
+}

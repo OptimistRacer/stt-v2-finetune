@@ -1,0 +1,17 @@
+{
+  "intended_text": "آج ہم ایک نئے موضوع پر بات کریں گے جو ہمارے سامعین کے لیے بہت اہم ہے۔ امید ہے آپ کو یہ اپیسوڈ پسند آئے گا۔",
+  "results": [
+    {
+      "file": "D:/Audion-Data/TTS/test_output_mms_finetuned.wav",
+      "stt_transcript": "آج ہم ٹھیک کہہ رہے ہیں، جب ہمارے طرح آئے گئے، ہمارے طرح آئے گئے، اور ہمارے طرح آئے گئے۔",
+      "duration_s": 6.69,
+      "n_segments": 1
+    },
+    {
+      "file": "D:/Audion-Data/TTS/test_output_mms_finetuned_v2.wav",
+      "stt_transcript": "اپس انہوں نے یہ کہی ہے، انہوں نے صورت دیتا ہے، انہوں نے لڑنی digital اور فائز آئیں گے، انہوں نے بہت زیادہ نیائی کو سوچتے ہیں، انہوں نے آپ کو ایک ہی ویڈیو پر سوچ دیتا ہے۔",
+      "duration_s": 8.56,
+      "n_segments": 1
+    }
+  ]
+}

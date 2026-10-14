@@ -1,0 +1,167 @@
+{
+ "Female": {
+  "name": "Sana",
+  "speaker_mean_pitch_hz": 209.5,
+  "pitch_bin": "slightly high-pitch",
+  "rate_edges_letters_per_s": [
+   7.23,
+   8.03,
+   8.65,
+   9.24,
+   9.96,
+   11.1
+  ],
+  "expressiveness_edges_pitch_std_hz": [
+   28.16,
+   38.32,
+   51.4,
+   66.2
+  ]
+ },
+ "Male": {
+  "name": "Parvaaz",
+  "speaker_mean_pitch_hz": 118.5,
+  "pitch_bin": "moderate pitch",
+  "rate_edges_letters_per_s": [
+   7.73,
+   8.61,
+   9.29,
+   9.91,
+   10.75,
+   12.13
+  ],
+  "expressiveness_edges_pitch_std_hz": [
+   18.88,
+   23.82,
+   27.26,
+   32.83
+  ]
+ },
+ "train": {
+  "rows": 20107,
+  "by_speaker": {
+   "Female": {
+    "rate": {
+     "moderate speed": 1929,
+     "fast": 1446,
+     "slightly fast": 1926,
+     "very fast": 482,
+     "slowly": 1445,
+     "slightly slowly": 1924,
+     "very slowly": 482
+    },
+    "monotony": {
+     "monotone": 2408,
+     "very monotone": 964,
+     "slightly expressive and animated": 2890,
+     "expressive and animated": 2408,
+     "very expressive and animated": 964
+    },
+    "noise": {
+     "balanced in clarity": 1315,
+     "clean": 3538,
+     "slightly clean": 4406,
+     "very clean": 184,
+     "slightly noisy": 171,
+     "noisy": 19,
+     "very noisy": 1
+    }
+   },
+   "Male": {
+    "rate": {
+     "very slowly": 524,
+     "slightly fast": 2096,
+     "fast": 1571,
+     "slightly slowly": 2094,
+     "moderate speed": 2093,
+     "slowly": 1571,
+     "very fast": 524
+    },
+    "monotony": {
+     "monotone": 2618,
+     "slightly expressive and animated": 3141,
+     "very expressive and animated": 1048,
+     "expressive and animated": 2618,
+     "very monotone": 1048
+    },
+    "noise": {
+     "clean": 1720,
+     "slightly clean": 5452,
+     "balanced in clarity": 2877,
+     "slightly noisy": 285,
+     "very clean": 126,
+     "noisy": 12,
+     "very noisy": 1
+    }
+   }
+  },
+  "examples": [
+   "In a slightly high-pitched voice that is monotone, Sana speaks at a moderate speed in a clear voice, as if speaking to a voice assistant. The audio is balanced in clarity and very close-sounding.",
+   "In a slightly high-pitched voice that is very monotone, Sana speaks fast in a clear voice, as if speaking to a voice assistant. The audio is clean and very close-sounding.",
+   "Parvaaz delivers his words slowly in a calm, informative reading voice; his moderate-pitched voice is monotone. The recording sounds slightly clean and very close-sounding.",
+   "Parvaaz speaks in a calm, informative reading voice, slowly, with a moderate-pitched voice that is monotone. The recording is balanced in clarity and very close-sounding."
+  ]
+ },
+ "test": {
+  "rows": 2237,
+  "by_speaker": {
+   "Female": {
+    "rate": {
+     "fast": 163,
+     "slightly fast": 226,
+     "very fast": 53,
+     "moderate speed": 204,
+     "slowly": 166,
+     "slightly slowly": 204,
+     "very slowly": 53
+    },
+    "monotony": {
+     "very monotone": 107,
+     "monotone": 261,
+     "slightly expressive and animated": 321,
+     "expressive and animated": 278,
+     "very expressive and animated": 102
+    },
+    "noise": {
+     "clean": 387,
+     "balanced in clarity": 155,
+     "slightly clean": 480,
+     "very clean": 26,
+     "slightly noisy": 20,
+     "noisy": 1
+    }
+   },
+   "Male": {
+    "rate": {
+     "slightly fast": 255,
+     "very fast": 62,
+     "fast": 161,
+     "moderate speed": 226,
+     "slowly": 158,
+     "slightly slowly": 247,
+     "very slowly": 59
+    },
+    "monotony": {
+     "expressive and animated": 296,
+     "monotone": 284,
+     "slightly expressive and animated": 336,
+     "very monotone": 128,
+     "very expressive and animated": 124
+    },
+    "noise": {
+     "slightly clean": 610,
+     "clean": 195,
+     "slightly noisy": 29,
+     "balanced in clarity": 319,
+     "very clean": 15
+    }
+   }
+  },
+  "examples": [
+   "In a slightly high-pitched voice that is very monotone, Sana speaks fast in a clear voice, as if speaking to a voice assistant. The audio is clean and very close-sounding.",
+   "Sana speaks in a clear voice, as if speaking to a voice assistant, fast, with a slightly high-pitched voice that is very monotone. The recording is clean and very close-sounding.",
+   "Parvaaz speaks in a calm, informative reading voice, slightly slowly, with a moderate-pitched voice that is slightly expressive and animated. The recording is balanced in clarity and very close-sounding.",
+   "Parvaaz speaks in a calm, informative reading voice, very slowly, with a moderate-pitched voice that is slightly expressive and animated. The recording is clean and very close-sounding."
+  ]
+ }
+}
