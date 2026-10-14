@@ -15,12 +15,19 @@ self-hosted STT). Code lives here and is git-tracked; audio data lives alongside
   safe Arabic model; an early checkpoint (500) is the only fine-tune that comes close on
   Gulf. See "Arabic fine-tune experiment".
 - **Deployed on this PC (2026-10-02):** the merged speech app -- speech to text with this
-  model plus text to speech, Urdu and Arabic -- lives in the separate TTS repo
-  (`D:\Audion-Data\TTS`). It starts hidden at Windows login as the scheduled task
+  model plus text to speech, Urdu and Arabic -- is the TTS project, published here as
+  [`tts/`](tts/) (full history). The deployed app runs from the live working copy
+  `D:\Audion-Data\TTS`. It starts hidden at Windows login as the scheduled task
   `UrduSpeechWebapp`, listens on port 8095 for the local network
   (`http://192.168.0.10:8095`, `http://localhost:8095` on this PC) and is restarted if it
-  dies. Operating notes: `D:\Audion-Data\TTS\deploy\README.txt`. Its Arabic transcription
-  uses base large-v3, not the fine-tunes.
+  dies. Operating notes: [`tts/deploy/README.txt`](tts/deploy/README.txt). Its Arabic
+  transcription uses base large-v3, not the fine-tunes.
+- **Voices (since 2026-10-14):** only voices we may use in a product -- Parvaaz v2 for Urdu
+  (Indic Parler-TTS fine-tuned on AI4Bharat's Rasa, CC BY 4.0) and an Arabic voice
+  (Chatterbox, MIT). Model weights stay on this PC. See
+  [`tts/rasa_voice/README.md`](tts/rasa_voice/README.md).
+- **Updating `tts/`:** commit in `D:\Audion-Data\TTS`, then in this repo (clean working
+  tree) run `git subtree pull --prefix=tts D:/Audion-Data/TTS master` and push.
 - **Still open:** accent tagging and the accent-wise report (need human labels), and
   measurement on real demo-environment audio. See "Open items" at the bottom.
 
